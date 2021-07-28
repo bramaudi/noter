@@ -1,0 +1,10 @@
+.masonry {
+  columns: 6 150px;
+  column-gap: .5rem;
+}
+.masonry__item {
+	@apply inline-block w-full m-0 mr-2 mb-2;
+	@apply text-sm;
+	@apply border rounded-lg p-3;
+	@apply bg-white hover:bg-gray-100;
+}

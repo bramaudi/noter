@@ -4,7 +4,7 @@
   "description": "",
   "scripts": {
     "start": "vite",
-    "dev": "vite",
+    "dev": "vite --host=0.0.0.0",
     "build": "vite build",
     "serve": "vite preview"
   },
@@ -19,6 +19,8 @@
     "vite-plugin-solid": "^2.0.0"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^1.20.0",
+    "crypto-js": "^4.1.1",
     "solid-app-router": "^0.1.2",
     "solid-js": "^1.0.4",
     "sort-route-paths": "^1.0.0"
