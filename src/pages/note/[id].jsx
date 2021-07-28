@@ -1,20 +1,18 @@
 import { useParams } from "solid-app-router"
 import { createSignal, onMount } from "solid-js"
-import supabase from "../../supabase"
+import notesModel from '../../models/notes-dummy'
 
 const readNote = () => {
 	const params = useParams()
 	const [note, setNote] = createSignal({})
-	const fetchNote = async () => {
-		const { data, error } = await supabase
-			.from('notes')
-			.select()
-			.eq('id', params.id)
-		if (error) console.error(error.message)
+	const fetchNote = () => {
+		const { error, data } = notesModel.read(params.id)
+		if (error) return console.error(error)
 		setNote(data[0])
 	}
 	onMount(async () => {
 		fetchNote()
+		console.log(note());
 	})
 	return (
 		<div className="p-5">

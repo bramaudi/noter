@@ -22,7 +22,6 @@ const Home = () => {
 	}
 	const fetchNotes = () => {
 		const { error, data } = notesModel.index()
-		console.log('notes', data);
 		if (error) console.error(error)
 		setNotes(data && data.map(
 			note => ({
