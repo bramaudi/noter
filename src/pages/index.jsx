@@ -1,5 +1,4 @@
 import styles from './index.module.css'
-import { Link } from "solid-app-router"
 import { createSignal, For, onMount, Show } from "solid-js"
 // Services
 import auth from '../services/auth'
@@ -23,7 +22,7 @@ const Home = () => {
 	const fetchNotes = () => {
 		const { error, data } = notesModel.index()
 		if (error) console.error(error)
-		setNotes(data && data.map(
+		setNotes(data.map(
 			note => ({
 				...note,
 				created_at: formatDate(note.created_at),
@@ -33,7 +32,7 @@ const Home = () => {
 	}
 	const autoTitleSize = (str = '') => {
 		const { length: len } = str
-		if (len < 10) return 'text-2xl font-normal'
+		if (len < 10) return 'text-2xl'
 		else if (len < 30) return 'text-xl'
 		else if (len < 50) return 'text-lg'
 		else return 'text-sm'
@@ -46,17 +45,18 @@ const Home = () => {
 			<Show when={auth}>
 				<Header />
 				<div className="p-3 font-medium">
-					<div className={styles.masonry}>
+					<div className={styles.container}>
 						<For each={notes()}>
-							{note => (
-								<Link
-									href={`/note/${note.id}`}
-									className={styles.masonry__item}
-									>
-									<div className={`${autoTitleSize(note.title)} leading-5`}>{note.title}</div>
-									<div className="mt-2 text-gray-500">{note.created_at}</div>
-								</Link>
-							)}
+							{(note, i) => {
+								return (
+									<button
+										className={styles.item}
+										>
+										<div className={`${autoTitleSize(note.title)}`}>({i}) {note.title}</div>
+										<div className="mt-2 text-gray-500">{note.created_at}</div>
+									</button>
+								)
+							}}
 						</For>
 					</div>
 				</div>
