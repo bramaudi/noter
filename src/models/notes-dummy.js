@@ -1,4 +1,5 @@
 import { LoremIpsum } from "lorem-ipsum";
+import { formatDate } from "../helper/date";
 
 const lorem = new LoremIpsum({
   sentencesPerParagraph: {
@@ -12,7 +13,7 @@ const lorem = new LoremIpsum({
 });
 
 const index = (limit = 10) => {
-  const data = Array.from({ length: limit }, (v, i) => {
+  let data = Array.from({ length: limit }, (v, i) => {
     return {
       id: Math.random().toString(36).substring(7),
       title: lorem.generateWords(Math.floor(Math.random() * 30)),
@@ -22,6 +23,13 @@ const index = (limit = 10) => {
       uodated_at: null
     }
   })
+  data = data.map(
+    note => ({
+      ...note,
+      created_at: formatDate(note.created_at),
+      updated_at: formatDate(note.updated_at),
+    })
+  )
   return { error: null, data }
 }
 

@@ -1,17 +1,17 @@
-.grid {
+.container {
   display: -webkit-box; /* Not needed if autoprefixing */
   display: -ms-flexbox; /* Not needed if autoprefixing */
   display: flex;
   @apply -ml-2; /* gutter size offset */
   width: auto;
 }
-.grid_column {
+.column {
   @apply pl-2; /* gutter size */
   background-clip: padding-box;
 }
 
 /* Style your items */
-.grid_column > div { /* change div to reference your elements you put in <Masonry> */
+.column > div { /* change div to reference your elements you put in <Masonry> */
   @apply m-0 mb-2;
   @apply font-light leading-relaxed;
   @apply border rounded-lg p-3;
