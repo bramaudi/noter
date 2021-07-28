@@ -1,12 +1,13 @@
-import styles from './index.module.css'
 import { createSignal, For, onMount, Show } from "solid-js"
 // Services
 import auth from '../services/auth'
 import notesModel from '../models/notes-dummy'
 // Components
+import styles from './index.module.css'
 import Header from '../components/Header'
 import FloatActionButton from '../components/FloatActionButton'
 import Welcome from '../components/Welcome'
+import Masonry from '../components/Masonry'
 
 const Home = () => {
 	const [notes, setNotes] = createSignal([])
@@ -40,25 +41,29 @@ const Home = () => {
 	onMount(() => {
 		fetchNotes()
 	})
+	const breakpointColumnsObj = {
+		default: 4,
+		1100: 3,
+		700: 2,
+		300: 1
+	}
 	return (
 		<>
 			<Show when={auth}>
 				<Header />
 				<div className="p-3 font-medium">
-					<div className={styles.container}>
-						<For each={notes()}>
-							{(note, i) => {
-								return (
-									<button
-										className={styles.item}
-										>
-										<div className={`${autoTitleSize(note.title)}`}>({i}) {note.title}</div>
-										<div className="mt-2 text-gray-500">{note.created_at}</div>
-									</button>
-								)
-							}}
-						</For>
-					</div>
+					<Masonry
+						breakpointCols={breakpointColumnsObj}
+						className={styles.grid}
+						columnClassName={styles.grid_column}
+					>
+						{notes().map((note, i) => (
+							<div>
+								<div className={`${autoTitleSize(note.title)}`}>({i + 1}) {note.title}</div>
+								<div className="mt-2 text-xs text-right text-gray-500">{note.created_at}</div>
+							</div>
+						))}
+					</Masonry>
 				</div>
 				<FloatActionButton />
 			</Show>
