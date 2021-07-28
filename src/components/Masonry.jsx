@@ -3,7 +3,7 @@
  * Copyright (c) 2017 Paul Collett
  */
 
-import { createEffect, createSignal, onCleanup, onMount } from "solid-js";
+import { createEffect, createSignal, For, onCleanup, onMount } from "solid-js";
 
 const defaultProps = {
   breakpointCols: undefined, // optional, number or object { default: number, [key: number]: number }
@@ -130,15 +130,18 @@ const Masonry = (props = defaultProps) => {
       className
     };
 
-    return childrenInColumns.map((items, i) => {
-      return <div
-        {...columnAttributes}
-
-        key={i}
-      >
-        {items}
-      </div>;
-    });
+    return (
+      <For each={childrenInColumns}>
+        {(items, i) => (
+          <div
+            {...columnAttributes}
+            key={i}
+          >
+            {items}
+          </div>
+        )}
+      </For>
+    )
   }
 
   function logDeprecated(message) {
