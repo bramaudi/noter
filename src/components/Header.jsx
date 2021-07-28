@@ -1,13 +1,15 @@
-import supabase, { auth } from '../supabase'
 import { createEffect, createSignal, Show } from 'solid-js'
+// Services
+import auth from '../services/auth'
+// Components
 import iconLogOut from '../assets/icons/log-out.svg'
 
 const Header = () => {
 	const [modalProfile, setModalProfile] = createSignal(false)
 	const signOut = async () => {
-		const { error } = await supabase.auth.signOut()
-		if (error) return createAlert(error.message)
-		window.location.href = '/'
+		// const { error } = await supabase.auth.signOut()
+		// if (error) return createAlert(error.message)
+		// window.location.href = '/'
 	}
 	const clickOutsideProfilePopup = event => {
 		if (!event.target.closest('#profile_popup')) {

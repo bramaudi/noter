@@ -12,6 +12,7 @@
   "devDependencies": {
     "@vue/compiler-sfc": "^3.1.5",
     "autoprefixer": "^10.3.1",
+    "lorem-ipsum": "^2.0.3",
     "postcss": "^8.3.6",
     "tailwindcss": "^2.2.7",
     "vite": "^2.4.2",

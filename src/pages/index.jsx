@@ -1,7 +1,10 @@
+import styles from './index.module.css'
 import { Link } from "solid-app-router"
 import { createSignal, For, onMount, Show } from "solid-js"
-import supabase, { auth } from "../supabase"
-import styles from './index.module.css'
+// Services
+import auth from '../services/auth'
+import notesModel from '../models/notes-dummy'
+// Components
 import Header from '../components/Header'
 import FloatActionButton from '../components/FloatActionButton'
 import Welcome from '../components/Welcome'
@@ -17,10 +20,9 @@ const Home = () => {
 		const date = x.getDate()
 		return `${month} ${date} ${year}`
 	}
-	const fetchNotes = async () => {
-		const { data, error } = await supabase
-			.from('notes')
-			.select()
+	const fetchNotes = () => {
+		const { error, data } = notesModel.index()
+		console.log('notes', data);
 		if (error) console.error(error)
 		setNotes(data && data.map(
 			note => ({
