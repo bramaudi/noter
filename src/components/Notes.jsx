@@ -4,7 +4,7 @@ import { autoTitleSize } from "../helper/style"
 
 const breakpointColumnsObj = {
 	default: 4,
-	1100: 3,
+	1100: 4,
 	700: 2,
 	300: 1
 }
