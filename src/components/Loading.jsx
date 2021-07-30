@@ -20,13 +20,13 @@ const Loading = () => {
 		setData(data().map(() => randomHeight()))
 		randomizeInterval = setInterval(() => {
 			setData(data().map(() => randomHeight()))
-		}, 2500)
+		}, 1500)
 	})
 	onCleanup(() => {
 		clearInterval(randomizeInterval)
 	})
 	return (
-		<div className="p-3 animate-pulse">
+		<div className="p-3 animate-pulse" style={{ animation: 'pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite' }}>
 			<Masonry
 				breakpointCols={breakpointColumnsObj}
 				className={styles.container}
