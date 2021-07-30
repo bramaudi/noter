@@ -1,4 +1,6 @@
-const auth = {
+import supabase from "./supabase"
+
+const authDummy = {
 	"id": "8bd9595f-e795-47c1-a062-3dbc9daac705",
 	"aud": "authenticated",
 	"role": "authenticated",
@@ -18,5 +20,7 @@ const auth = {
 	"created_at": "2021-07-23T00:59:50.491297Z",
 	"updated_at": "2021-07-23T00:59:50.491297Z"
 }
+
+const auth = supabase.auth.user()
 
 export default auth

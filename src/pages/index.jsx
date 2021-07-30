@@ -16,7 +16,7 @@ const Home = () => {
 	const [route, setRoute] = createSignal('notes')
 
 	const fetchNotes = ({ lastId, limit }) => notesModel.index(lastId, limit)
-	const [notes] = createResource({ lastId: 0, limit: 10 }, fetchNotes)
+	const [notes, { refetch }] = createResource({ lastId: 0, limit: 10 }, fetchNotes)
 
 	onMount(() => {
 		window.addEventListener('scroll', () => {
@@ -40,7 +40,7 @@ const Home = () => {
 						<FloatActionButton onClick={() => setRoute('create')} />
 					</Match>
 					<Match when={route() === 'create'}>
-						<CreateNote onBack={{ lastY: lastY(), event: () => setRoute('notes') }} />
+						<CreateNote onBack={{ lastY: lastY(), event: () => { setRoute('notes'); refetch() } }} />
 					</Match>
 				</Switch>
 			</Show>

@@ -1,9 +1,9 @@
 const autoTitleSize = (str = '') => {
 	const { length: len } = str
-	if (len < 10) return 'text-2xl'
-	else if (len < 30) return 'text-xl'
-	else if (len < 50) return 'text-lg'
-	else return 'text-sm'
+	if (len >= 50) return 'text-sm'
+	else if (len >= 30) return 'text-lg'
+	else if (len >= 10) return 'text-xl'
+	else return 'text-2xl'
 }
 
 const rgbToHex = (r, g, b) => '#' + [r, g, b].map(x => {
@@ -46,8 +46,18 @@ const invertToBW = (color) => {
 		: options.white
 }
 
+const truncateText = (str = '', limit = 50, suffix = '...') => {
+	const words = str.split(' ')
+	if (words.length > limit) {
+		words.splice(limit, 0, suffix) // add suffix before limited string
+		words.splice(limit + 1, (words.length - limit)) // delete the rest
+	}
+	return words.join(' ')
+}
+
 export {
 	autoTitleSize,
 	rgbToHex,
-	invertToBW
+	invertToBW,
+	truncateText
 }

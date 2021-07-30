@@ -2,6 +2,8 @@ import { createSignal, For } from "solid-js"
 import { invertToBW, rgbToHex } from "../helper/style"
 import iconArrowRight from '../assets/icons/arrow-right.svg'
 import iconCheck from '../assets/icons/check.svg'
+import { store as storeNote } from '../models/notes'
+import auth from "../services/auth"
 
 const CreateNote = (props) => {
 	const { onBack } = props
@@ -9,7 +11,8 @@ const CreateNote = (props) => {
 		title: '',
 		body: '',
 		tags: [],
-		color: '#fff'
+		color: '#fff',
+		user_id: auth.id
 	})
 	const navigateBack = () => {
 		const { lastY, event } = onBack
@@ -40,7 +43,8 @@ const CreateNote = (props) => {
 	}
 	const submitNote = e => {
 		e.preventDefault()
-		console.log(data());
+		storeNote(data())
+		navigateBack()
 	}
 	return (
 		<div className="p-3">
@@ -61,7 +65,6 @@ const CreateNote = (props) => {
 				</div>
 				<textarea
 					onInput={e => setData(n => ({...n, body: e.target.value}))}
-					onFocus={e => { e.target.classList.remove('border-red-400'); setFormError(null) }}
 					className="block w-full my-2 p-2 px-3 border-2 rounded outline-none focus:ring-0 focus:border-blue-500"
 					style={{background: data().color, color: invertToBW(data().color)}}
 					id="note-body"
