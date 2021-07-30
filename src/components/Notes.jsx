@@ -22,7 +22,7 @@ const Notes = (props = defaultProps) => {
 				className={styles.container}
 				columnClassName={styles.column}
 			>
-				{notes().map((note, i) => (
+				{notes.map((note, i) => (
 					<div>
 						<div className={`${autoTitleSize(note.title)}`}>{note.title}</div>
 						<div className="mt-2 text-xs text-right text-gray-500">{note.created_at}</div>

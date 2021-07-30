@@ -1,7 +1,7 @@
-import { createSignal, Match, onCleanup, onMount, Show, Switch } from "solid-js"
+import { createResource, createSignal, Match, onCleanup, onMount, Show, Switch } from "solid-js"
 // Services
 import auth from '../services/auth'
-import notesModel from '../models/notes-dummy'
+import * as notesModel from '../models/notes'
 // Components
 import Header from '../components/Header'
 import FloatActionButton from '../components/FloatActionButton'
@@ -9,18 +9,16 @@ import Welcome from '../components/Welcome'
 import Notes from "../components/Notes"
 import CreateNote from "../components/CreateNote"
 import Loading from "../components/Loading"
+import Empty from "../components/Empty"
 
 const Home = () => {
 	const [lastY, setLastY] = createSignal(0)
-	const [notes, setNotes] = createSignal([])
 	const [route, setRoute] = createSignal('notes')
-	const fetchNotes = () => {
-		const { error, data } = notesModel.index()
-		if (error) console.error(error)
-		setNotes(data)
-	}
+
+	const fetchNotes = ({ lastId, limit }) => notesModel.index(lastId, limit)
+	const [notes] = createResource({ lastId: 0, limit: 10 }, fetchNotes)
+
 	onMount(() => {
-		fetchNotes()
 		window.addEventListener('scroll', () => {
 			setLastY(window.scrollY)
 		})
@@ -34,8 +32,11 @@ const Home = () => {
 				<Switch>
 					<Match when={route() === 'notes'}>
 						<Header />
-						<Loading />
-						{/* <Notes notes={notes} /> */}
+						<Show when={notes.loading}><Loading /></Show>
+						<Show when={!notes.loading}>
+							<Show when={!notes().data.length}><Empty /></Show>
+							<Notes notes={notes().data} />
+						</Show>
 						<FloatActionButton onClick={() => setRoute('create')} />
 					</Match>
 					<Match when={route() === 'create'}>
