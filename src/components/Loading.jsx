@@ -20,7 +20,7 @@ const Loading = () => {
 		setData(data().map(() => randomHeight()))
 		randomizeInterval = setInterval(() => {
 			setData(data().map(() => randomHeight()))
-		}, 1500)
+		}, 2500)
 	})
 	onCleanup(() => {
 		clearInterval(randomizeInterval)
