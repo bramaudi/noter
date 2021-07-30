@@ -22,8 +22,8 @@ const Header = () => {
 			: document.removeEventListener('click', clickOutsideProfilePopup)
 	})
 	return (
-		<header class="flex items-center p-3 pt-4 pb-0 -mb-1">
-			<div className="text-3xl">Catat</div>
+		<header class="flex items-center p-3 pb-0 -mb-1">
+			<div className="text-3xl">Noter</div>
 			<Show when={auth}>
 				<div class="ml-auto">
 					<button onClick={() => setModalProfile(true)} class="relative flex items-center">
@@ -36,7 +36,7 @@ const Header = () => {
 					</button>
 					<div
 						id="profile_popup"
-						class="absolute pr-4 top-12 right-2 w-48 text-sm bg-white border rounded-lg shadow-md"
+						class="absolute z-10 pr-4 top-12 right-2 w-48 text-sm bg-white border rounded-lg shadow-md"
 						class={modalProfile() ? '' : 'hidden'}
 						>
 						
