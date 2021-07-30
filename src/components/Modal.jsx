@@ -14,7 +14,7 @@ const Modal = (props) => {
 	})
 	return (
 		<div
-			class="transition duration-300 ease-in-out fixed left-0 w-full top-0 h-full flex items-center justify-center overflow-auto bg-black bg-opacity-30"
+			class="transition duration-300 ease-in-out fixed z-30 left-0 w-full top-0 h-full flex items-center justify-center overflow-auto bg-black bg-opacity-30"
 			class={props.show ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}
 			onClick={props.onClose}
 			>
