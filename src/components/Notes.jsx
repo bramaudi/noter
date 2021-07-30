@@ -24,7 +24,7 @@ const Notes = (props = defaultProps) => {
 			>
 				{notes().map((note, i) => (
 					<div>
-						<div className={`${autoTitleSize(note.title)}`}>({i + 1}) {note.title}</div>
+						<div className={`${autoTitleSize(note.title)}`}>{note.title}</div>
 						<div className="mt-2 text-xs text-right text-gray-500">{note.created_at}</div>
 					</div>
 				))}
