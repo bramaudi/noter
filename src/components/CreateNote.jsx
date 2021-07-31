@@ -6,7 +6,7 @@ import { store as storeNote } from '../models/notes'
 import auth from "../services/auth"
 
 const CreateNote = (props) => {
-	const { onBack } = props
+	const { lastScrollY, navigateBack } = props
 	const [data, setData] = createSignal({
 		title: '',
 		body: '',
@@ -14,11 +14,6 @@ const CreateNote = (props) => {
 		color: '#fff',
 		user_id: auth.id
 	})
-	const navigateBack = () => {
-		const { lastY, event } = onBack
-		event()
-		window.scrollTo(window, lastY)
-	}
 	const tagsAdd = e => {
 		if (e.key === 'Enter' && !!e.target.value) {
 			e.preventDefault();
@@ -44,21 +39,24 @@ const CreateNote = (props) => {
 	const submitNote = e => {
 		e.preventDefault()
 		storeNote(data())
-		navigateBack()
+		navigateBack(lastScrollY)
 	}
 	return (
-		<div className="p-3">
+		<div className="p-3 mx-auto max-w-xl">
 			<form onSubmit={submitNote}>
 				<div className="flex items-center mb-3">
-					<button onClick={navigateBack} type="button" className="cursor-pointer p-2 rounded whitespace-nowrap bg-gray-300 hover:bg-gray-400">
+					{/* Back */}
+					<button onClick={() => navigateBack(lastScrollY)} type="button" className="cursor-pointer p-2 rounded whitespace-nowrap bg-gray-300 hover:bg-gray-400">
 						<img className="w-5 h-5 transform -rotate-180" src={iconArrowRight} alt="back" />
 					</button>
+					{/* Note title */}
 					<input
 						onInput={e => setData(n => ({...n, title: e.target.value}))}
-						className="mx-3 -mb-1 font-semibold outline-none border-b border-transparent focus:border-blue-500 flex-1 whitespace-nowrap overflow-hidden overflow-ellipsis"
+						className="mx-3 -mb-1 font-medium outline-none bg-transparent border-b border-transparent focus:border-blue-500 flex-1 whitespace-nowrap overflow-hidden overflow-ellipsis"
 						value={data().title}
 						placeholder="Untitled"
 						/>
+					{/* Save */}
 					<button type="submit" className="cursor-pointer p-2 rounded whitespace-nowrap bg-gray-300 hover:bg-gray-400">
 						<img className="w-5 h-5" src={iconCheck} alt="back" />
 					</button>
@@ -92,7 +90,7 @@ const CreateNote = (props) => {
 					<input onChange={e => setData(n => ({...n, color: e.target.value}))} type="color" id="note-color" className="hidden" />
 				</div>
 				{/* Tags */}
-				<div class="relative border-b-2 my-5 focus-within:border-blue-500">
+				<div class="relative border-b-2 pb-2 mt-10 mb-5 focus-within:border-blue-500">
 					<input
 						onKeyPress={tagsAdd}
 						type="text"

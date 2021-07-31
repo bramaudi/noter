@@ -10,6 +10,7 @@ import Notes from "../components/Notes"
 import CreateNote from "../components/CreateNote"
 import Loading from "../components/Loading"
 import Empty from "../components/Empty"
+import supabase from "../services/supabase"
 
 const Home = () => {
 	const [lastY, setLastY] = createSignal(0)
@@ -18,13 +19,24 @@ const Home = () => {
 	const fetchNotes = ({ lastId, limit }) => notesModel.index(lastId, limit)
 	const [notes, { refetch }] = createResource({ lastId: 0, limit: 10 }, fetchNotes)
 
-	onMount(() => {
-		window.addEventListener('scroll', () => {
-			setLastY(window.scrollY)
+	const saveScroll = () => setLastY(window.scrollY)
+
+	if (!auth) {
+		supabase.auth.onAuthStateChange(() => {
+			window.location.href = '/'
 		})
+	}
+
+	const navigateBack = (lastY) => {
+		setRoute('notes')
+		window.scrollTo(window, lastY)
+	}
+
+	onMount(() => {
+		window.addEventListener('scroll', saveScroll)
 	})
 	onCleanup(() => {
-		window.removeEventListener('scroll')
+		window.removeEventListener('scroll', saveScroll)
 	})
 	return (
 		<>
@@ -40,7 +52,7 @@ const Home = () => {
 						<FloatActionButton onClick={() => setRoute('create')} />
 					</Match>
 					<Match when={route() === 'create'}>
-						<CreateNote onBack={{ lastY: lastY(), event: () => { setRoute('notes'); refetch() } }} />
+						<CreateNote lastScrollY={lastY()} navigateBack={navigateBack} />
 					</Match>
 				</Switch>
 			</Show>
