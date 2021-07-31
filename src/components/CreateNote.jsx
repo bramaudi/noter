@@ -2,18 +2,11 @@ import { createSignal, For } from "solid-js"
 import { invertToBW, rgbToHex } from "../helper/style"
 import iconArrowRight from '../assets/icons/arrow-right.svg'
 import iconCheck from '../assets/icons/check.svg'
-import { store as storeNote } from '../models/notes'
-import auth from "../services/auth"
+import notesModel from '../models/notes'
 
 const CreateNote = (props) => {
-	const { lastScrollY, navigateBack } = props
-	const [data, setData] = createSignal({
-		title: '',
-		body: '',
-		tags: [],
-		color: '#fff',
-		user_id: auth.id
-	})
+	const { notes, mutateNotes, lastScrollY, maxScrollY, navigateBack } = props
+	const [data, setData] = createSignal(notesModel.structure)
 	const tagsAdd = e => {
 		if (e.key === 'Enter' && !!e.target.value) {
 			e.preventDefault();
@@ -36,10 +29,15 @@ const CreateNote = (props) => {
 		const [r, g, b] = bgColor.match(/\((.*)\)/)[1].split(',').map(c => c.trim())
 		setData(n => ({...n, color: rgbToHex(r, g, b)}))
 	}
-	const submitNote = e => {
+	const submitNote = (e) => {
 		e.preventDefault()
-		storeNote(data())
-		navigateBack(lastScrollY)
+		try {
+			notesModel.store(data())
+			mutateNotes([...notes, data()])
+			navigateBack(-1) // scroll bottom
+		} catch (error) {
+			alert(error)
+		}
 	}
 	return (
 		<div className="p-3 mx-auto max-w-xl">

@@ -1,7 +1,7 @@
-import { createResource, createSignal, Match, onCleanup, onMount, Show, Switch } from "solid-js"
+import { createEffect, createResource, createSignal, Match, onCleanup, onMount, Show, Switch } from "solid-js"
 // Services
 import auth from '../services/auth'
-import * as notesModel from '../models/notes'
+import notesModel from '../models/notes'
 // Components
 import Header from '../components/Header'
 import FloatActionButton from '../components/FloatActionButton'
@@ -15,9 +15,10 @@ import supabase from "../services/supabase"
 const Home = () => {
 	const [lastY, setLastY] = createSignal(0)
 	const [route, setRoute] = createSignal('notes')
+	const [notes, setNotes] = createSignal([])
 
 	const fetchNotes = ({ lastId, limit }) => notesModel.index(lastId, limit)
-	const [notes, { refetch }] = createResource({ lastId: 0, limit: 10 }, fetchNotes)
+	const [notesResource] = createResource({ lastId: 0, limit: 100 }, fetchNotes)
 
 	const saveScroll = () => setLastY(window.scrollY)
 
@@ -27,13 +28,20 @@ const Home = () => {
 		})
 	}
 
-	const navigateBack = (lastY) => {
+	const navigateBack = (scrollY) => {
 		setRoute('notes')
-		window.scrollTo(window, lastY)
+		if (scrollY == -1) window.scrollTo(0,document.body.scrollHeight)
+		else window.scrollTo(window, scrollY)
 	}
 
 	onMount(() => {
 		window.addEventListener('scroll', saveScroll)
+	})
+	createEffect(() => {
+		if (!notesResource.loading) {
+			const { data } = notesResource()
+			setNotes(data)
+		}
 	})
 	onCleanup(() => {
 		window.removeEventListener('scroll', saveScroll)
@@ -44,15 +52,21 @@ const Home = () => {
 				<Switch>
 					<Match when={route() === 'notes'}>
 						<Header />
-						<Show when={notes.loading}><Loading /></Show>
-						<Show when={!notes.loading}>
-							<Show when={!notes().data.length}><Empty /></Show>
-							<Notes notes={notes().data} />
+						<Show when={notesResource.loading}><Loading /></Show>
+						<Show when={!notesResource.loading}>
+							<Show when={!notes().length}><Empty /></Show>
+							<Notes notes={notes} />
 						</Show>
 						<FloatActionButton onClick={() => setRoute('create')} />
 					</Match>
 					<Match when={route() === 'create'}>
-						<CreateNote lastScrollY={lastY()} navigateBack={navigateBack} />
+						<CreateNote
+							notes={!notesResource.loading ? notes() : []}
+							mutateNotes={setNotes}
+							lastScrollY={lastY()}
+							maxScrollY={document.documentElement.scrollHeight - document.documentElement.clientHeight}
+							navigateBack={navigateBack}
+							/>
 					</Match>
 				</Switch>
 			</Show>

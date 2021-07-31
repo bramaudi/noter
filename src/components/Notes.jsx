@@ -24,8 +24,8 @@ const Notes = (props = defaultProps) => {
 				className={styles.container}
 				columnClassName={styles.column}
 			>
-				{notes.map((note, i) => (
-					<div style={{ background: note.color, color: invertToBW(note.color) }}>
+				{notes().map(note => (
+					<div style={{ background: note.color, color: invertToBW(note.color) }} className="break-words">
 						<Show when={note.title !== '' && note.body !== ''}>
 							<div className={`${autoTitleSize(note.title)}`} className="font-medium">{truncateText(note.title)}</div>
 							<div className={`${autoTitleSize(note.body)}`}>{truncateText(note.body)}</div>

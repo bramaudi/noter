@@ -1,4 +1,15 @@
-import supabase from '../services/supabase'
+import { toIsoString } from '../helper/date'
+import supabase, { auth } from '../services/supabase'
+
+const structure = {
+	title: '',
+	body: '',
+	tags: [],
+	color: '#fff',
+	created_at: toIsoString(new Date()),
+	updated_at: null,
+	user_id: auth.id
+}
 
 const index = async (lastId = 0, limit = 10) => {
 	return await supabase
@@ -22,7 +33,8 @@ const store = async (data) => {
 		.insert(data)
 }
 
-export {
+export default {
+	structure,
 	index,
 	read,
 	store
