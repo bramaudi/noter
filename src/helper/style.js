@@ -1,9 +1,9 @@
 const autoTitleSize = (str = '') => {
 	const { length: len } = str
-	if (len >= 50) return 'text-sm'
-	else if (len >= 30) return 'text-lg'
-	else if (len >= 10) return 'text-xl'
-	else return 'text-2xl'
+	if (len >= 30) return 'text-sm'
+	else if (len >= 10) return 'text-base'
+	else if (len >= 5) return 'text-lg'
+	else return 'text-xl'
 }
 
 const rgbToHex = (r, g, b) => '#' + [r, g, b].map(x => {
