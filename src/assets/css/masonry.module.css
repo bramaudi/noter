@@ -12,8 +12,8 @@
 
 /* Style your items */
 .column > div { /* change div to reference your elements you put in <Masonry> */
-  @apply m-0 mb-2;
-  @apply font-light leading-relaxed;
+  @apply cursor-pointer m-0 mb-2;
+  @apply font-light leading-relaxed break-words;
   @apply border rounded-lg p-3;
-  @apply bg-white hover:bg-gray-100;
+  @apply hover:border hover:border-gray-400;
 }
