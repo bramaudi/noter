@@ -34,7 +34,7 @@ const Header = (props = defaultProps) => {
 		refreshImgEl.setAttribute('src', iconCheck)
 		setTimeout(() => {
 			refreshImgEl.setAttribute('src', iconRefresh)
-		}, 1500)
+		}, 2000)
 	}
 	createEffect(() => {
 		modalProfile()
@@ -59,7 +59,7 @@ const Header = (props = defaultProps) => {
 				<div class="ml-5">
 					<button onClick={() => setModalProfile(true)} class="relative flex items-center">
 						<img
-							class="w-8 h-8 rounded"
+							class="w-8 h-8 rounded bg-gray-200"
 							src={auth.user_metadata.avatar_url}
 							alt={auth.user_metadata.user_name} />
 						
