@@ -1,11 +1,21 @@
 import { createEffect, createSignal, Show } from 'solid-js'
 // Services
 import auth, { logout } from '../services/auth'
+import notesModel from '../models/notes'
 // Components
+import iconCheck from '../assets/icons/check.svg'
+import iconRefresh from '../assets/icons/refresh-cw.svg'
 import iconLogOut from '../assets/icons/log-out.svg'
 
-const Header = () => {
+const defaultProps = {
+	mutateNotes: () => []
+}
+
+const Header = (props = defaultProps) => {
+	let refreshImgEl
+	const { mutateNotes } = props
 	const [modalProfile, setModalProfile] = createSignal(false)
+	const [spin, setSpin] = createSignal(false)
 	const signOut = async () => {
 		const { error } = await logout()
 		if (error) return createAlert(error.message)
@@ -16,6 +26,16 @@ const Header = () => {
 			setModalProfile(false)
 		}
 	}
+	const refreshNotes = async () => {
+		setSpin(true)
+		const { data } = await notesModel.index()
+		mutateNotes(data)
+		setSpin(false)
+		refreshImgEl.setAttribute('src', iconCheck)
+		setTimeout(() => {
+			refreshImgEl.setAttribute('src', iconRefresh)
+		}, 1500)
+	}
 	createEffect(() => {
 		modalProfile()
 			? document.addEventListener('click', clickOutsideProfilePopup, false)
@@ -25,7 +45,18 @@ const Header = () => {
 		<header class="flex items-center p-3 pb-0 -mb-1">
 			<div className="text-3xl">Noter</div>
 			<Show when={auth}>
-				<div class="ml-auto">
+				<div className="ml-auto">
+					<button onClick={() => refreshNotes()} class="relative flex items-center">
+						<img
+							ref={refreshImgEl}
+							class="w-5 h-5 rounded"
+							className={spin() && 'animate-spin'}
+							src={iconRefresh}
+							alt="refresh"
+						/>
+					</button>
+				</div>
+				<div class="ml-5">
 					<button onClick={() => setModalProfile(true)} class="relative flex items-center">
 						<img
 							class="w-8 h-8 rounded"

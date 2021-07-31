@@ -51,7 +51,7 @@ const Home = () => {
 			<Show when={auth}>
 				<Switch>
 					<Match when={route() === 'notes'}>
-						<Header />
+						<Header mutateNotes={setNotes} />
 						<Show when={notesResource.loading}><Loading /></Show>
 						<Show when={!notesResource.loading}>
 							<Show when={!notes().length}><Empty /></Show>

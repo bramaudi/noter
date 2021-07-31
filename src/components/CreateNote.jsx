@@ -33,7 +33,7 @@ const CreateNote = (props) => {
 		e.preventDefault()
 		try {
 			notesModel.store(data())
-			mutateNotes([...notes, data()])
+			mutateNotes([...notes, data()]) // add new note to current notes
 			navigateBack(-1) // scroll bottom
 		} catch (error) {
 			alert(error)
