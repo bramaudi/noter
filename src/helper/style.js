@@ -46,7 +46,7 @@ const invertToBW = (color) => {
 		: options.white
 }
 
-const truncateText = (str = '', limit = 50, suffix = '...') => {
+const truncateText = (str = '', limit = 20, suffix = '...') => {
 	const words = str.split(' ')
 	if (words.length > limit) {
 		words.splice(limit, 0, suffix) // add suffix before limited string
