@@ -6,6 +6,7 @@ import notesModel from '../models/notes'
 import iconCheck from '../assets/icons/check.svg'
 import iconRefresh from '../assets/icons/refresh-cw.svg'
 import iconLogOut from '../assets/icons/log-out.svg'
+import Tooltip from './Tooltip'
 
 const defaultProps = {
 	mutateNotes: () => []
@@ -46,15 +47,17 @@ const Header = (props = defaultProps) => {
 			<div className="text-3xl">Noter</div>
 			<Show when={auth}>
 				<div className="ml-auto">
-					<button onClick={() => refreshNotes()} class="relative flex items-center">
-						<img
-							ref={refreshImgEl}
-							class="w-5 h-5 rounded"
-							className={spin() && 'animate-spin'}
-							src={iconRefresh}
-							alt="refresh"
-						/>
-					</button>
+					<Tooltip text="Refresh" position="bottom">
+						<button onClick={() => refreshNotes()} class="relative flex items-center">
+							<img
+								ref={refreshImgEl}
+								class="w-5 h-5 rounded"
+								className={spin() && 'animate-spin'}
+								src={iconRefresh}
+								alt="refresh"
+							/>
+						</button>
+					</Tooltip>
 				</div>
 				<div class="ml-5">
 					<button onClick={() => setModalProfile(true)} class="relative flex items-center">

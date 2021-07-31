@@ -1,0 +1,73 @@
+/* Manually forked from Spectre.css */
+/* Spectre.css v0.5.9 | MIT License | github.com/picturepan2/spectre */
+
+.tooltip {
+  position: relative;
+}
+
+.tooltip::after {
+  background: rgba(48, 55, 66, .95);
+  bottom: 100%;
+  color: #fff;
+  content: attr(data-tooltip);
+  display: block;
+  font-size: .7rem;
+  left: 50%;
+  max-width: 320px;
+  opacity: 0;
+  overflow: hidden;
+  padding: .2rem .4rem;
+  pointer-events: none;
+  position: absolute;
+  text-overflow: ellipsis;
+  transform: translate(-50%, .4rem);
+  transition: opacity .2s, transform .2s;
+  white-space: pre;
+  z-index: 300;
+	@apply rounded-md;
+}
+
+.tooltip:focus::after,
+.tooltip:hover::after {
+  opacity: 1;
+  transform: translate(-50%, -.2rem);
+}
+
+.tooltip[disabled],
+.tooltip.disabled {
+  pointer-events: auto;
+}
+
+.tooltip__right::after {
+  bottom: 50%;
+  left: 100%;
+  transform: translate(-.2rem, 50%);
+}
+
+.tooltip__right:focus::after,
+.tooltip__right:hover::after {
+  transform: translate(.2rem, 50%);
+}
+
+.tooltip__bottom::after {
+  bottom: auto;
+  top: 100%;
+  transform: translate(-50%, -.4rem);
+}
+
+.tooltip__bottom:focus::after,
+.tooltip__bottom:hover::after {
+  transform: translate(-50%, .2rem);
+}
+
+.tooltip__left::after {
+  bottom: 50%;
+  left: auto;
+  right: 100%;
+  transform: translate(.4rem, 50%);
+}
+
+.tooltip__left:focus::after,
+.tooltip__left:hover::after {
+  transform: translate(-.2rem, 50%);
+}
