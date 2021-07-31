@@ -11,11 +11,13 @@ import CreateNote from "../components/CreateNote"
 import Loading from "../components/Loading"
 import Empty from "../components/Empty"
 import supabase from "../services/supabase"
+import ReadNote from "../components/ReadNote"
 
 const Home = () => {
 	const [lastY, setLastY] = createSignal(0)
 	const [route, setRoute] = createSignal('notes')
 	const [notes, setNotes] = createSignal([])
+	const [singleNote, setSingleNote] = createSignal(notesModel.structure)
 
 	const fetchNotes = ({ lastId, limit }) => notesModel.index(lastId, limit)
 	const [notesResource] = createResource({ lastId: 0, limit: 100 }, fetchNotes)
@@ -55,7 +57,7 @@ const Home = () => {
 						<Show when={notesResource.loading}><Loading /></Show>
 						<Show when={!notesResource.loading}>
 							<Show when={!notes().length}><Empty /></Show>
-							<Notes notes={notes} />
+							<Notes notes={notes} setSingleNote={setSingleNote} setRoute={setRoute} />
 						</Show>
 						<FloatActionButton onClick={() => setRoute('create')} />
 					</Match>
@@ -67,6 +69,9 @@ const Home = () => {
 							maxScrollY={document.documentElement.scrollHeight - document.documentElement.clientHeight}
 							navigateBack={navigateBack}
 							/>
+					</Match>
+					<Match when={route() === 'read'}>
+						<ReadNote note={singleNote} setRoute={setRoute} scrollLastY={lastY()} />
 					</Match>
 				</Switch>
 			</Show>

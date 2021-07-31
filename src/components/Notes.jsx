@@ -12,11 +12,17 @@ const breakpointColumnsObj = {
 }
 
 const defaultProps = {
-	notes: () => []
+	notes: () => [],
+	setSingleNote: () => null,
+	setRoute: () => null,
 }
 
 const Notes = (props = defaultProps) => {
-	const { notes } = props
+	const { notes, setSingleNote, setRoute } = props
+	const readNote = (note) => {
+		setSingleNote(note)
+		setRoute('read')
+	}
 	return (
 		<div className="p-3 font-medium">
 			<Masonry
@@ -25,7 +31,7 @@ const Notes = (props = defaultProps) => {
 				columnClassName={styles.column}
 			>
 				{notes().map(note => (
-					<div style={{ background: note.color, color: invertToBW(note.color) }}>
+					<div onClick={() => readNote(note)} style={{ background: note.color, color: invertToBW(note.color) }}>
 						<Show when={note.title !== '' && note.body !== ''}>
 							<div className={`${autoTitleSize(note.title)}`} className="font-medium">{truncateText(note.title)}</div>
 							<div className={`${autoTitleSize(note.body)}`}>{truncateText(note.body)}</div>
