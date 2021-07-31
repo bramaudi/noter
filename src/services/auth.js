@@ -23,4 +23,12 @@ const authDummy = {
 
 const auth = supabase.auth.user()
 
+export const logout = async () => {
+	return await supabase.auth.signOut()
+}
+
+export const login = async (provider) => {
+	return await supabase.auth.signIn({ provider })
+}
+
 export default auth

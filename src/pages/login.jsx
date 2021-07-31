@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "solid-app-router"
 import { createSignal, onMount, Show } from "solid-js"
-import supabase from "../supabase"
+import auth, { login } from "../services/auth"
 
 const Login = () => {
 	const navigate = useNavigate()
@@ -10,11 +10,11 @@ const Login = () => {
 		setTimeout(() => setAlert(null), 3000)
 	}
 	const signInWith = async (provider) => {
-		const { error } = await supabase.auth.signIn({ provider })
+		const { error } = await login(provider)
 		if (error) return createAlert(error.message)
 	}
 	onMount(() => {
-		if (supabase.auth.user()) navigate('/', { replace: true })
+		if (auth) navigate('/', { replace: true })
 	})
 	return (
 		<div class="flex items-center justify-center bg-gray-100" style="min-height: calc(100vh - 10em)">
