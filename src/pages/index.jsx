@@ -8,13 +8,14 @@ import FloatActionButton from '../components/FloatActionButton'
 import Welcome from '../components/Welcome'
 import Notes from "../components/Notes"
 import CreateNote from "../components/CreateNote"
+import EditNote from "../components/EditNote"
 import Loading from "../components/Loading"
 import Empty from "../components/Empty"
 import supabase from "../services/supabase"
 import ReadNote from "../components/ReadNote"
 
 const Home = () => {
-	const [lastY, setLastY] = createSignal(0)
+	const [scrollLastY, setScrollLastY] = createSignal(0)
 	const [route, setRoute] = createSignal('notes')
 	const [notes, setNotes] = createSignal([])
 	const [singleNote, setSingleNote] = createSignal(notesModel.structure)
@@ -22,7 +23,7 @@ const Home = () => {
 	const fetchNotes = ({ lastId, limit }) => notesModel.index(lastId, limit)
 	const [notesResource] = createResource({ lastId: 0, limit: 100 }, fetchNotes)
 
-	const saveScroll = () => setLastY(window.scrollY)
+	const saveScroll = () => setScrollLastY(window.scrollY)
 
 	if (!auth) {
 		supabase.auth.onAuthStateChange(() => {
@@ -30,9 +31,9 @@ const Home = () => {
 		})
 	}
 
-	const navigateBack = (scrollY) => {
-		setRoute('notes')
-		if (scrollY == -1) window.scrollTo(0,document.body.scrollHeight)
+	const navigateBack = (scrollY, route = 'notes') => {
+		setRoute(route)
+		if (scrollY == -1) window.scrollTo(0, document.body.scrollHeight)
 		else window.scrollTo(window, scrollY)
 	}
 
@@ -64,14 +65,26 @@ const Home = () => {
 					<Match when={route() === 'create'}>
 						<CreateNote
 							notes={!notesResource.loading ? notes() : []}
-							mutateNotes={setNotes}
-							lastScrollY={lastY()}
-							maxScrollY={document.documentElement.scrollHeight - document.documentElement.clientHeight}
+							setNotes={setNotes}
+							scrollLastY={scrollLastY}
 							navigateBack={navigateBack}
-							/>
+						/>
+					</Match>
+					<Match when={route() === 'edit'}>
+						<EditNote
+							note={singleNote}
+							setNotes={setNotes}
+							scrollLastY={scrollLastY}
+							navigateBack={navigateBack}
+						/>
 					</Match>
 					<Match when={route() === 'read'}>
-						<ReadNote note={singleNote} setRoute={setRoute} scrollLastY={lastY()} />
+						<ReadNote
+							note={singleNote}
+							setRoute={setRoute}
+							scrollLastY={scrollLastY}
+							setScrollLastY={setScrollLastY}
+						/>
 					</Match>
 				</Switch>
 			</Show>

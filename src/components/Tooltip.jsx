@@ -11,7 +11,7 @@ const Tooltip = (props = defaultProps) => {
 	return (
 		<div
 			data-tooltip={text}
-			className={styles.tooltip}
+			className={`${styles.tooltip} ${props.className}`}
 			className={styles[`tooltip__${position || 'top'}`]}
 		>
 			{children}

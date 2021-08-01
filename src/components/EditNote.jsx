@@ -5,15 +5,15 @@ import iconCheck from '../assets/icons/check.svg'
 import notesModel from '../models/notes'
 
 const propsTypes = {
-	notes: () => notesModel.structure,
+	note: () => notesModel.structure,
 	setNotes: () => null,
 	scrollLastY: () => 0,
-	navigateBack: (scrollY = 0) => null,
+	navigateBack: () => null,
 }
 
-const CreateNote = (props = propsTypes) => {
-	const { notes, setNotes, scrollLastY, navigateBack } = props
-	const [data, setData] = createSignal(notesModel.structure)
+const EditNote = (props = propsTypes) => {
+	const { note, setNotes, scrollLastY, navigateBack } = props
+	const [data, setData] = createSignal(note())
 	const tagsAdd = e => {
 		if (e.key === 'Enter' && !!e.target.value) {
 			e.preventDefault();
@@ -36,22 +36,23 @@ const CreateNote = (props = propsTypes) => {
 		const [r, g, b] = bgColor.match(/\((.*)\)/)[1].split(',').map(c => c.trim())
 		setData(n => ({...n, color: rgbToHex(r, g, b)}))
 	}
-	const submitNote = (e) => {
+	const submitEditNote = (e) => {
 		e.preventDefault()
-		try {
-			notesModel.store(data())
-			setNotes([...notes, data()]) // add new note to current notes
-			navigateBack(-1) // scroll bottom
-		} catch (error) {
-			alert(error)
-		}
+		console.log('TODO: edit note');
+		// try {
+		// 	notesModel.store(data())
+		// 	mutateNotes([...notes, data()]) // add new note to current notes
+		// 	navigateBack(-1) // scroll bottom
+		// } catch (error) {
+		// 	alert(error)
+		// }
 	}
 	return (
 		<div className="p-3 mx-auto max-w-xl">
-			<form onSubmit={submitNote}>
+			<form onSubmit={submitEditNote}>
 				<div className="flex items-center mb-3">
 					{/* Back */}
-					<button onClick={() => navigateBack(scrollLastY())} type="button" className="cursor-pointer p-2 rounded whitespace-nowrap bg-gray-300 hover:bg-gray-400">
+					<button onClick={() => navigateBack(scrollLastY(), 'read')} type="button" className="cursor-pointer p-2 rounded whitespace-nowrap bg-gray-300 hover:bg-gray-400">
 						<img className="w-5 h-5 transform -rotate-180" src={iconArrowRight} alt="back" />
 					</button>
 					{/* Note title */}
@@ -74,7 +75,8 @@ const CreateNote = (props = propsTypes) => {
 					cols="30"
 					rows="10"
 					placeholder="Write a note here ..."
-					>	
+				>
+					{data().body}
 				</textarea>
 				<div className="">
 					<span onClick={colorSelect} className="cursor-pointer inline-block w-6 h-6 mr-2 mb-0 rounded-md bg-yellow-200 border border-gray-200 hover:border-gray-500"></span>
@@ -120,4 +122,4 @@ const CreateNote = (props = propsTypes) => {
 	)
 }
 
-export default CreateNote
+export default EditNote
