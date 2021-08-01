@@ -6,6 +6,7 @@ import notesModel from '../models/notes'
 import iconCheck from '../assets/icons/check.svg'
 import iconRefresh from '../assets/icons/refresh-cw.svg'
 import iconLogOut from '../assets/icons/log-out.svg'
+import iconLoader from '../assets/icons/loader.svg'
 import Tooltip from './Tooltip'
 
 const propsTypes = {
@@ -13,13 +14,17 @@ const propsTypes = {
 }
 
 const Header = (props = propsTypes) => {
-	let refreshImgEl
+	let ref_imgRefresh, ref_imgLogout
 	const { setNotes } = props
 	const [modalProfile, setModalProfile] = createSignal(false)
 	const [spin, setSpin] = createSignal(false)
 	const signOut = async () => {
+		ref_imgLogout.classList.add('animate-spin')
+		ref_imgLogout.setAttribute('src', iconLoader)
 		const { error } = await logout()
 		if (error) return createAlert(error.message)
+		ref_imgLogout.classList.remove('animate-spin')
+		ref_imgLogout.setAttribute('src', iconLogOut)
 		window.location.href = '/'
 	}
 	const clickOutsideProfilePopup = event => {
@@ -32,9 +37,9 @@ const Header = (props = propsTypes) => {
 		const { data } = await notesModel.index()
 		setNotes(data)
 		setSpin(false)
-		refreshImgEl.setAttribute('src', iconCheck)
+		ref_imgRefresh.setAttribute('src', iconCheck)
 		setTimeout(() => {
-			refreshImgEl.setAttribute('src', iconRefresh)
+			ref_imgRefresh.setAttribute('src', iconRefresh)
 		}, 2000)
 	}
 	createEffect(() => {
@@ -50,7 +55,7 @@ const Header = (props = propsTypes) => {
 					<Tooltip text="Refresh" position="bottom">
 						<button onClick={() => refreshNotes()} class="relative flex items-center">
 							<img
-								ref={refreshImgEl}
+								ref={ref_imgRefresh}
 								class="w-5 h-5 rounded"
 								className={spin() && 'animate-spin'}
 								src={iconRefresh}
@@ -77,7 +82,7 @@ const Header = (props = propsTypes) => {
 						<span class="block sm:hidden w-full p-2 m-2 rounded border-b border-gray-200">{auth.user_metadata.full_name}</span>
 
 						<button onClick={signOut} class="flex items-center w-full p-1 px-3 m-2 rounded-lg text-left hover:bg-gray-200">
-							<img src={iconLogOut} alt="log-out" className="w-4 h-4 mr-2" />
+							<img ref={ref_imgLogout} src={iconLogOut} alt="log-out" className="w-4 h-4 mr-2" />
 							Logout
 						</button>
 
