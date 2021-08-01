@@ -40,14 +40,14 @@ const Home = () => {
 
 	onMount(() => {
 		window.addEventListener('scroll', saveScroll)
-		// restore scrollY
-		window.scrollTo(window, scrollY().notes)
 	})
 	createEffect(() => {
 		if (!notesResource.loading) {
 			const { data } = notesResource()
 			setNotes(data)
 		}
+		// restore scrollY
+		window.scrollTo(window, scrollY().notes)
 	})
 	onCleanup(() => {
 		window.removeEventListener('scroll', saveScroll)

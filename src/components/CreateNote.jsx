@@ -47,8 +47,8 @@ const CreateNote = (props = propsTypes) => {
 		try {
 			notesModel.store(data())
 			setNotes([...notes, data()]) // add new note to current notes
-			setScrollY(x => ({...x, notes: document.body.scrollHeight})) // scroll bottom
 			setRoute('notes')
+			setScrollY(x => ({...x, notes: document.body.scrollHeight})) // scroll bottom
 		} catch (error) {
 			alert(error)
 		}
