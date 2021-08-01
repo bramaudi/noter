@@ -46,14 +46,13 @@ const invertToBW = (color) => {
 		: options.white
 }
 
-const truncateText = (str = '', limit = 20, suffix = '...') => {
-	const words = str.split(' ')
-	if (words.length > limit) {
-		words.splice(limit, 0, suffix) // add suffix before limited string
-		words.splice(limit + 1, (words.length - limit)) // delete the rest
-	}
-	return words.join(' ')
-}
+const truncateText = ( str = '', limit = 100, useWordBoundary = true ) => {
+  if (str.length <= limit) return str;
+  const subString = str.substr(0, limit-1); // the original check
+  return (useWordBoundary 
+    ? subString.substr(0, subString.lastIndexOf(" ")) 
+    : subString) + "...";
+};
 
 export {
 	autoTitleSize,
