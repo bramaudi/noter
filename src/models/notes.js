@@ -9,7 +9,7 @@ const structure = {
 	color: '#fff',
 	created_at: toIsoString(new Date()),
 	updated_at: null,
-	user_id: auth.id
+	user_id: auth?.id || ''
 }
 
 const order = (a, b) => {
