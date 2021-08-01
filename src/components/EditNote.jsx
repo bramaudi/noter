@@ -82,6 +82,7 @@ const EditNote = (props = propsTypes) => {
 					{data().body}
 				</textarea>
 				<div className="">
+					<span onClick={colorSelect} className="cursor-pointer inline-block w-6 h-6 mr-2 mb-0 rounded-md bg-white border border-gray-200 hover:border-gray-500"></span>
 					<span onClick={colorSelect} className="cursor-pointer inline-block w-6 h-6 mr-2 mb-0 rounded-md bg-yellow-200 border border-gray-200 hover:border-gray-500"></span>
 					<span onClick={colorSelect} className="cursor-pointer inline-block w-6 h-6 mr-2 mb-0 rounded-md bg-blue-200 border border-gray-200 hover:border-gray-500"></span>
 					<span onClick={colorSelect} className="cursor-pointer inline-block w-6 h-6 mr-2 mb-0 rounded-md bg-green-200 border border-gray-200 hover:border-gray-500"></span>
