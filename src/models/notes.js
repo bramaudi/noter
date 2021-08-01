@@ -12,10 +12,16 @@ const structure = {
 	user_id: auth.id
 }
 
+const order = (a, b) => {
+	return new Date(b.updated_at) - new Date(a.updated_at)
+			|| new Date(b.created_at) - new Date(a.created_at)
+}
+
 const index = async (lastId = 0, limit = 10) => {
 	return await supabase
 		.from('notes')
 		.select()
+		.order('updated_at', { ascending: false })
 		.order('created_at', { ascending: false })
 		.gt('id', lastId)
 		.limit(limit)
@@ -52,6 +58,7 @@ const remove = async (noteId) => {
 
 export default {
 	structure,
+	order,
 	index,
 	read,
 	store,

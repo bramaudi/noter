@@ -3,6 +3,7 @@ import { invertToBW, rgbToHex } from "../helper/style"
 import iconArrowRight from '../assets/icons/arrow-right.svg'
 import iconCheck from '../assets/icons/check.svg'
 import notesModel from '../models/notes'
+import { toIsoString } from "../helper/date"
 
 const propsTypes = {
 	note: () => notesModel.structure,
@@ -39,10 +40,11 @@ const EditNote = (props = propsTypes) => {
 	const submitEditNote = (e) => {
 		e.preventDefault()
 		try {
+			data().updated_at = toIsoString(new Date())
 			notesModel.update(data())
 			// change local note
 			setSingleNote(data())
-			setNotes( n => n.map(x => x.id == data().id ? data() : x) )
+			setNotes( n => n.map(x => x.id == data().id ? data() : x).sort(notesModel.order) )
 			setRoute('read')
 		} catch (error) {
 			alert(error)
