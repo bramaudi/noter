@@ -5,21 +5,22 @@ import iconArrowRight from '../assets/icons/arrow-right.svg'
 import iconTrash from '../assets/icons/trash.svg'
 import iconEdit from '../assets/icons/edit-2.svg'
 import { invertToBW } from '../helper/style'
-import { createSignal } from 'solid-js'
+import { createSignal, onMount } from 'solid-js'
 
 const propsType = {
 	note: () => notesModel.structure,
-	scrollLastY: () => 0,
-	setScrollLastY: () => null,
+	scrollY: () => ({ notes: 0, read: 0 }),
+	setScrollY: () => null,
 	setRoute: () => null,
 }
 
 const ReadNote = (props = propsType) => {
-	const { note, setRoute, scrollLastY, setScrollLastY } = props
+	const { note, setRoute, scrollY, setScrollY } = props
 	const [modal, setModal] = createSignal(false)
 	const navigateBack = () => {
+		let lastY = scrollY().notes
 		setRoute('notes')
-		window.scrollTo(window, scrollLastY)
+		window.scrollTo(window, lastY)
 	}
 	const nl2br = (str = '') => {
 		return str.replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '<br />')
@@ -30,8 +31,13 @@ const ReadNote = (props = propsType) => {
 	}
 	const navigateEdit = () => {
 		setRoute('edit')
-		setScrollLastY(window.scrollY)
+		setScrollY(x => ({ ...x, read: window.scrollY }))
 	}
+
+	onMount(() => {
+		// restore scrollY
+		window.scrollTo(window, scrollY().read)
+	})
 	return (
 		<div className="p-3 mx-auto min-h-screen max-w-xl">
 			<Modal show={modal} onClose={() => setModal(false)}>

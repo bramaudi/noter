@@ -15,7 +15,10 @@ import supabase from "../services/supabase"
 import ReadNote from "../components/ReadNote"
 
 const Home = () => {
-	const [scrollLastY, setScrollLastY] = createSignal(0)
+	const [scrollY, setScrollY] = createSignal({
+		notes: 0,
+		read: 0
+	})
 	const [route, setRoute] = createSignal('notes')
 	const [notes, setNotes] = createSignal([])
 	const [singleNote, setSingleNote] = createSignal(notesModel.structure)
@@ -23,7 +26,11 @@ const Home = () => {
 	const fetchNotes = ({ lastId, limit }) => notesModel.index(lastId, limit)
 	const [notesResource] = createResource({ lastId: 0, limit: 100 }, fetchNotes)
 
-	const saveScroll = () => setScrollLastY(window.scrollY)
+	const saveScroll = () => {
+		if (route() === 'notes') {
+			setScrollY(x => ({...x, notes: window.scrollY}))
+		}
+	}
 
 	if (!auth) {
 		supabase.auth.onAuthStateChange(() => {
@@ -31,14 +38,10 @@ const Home = () => {
 		})
 	}
 
-	const navigateBack = (scrollY, route = 'notes') => {
-		setRoute(route)
-		if (scrollY == -1) window.scrollTo(0, document.body.scrollHeight)
-		else window.scrollTo(window, scrollY)
-	}
-
 	onMount(() => {
 		window.addEventListener('scroll', saveScroll)
+		// restore scrollY
+		window.scrollTo(window, scrollY().notes)
 	})
 	createEffect(() => {
 		if (!notesResource.loading) {
@@ -66,24 +69,24 @@ const Home = () => {
 						<CreateNote
 							notes={!notesResource.loading ? notes() : []}
 							setNotes={setNotes}
-							scrollLastY={scrollLastY}
-							navigateBack={navigateBack}
+							scrollY={scrollY}
+							setScrollY={setScrollY}
+							setRoute={setRoute}
 						/>
 					</Match>
 					<Match when={route() === 'edit'}>
 						<EditNote
 							note={singleNote}
 							setNotes={setNotes}
-							scrollLastY={scrollLastY}
-							navigateBack={navigateBack}
+							setRoute={setRoute}
 						/>
 					</Match>
 					<Match when={route() === 'read'}>
 						<ReadNote
 							note={singleNote}
 							setRoute={setRoute}
-							scrollLastY={scrollLastY}
-							setScrollLastY={setScrollLastY}
+							scrollY={scrollY}
+							setScrollY={setScrollY}
 						/>
 					</Match>
 				</Switch>

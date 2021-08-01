@@ -7,12 +7,11 @@ import notesModel from '../models/notes'
 const propsTypes = {
 	note: () => notesModel.structure,
 	setNotes: () => null,
-	scrollLastY: () => 0,
-	navigateBack: () => null,
+	setRoute: () => null,
 }
 
 const EditNote = (props = propsTypes) => {
-	const { note, setNotes, scrollLastY, navigateBack } = props
+	const { note, scrollY, setNotes, setRoute } = props
 	const [data, setData] = createSignal(note())
 	const tagsAdd = e => {
 		if (e.key === 'Enter' && !!e.target.value) {
@@ -52,7 +51,7 @@ const EditNote = (props = propsTypes) => {
 			<form onSubmit={submitEditNote}>
 				<div className="flex items-center mb-3">
 					{/* Back */}
-					<button onClick={() => navigateBack(scrollLastY(), 'read')} type="button" className="cursor-pointer p-2 rounded whitespace-nowrap bg-gray-300 hover:bg-gray-400">
+					<button onClick={() => setRoute('read')} type="button" className="cursor-pointer p-2 rounded whitespace-nowrap bg-gray-300 hover:bg-gray-400">
 						<img className="w-5 h-5 transform -rotate-180" src={iconArrowRight} alt="back" />
 					</button>
 					{/* Note title */}

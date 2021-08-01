@@ -6,14 +6,20 @@ import notesModel from '../models/notes'
 
 const propsTypes = {
 	notes: () => notesModel.structure,
+	scrollY: () => ({ notes: 0 }),
 	setNotes: () => null,
-	scrollLastY: () => 0,
-	navigateBack: (scrollY = 0) => null,
+	setScrollY: () => null,
+	setRoute: () => null,
 }
 
 const CreateNote = (props = propsTypes) => {
-	const { notes, setNotes, scrollLastY, navigateBack } = props
+	const { notes, scrollY, setScrollY, setNotes, setRoute } = props
 	const [data, setData] = createSignal(notesModel.structure)
+	const navigateBack = () => {
+		let lastY = scrollY().notes
+		setRoute('notes')
+		window.scrollTo(window, lastY)
+	}
 	const tagsAdd = e => {
 		if (e.key === 'Enter' && !!e.target.value) {
 			e.preventDefault();
@@ -41,7 +47,8 @@ const CreateNote = (props = propsTypes) => {
 		try {
 			notesModel.store(data())
 			setNotes([...notes, data()]) // add new note to current notes
-			navigateBack(-1) // scroll bottom
+			setScrollY(x => ({...x, notes: document.body.scrollHeight})) // scroll bottom
+			setRoute('notes')
 		} catch (error) {
 			alert(error)
 		}
@@ -51,7 +58,7 @@ const CreateNote = (props = propsTypes) => {
 			<form onSubmit={submitNote}>
 				<div className="flex items-center mb-3">
 					{/* Back */}
-					<button onClick={() => navigateBack(scrollLastY())} type="button" className="cursor-pointer p-2 rounded whitespace-nowrap bg-gray-300 hover:bg-gray-400">
+					<button onClick={() => navigateBack()} type="button" className="cursor-pointer p-2 rounded whitespace-nowrap bg-gray-300 hover:bg-gray-400">
 						<img className="w-5 h-5 transform -rotate-180" src={iconArrowRight} alt="back" />
 					</button>
 					{/* Note title */}
