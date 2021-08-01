@@ -19,12 +19,13 @@ const Home = () => {
 		notes: 0,
 		read: 0
 	})
+	
+	const fetchNotes = async ({ lastId, limit }) => await notesModel.index(lastId, limit)
+
 	const [route, setRoute] = createSignal('notes')
 	const [notes, setNotes] = createSignal([])
+	const [loading, setLoading] = createSignal(false)
 	const [singleNote, setSingleNote] = createSignal(notesModel.structure)
-
-	const fetchNotes = ({ lastId, limit }) => notesModel.index(lastId, limit)
-	const [notesResource] = createResource({ lastId: 0, limit: 100 }, fetchNotes)
 
 	const saveScroll = () => {
 		if (route() === 'notes') {
@@ -38,14 +39,14 @@ const Home = () => {
 		})
 	}
 
-	onMount(() => {
+	onMount(async () => {
 		window.addEventListener('scroll', saveScroll)
+		setLoading(true)
+		const { data } = await fetchNotes({ lastId: 0, limit: 1000 })
+		setNotes(data)
+		setLoading(false)
 	})
 	createEffect(() => {
-		if (!notesResource.loading) {
-			const { data } = notesResource()
-			setNotes(data)
-		}
 		// restore scrollY
 		window.scrollTo(window, scrollY().notes)
 	})
@@ -57,9 +58,9 @@ const Home = () => {
 			<Show when={auth}>
 				<Switch>
 					<Match when={route() === 'notes'}>
-						<Header mutateNotes={setNotes} />
-						<Show when={notesResource.loading}><Loading /></Show>
-						<Show when={!notesResource.loading}>
+						<Header setNotes={setNotes} />
+						<Show when={loading()}><Loading /></Show>
+						<Show when={!loading()}>
 							<Show when={!notes().length}><Empty /></Show>
 							<Notes notes={notes} setSingleNote={setSingleNote} setRoute={setRoute} />
 						</Show>
@@ -67,7 +68,7 @@ const Home = () => {
 					</Match>
 					<Match when={route() === 'create'}>
 						<CreateNote
-							notes={!notesResource.loading ? notes() : []}
+							notes={!loading() ? notes() : []}
 							setNotes={setNotes}
 							scrollY={scrollY}
 							setScrollY={setScrollY}
@@ -78,12 +79,14 @@ const Home = () => {
 						<EditNote
 							note={singleNote}
 							setNotes={setNotes}
+							setSingleNote={setSingleNote}
 							setRoute={setRoute}
 						/>
 					</Match>
 					<Match when={route() === 'read'}>
 						<ReadNote
 							note={singleNote}
+							setNotes={setNotes}
 							setRoute={setRoute}
 							scrollY={scrollY}
 							setScrollY={setScrollY}

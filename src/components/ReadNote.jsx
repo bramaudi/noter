@@ -12,10 +12,11 @@ const propsType = {
 	scrollY: () => ({ notes: 0, read: 0 }),
 	setScrollY: () => null,
 	setRoute: () => null,
+	setNotes: () => null,
 }
 
 const ReadNote = (props = propsType) => {
-	const { note, setRoute, scrollY, setScrollY } = props
+	const { note, scrollY, setScrollY, setRoute, setNotes } = props
 	const [modal, setModal] = createSignal(false)
 	const navigateBack = () => {
 		let lastY = scrollY().notes
@@ -26,8 +27,11 @@ const ReadNote = (props = propsType) => {
 		return str.replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '<br />')
 	}
 	const commitDelete = () => {
-		// TODO: proccess delete
-		 alert('Deleted')
+		notesModel.remove(note().id)
+		setNotes(n => n.filter((item) => {
+			return item.id !== note().id
+		}))
+		navigateBack()
 	}
 	const navigateEdit = () => {
 		setRoute('edit')

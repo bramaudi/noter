@@ -6,12 +6,13 @@ import notesModel from '../models/notes'
 
 const propsTypes = {
 	note: () => notesModel.structure,
+	setSingleNote: () => null,
 	setNotes: () => null,
 	setRoute: () => null,
 }
 
 const EditNote = (props = propsTypes) => {
-	const { note, scrollY, setNotes, setRoute } = props
+	const { note, setSingleNote, setNotes, setRoute } = props
 	const [data, setData] = createSignal(note())
 	const tagsAdd = e => {
 		if (e.key === 'Enter' && !!e.target.value) {
@@ -37,14 +38,15 @@ const EditNote = (props = propsTypes) => {
 	}
 	const submitEditNote = (e) => {
 		e.preventDefault()
-		console.log('TODO: edit note');
-		// try {
-		// 	notesModel.store(data())
-		// 	mutateNotes([...notes, data()]) // add new note to current notes
-		// 	navigateBack(-1) // scroll bottom
-		// } catch (error) {
-		// 	alert(error)
-		// }
+		try {
+			notesModel.update(data())
+			// change local note
+			setSingleNote(data())
+			setNotes( n => n.map(x => x.id == data().id ? data() : x) )
+			setRoute('read')
+		} catch (error) {
+			alert(error)
+		}
 	}
 	return (
 		<div className="p-3 mx-auto max-w-xl">

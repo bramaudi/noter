@@ -8,13 +8,13 @@ import iconRefresh from '../assets/icons/refresh-cw.svg'
 import iconLogOut from '../assets/icons/log-out.svg'
 import Tooltip from './Tooltip'
 
-const defaultProps = {
-	mutateNotes: () => []
+const propsTypes = {
+	setNotes: () => []
 }
 
-const Header = (props = defaultProps) => {
+const Header = (props = propsTypes) => {
 	let refreshImgEl
-	const { mutateNotes } = props
+	const { setNotes } = props
 	const [modalProfile, setModalProfile] = createSignal(false)
 	const [spin, setSpin] = createSignal(false)
 	const signOut = async () => {
@@ -30,7 +30,7 @@ const Header = (props = defaultProps) => {
 	const refreshNotes = async () => {
 		setSpin(true)
 		const { data } = await notesModel.index()
-		mutateNotes(data)
+		setNotes(data)
 		setSpin(false)
 		refreshImgEl.setAttribute('src', iconCheck)
 		setTimeout(() => {

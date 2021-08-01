@@ -2,6 +2,7 @@ import { toIsoString } from '../helper/date'
 import supabase, { auth } from '../services/supabase'
 
 const structure = {
+	id: 0,
 	title: '',
 	body: '',
 	tags: [],
@@ -15,6 +16,7 @@ const index = async (lastId = 0, limit = 10) => {
 	return await supabase
 		.from('notes')
 		.select()
+		.order('created_at', { ascending: false })
 		.gt('id', lastId)
 		.limit(limit)
 }
@@ -28,14 +30,31 @@ const read = async (id) => {
 }
 
 const store = async (data) => {
+	delete data.id
 	return await supabase
 		.from('notes')
 		.insert(data)
+}
+
+const update = async (data) => {
+	return await supabase
+		.from('notes')
+		.update(data)
+		.match({ id: data.id })
+}
+
+const remove = async (noteId) => {
+	return await supabase
+		.from('notes')
+		.delete()
+		.eq('id', noteId)
 }
 
 export default {
 	structure,
 	index,
 	read,
-	store
+	store,
+	update,
+	remove
 }
