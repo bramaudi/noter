@@ -46,13 +46,13 @@ const ReadNote = (props = propsType) => {
 		<div className="p-3 mx-auto min-h-screen max-w-xl">
 			<Modal show={modal} onClose={() => setModal(false)}>
 				<div className="p-2">Delete this note?</div>
-				<div className="mb-3 px-2 text-sm text-yellow-600">This action cannot be undo!</div>
 				<div className="p-2 flex items-center">
 					<button onClick={commitDelete} type="button" className="cursor-pointer p-2 rounded whitespace-nowrap bg-red-300 hover:bg-red-400">
 						Delete
 					</button>
 					<button onClick={() => setModal(false)} type="button" className="cursor-pointer p-2 ml-auto">Cancel</button>
 				</div>
+				<div className="p-2 text-xs text-red-600">This action cannot be undone.</div>
 			</Modal>
 			<div className="flex items-center">
 				{/* Back */}
