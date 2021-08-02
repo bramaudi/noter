@@ -1,5 +1,7 @@
 import { createSignal, For } from "solid-js"
-import { invertToBW, rgbToHex } from "../helper/style"
+import { invertToBW } from "../helper/style"
+import formHelper from '../helper/form'
+// Components
 import iconArrowRight from '../assets/icons/arrow-right.svg'
 import iconCheck from '../assets/icons/check.svg'
 import notesModel from '../models/notes'
@@ -15,42 +17,35 @@ const propsTypes = {
 const CreateNote = (props = propsTypes) => {
 	const { notes, scrollY, setScrollY, setNotes, setRoute } = props
 	const [data, setData] = createSignal(notesModel.structure)
+	/**
+	 * Navigate back to notes list
+	 */
 	const navigateBack = () => {
 		let lastY = scrollY().notes
 		setRoute('notes')
 		window.scrollTo(window, lastY)
 	}
-	const tagsAdd = e => {
-		if (e.key === 'Enter' && !!e.target.value) {
-			e.preventDefault();
-			setData(n => ({
-				...n,
-				tags: [ ...n.tags, e.target.value.replace(/[^a-zA-Z0-9 ]/g, "") ]
-			}))
-			e.target.value = ''
-		}
-	}
-	const tagsRemove = (value) => {
-		setData(n => ({
-			...n,
-			tags: n.tags.filter(item => item !== value)
-		}))
-	}
-	const colorSelect = e => {
-		const computedStyle = window.getComputedStyle( e.target ,null);
-		const bgColor = computedStyle.getPropertyValue('background-color')
-		const [r, g, b] = bgColor.match(/\((.*)\)/)[1].split(',').map(c => c.trim())
-		setData(n => ({...n, color: rgbToHex(r, g, b)}))
-	}
+	/**
+	 * Submit new note
+	 * @param {Event} e 
+	 */
 	const submitNote = (e) => {
 		e.preventDefault()
+		// If nothing to store then back to notes list
+		if (data().title === '' && data().body === '') {
+			return navigateBack()
+		}
 		try {
+			// auto increment id based on current notes count
 			data().id = notes().length + 1
 			notesModel.store(data())
-			setNotes([...notes(), notesModel.decryptNote(data())]) // add new note to current notes
+			// append latest added note to current local notes
+			setNotes([...notes(), notesModel.decryptNote(data())])
+			// navigate back & scroll to bottom
 			setRoute('notes')
-			setScrollY(x => ({...x, notes: document.body.scrollHeight})) // scroll bottom
-		} catch (error) {
+			setScrollY(x => ({...x, notes: document.body.scrollHeight}))
+		}
+		catch (error) {
 			alert(error)
 		}
 	}
@@ -85,15 +80,15 @@ const CreateNote = (props = propsTypes) => {
 					>	
 				</textarea>
 				<div className="">
-					<span onClick={colorSelect} className="cursor-pointer inline-block w-6 h-6 mr-2 mb-0 rounded-md bg-white border border-gray-200 hover:border-gray-500"></span>
-					<span onClick={colorSelect} className="cursor-pointer inline-block w-6 h-6 mr-2 mb-0 rounded-md bg-yellow-200 border border-gray-200 hover:border-gray-500"></span>
-					<span onClick={colorSelect} className="cursor-pointer inline-block w-6 h-6 mr-2 mb-0 rounded-md bg-blue-200 border border-gray-200 hover:border-gray-500"></span>
-					<span onClick={colorSelect} className="cursor-pointer inline-block w-6 h-6 mr-2 mb-0 rounded-md bg-green-200 border border-gray-200 hover:border-gray-500"></span>
-					<span onClick={colorSelect} className="cursor-pointer inline-block w-6 h-6 mr-2 mb-0 rounded-md bg-red-200 border border-gray-200 hover:border-gray-500"></span>
-					<span onClick={colorSelect} className="cursor-pointer inline-block w-6 h-6 mr-2 mb-0 rounded-md bg-purple-200 border border-gray-200 hover:border-gray-500"></span>
-					<span onClick={colorSelect} className="cursor-pointer inline-block w-6 h-6 mr-2 mb-0 rounded-md bg-gray-300 border border-gray-200 hover:border-gray-500"></span>
-					<span onClick={colorSelect} className="cursor-pointer inline-block w-6 h-6 mr-2 mb-0 rounded-md bg-indigo-200 border border-gray-200 hover:border-gray-500"></span>
-					<span onClick={colorSelect} className="cursor-pointer inline-block w-6 h-6 mr-2 mb-0 rounded-md bg-pink-200 border border-gray-200 hover:border-gray-500"></span>
+					<For each={formHelper.colorOptions}>
+						{color => (
+							<span
+								onClick={formHelper.colorSelect}
+								className={`bg-${color}-200`}
+								className="cursor-pointer inline-block w-6 h-6 mr-2 mb-0 rounded-md border border-gray-200 hover:border-gray-500"
+							></span>
+						)}
+					</For>
 					<label
 						className="cursor-pointer inline-block w-6 h-6 mr-2 mb-0 rounded-md border border-gray-200 hover:border-gray-500"
 						htmlFor="note-color"
@@ -106,7 +101,7 @@ const CreateNote = (props = propsTypes) => {
 				{/* Tags */}
 				<div class="relative border-b-2 pb-2 mt-10 mb-5 focus-within:border-blue-500">
 					<input
-						onKeyPress={tagsAdd}
+						onKeyPress={formHelper.tagsAdd}
 						type="text"
 						name="note-tags"
 						placeholder=" "
@@ -120,7 +115,7 @@ const CreateNote = (props = propsTypes) => {
 							className="inline-flex items-center pl-2 mr-2 mb-2 rounded-3xl bg-blue-200"
 						>
 							{tag}
-							<button onClick={() => tagsRemove(tag)} className="flex items-center justify-center w-5 h-5 text-xs font-semibold p-2 ml-1 rounded-full bg-blue-300 hover:bg-blue-400 text-blue-900" type="button">x</button>
+							<button onClick={() => formHelper.tagsRemove(tag)} className="flex items-center justify-center w-5 h-5 text-xs font-semibold p-2 ml-1 rounded-full bg-blue-300 hover:bg-blue-400 text-blue-900" type="button">x</button>
 						</div>
 					)}
 				</For>

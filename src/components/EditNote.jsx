@@ -1,9 +1,11 @@
 import { createSignal, For } from "solid-js"
 import { invertToBW, rgbToHex } from "../helper/style"
+import { toIsoString } from "../helper/date"
+import formHelper from '../helper/form'
+// Components
 import iconArrowRight from '../assets/icons/arrow-right.svg'
 import iconCheck from '../assets/icons/check.svg'
 import notesModel from '../models/notes'
-import { toIsoString } from "../helper/date"
 
 const propsTypes = {
 	note: () => notesModel.structure,
@@ -15,39 +17,27 @@ const propsTypes = {
 const EditNote = (props = propsTypes) => {
 	const { note, setSingleNote, setNotes, setRoute } = props
 	const [data, setData] = createSignal(note())
-	const tagsAdd = e => {
-		if (e.key === 'Enter' && !!e.target.value) {
-			e.preventDefault();
-			setData(n => ({
-				...n,
-				tags: [ ...n.tags, e.target.value.replace(/[^a-zA-Z0-9 ]/g, "") ]
-			}))
-			e.target.value = ''
-		}
-	}
-	const tagsRemove = (value) => {
-		setData(n => ({
-			...n,
-			tags: n.tags.filter(item => item !== value)
-		}))
-	}
-	const colorSelect = e => {
-		const computedStyle = window.getComputedStyle( e.target ,null);
-		const bgColor = computedStyle.getPropertyValue('background-color')
-		const [r, g, b] = bgColor.match(/\((.*)\)/)[1].split(',').map(c => c.trim())
-		setData(n => ({...n, color: rgbToHex(r, g, b)}))
-	}
+	/**
+	 * Submit update note
+	 * @param {Event} e 
+	 */
 	const submitEditNote = (e) => {
 		e.preventDefault()
 		try {
 			data().updated_at = toIsoString(new Date())
 			notesModel.update(data())
-			// change local note
-			const modifedNote = notesModel.decryptNote(data())
-			setSingleNote(modifedNote)
-			setNotes( n => n.map(x => x.id == modifedNote.id ? modifedNote : x).sort(notesModel.order) )
+			// add changes to local state
+			const updatedNote = notesModel.decryptNote(data())
+			setSingleNote(updatedNote)
+			setNotes(
+				n => n
+					.map(x => x.id == updatedNote.id ? updatedNote : x)
+					.sort(notesModel.order)
+			)
+			// navigate back
 			setRoute('read')
-		} catch (error) {
+		}
+		catch (error) {
 			alert(error)
 		}
 	}
@@ -83,15 +73,15 @@ const EditNote = (props = propsTypes) => {
 					{data().body}
 				</textarea>
 				<div className="">
-					<span onClick={colorSelect} className="cursor-pointer inline-block w-6 h-6 mr-2 mb-0 rounded-md bg-white border border-gray-200 hover:border-gray-500"></span>
-					<span onClick={colorSelect} className="cursor-pointer inline-block w-6 h-6 mr-2 mb-0 rounded-md bg-yellow-200 border border-gray-200 hover:border-gray-500"></span>
-					<span onClick={colorSelect} className="cursor-pointer inline-block w-6 h-6 mr-2 mb-0 rounded-md bg-blue-200 border border-gray-200 hover:border-gray-500"></span>
-					<span onClick={colorSelect} className="cursor-pointer inline-block w-6 h-6 mr-2 mb-0 rounded-md bg-green-200 border border-gray-200 hover:border-gray-500"></span>
-					<span onClick={colorSelect} className="cursor-pointer inline-block w-6 h-6 mr-2 mb-0 rounded-md bg-red-200 border border-gray-200 hover:border-gray-500"></span>
-					<span onClick={colorSelect} className="cursor-pointer inline-block w-6 h-6 mr-2 mb-0 rounded-md bg-purple-200 border border-gray-200 hover:border-gray-500"></span>
-					<span onClick={colorSelect} className="cursor-pointer inline-block w-6 h-6 mr-2 mb-0 rounded-md bg-gray-300 border border-gray-200 hover:border-gray-500"></span>
-					<span onClick={colorSelect} className="cursor-pointer inline-block w-6 h-6 mr-2 mb-0 rounded-md bg-indigo-200 border border-gray-200 hover:border-gray-500"></span>
-					<span onClick={colorSelect} className="cursor-pointer inline-block w-6 h-6 mr-2 mb-0 rounded-md bg-pink-200 border border-gray-200 hover:border-gray-500"></span>
+					<For each={formHelper.colorOptions}>
+						{color => (
+							<span
+								onClick={formHelper.colorSelect}
+								className={`bg-${color}-200`}
+								className="cursor-pointer inline-block w-6 h-6 mr-2 mb-0 rounded-md border border-gray-200 hover:border-gray-500"
+							></span>
+						)}
+					</For>
 					<label
 						className="cursor-pointer inline-block w-6 h-6 mr-2 mb-0 rounded-md border border-gray-200 hover:border-gray-500"
 						htmlFor="note-color"
@@ -104,7 +94,7 @@ const EditNote = (props = propsTypes) => {
 				{/* Tags */}
 				<div class="relative border-b-2 pb-2 mt-10 mb-5 focus-within:border-blue-500">
 					<input
-						onKeyPress={tagsAdd}
+						onKeyPress={formHelper.tagsAdd}
 						type="text"
 						name="note-tags"
 						placeholder=" "
@@ -118,7 +108,7 @@ const EditNote = (props = propsTypes) => {
 							className="inline-flex items-center pl-2 mr-2 mb-2 rounded-3xl bg-blue-200"
 						>
 							{tag}
-							<button onClick={() => tagsRemove(tag)} className="flex items-center justify-center w-5 h-5 text-xs font-semibold p-2 ml-1 rounded-full bg-blue-300 hover:bg-blue-400 text-blue-900" type="button">x</button>
+							<button onClick={() => formHelper.tagsRemove(tag)} className="flex items-center justify-center w-5 h-5 text-xs font-semibold p-2 ml-1 rounded-full bg-blue-300 hover:bg-blue-400 text-blue-900" type="button">x</button>
 						</div>
 					)}
 				</For>
