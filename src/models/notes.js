@@ -2,7 +2,7 @@ import { toIsoString } from '../helper/date'
 import supabase, { auth } from '../services/supabase'
 import { encrypt, decrypt } from '../services/encryption'
 
-const structure = {
+export const structure = {
 	id: 0,
 	title: '',
 	body: '',
@@ -80,8 +80,8 @@ const store = async (data) => {
  * @returns {Promise}
  */
 const update = async (data) => {
-	if (data.body !== '') data.body = decrypt(data.body, auth.id)
-	if (data.title !== '') data.title = decrypt(data.title, auth.id)
+	if (data.body !== '') data.body = encrypt(data.body, auth.id)
+	if (data.title !== '') data.title = encrypt(data.title, auth.id)
 	return await supabase
 		.from('notes')
 		.update(data)

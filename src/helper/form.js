@@ -4,31 +4,34 @@ const colorOptions = [ 'white', 'yellow', 'blue', 'green', 'red', 'purple', 'gra
 
 /**
  * Append new tag
- * @param {Event} e 
+ * @param {Event} event
+ * @param {Function} setData // data signal setter
  */
-const tagsAdd = e => {
+const tagsAdd = (event, setData) => {
 	// sanitize tag name
-	const tag = e.target.value.replace(/[^a-zA-Z0-9 ]/g, "")
+	const tag = event.target.value.replace(/[^a-zA-Z0-9 ]/g, "")
 	// Prevent submit form on enter
-	if (e.key === 'Enter' && !!e.target.value) {
-		e.preventDefault();
+	if (event.key === 'Enter' && !!event.target.value) {
+		event.preventDefault();
 		setData(n => ({...n, tags: [ ...n.tags, tag ]}))
-		e.target.value = ''
+		event.target.value = ''
 	}
 }
 /**
  * Remove added tag
  * @param {string} tag 
+ * @param {Function} setData // data signal setter
  */
-const tagsRemove = (tag) => {
+const tagsRemove = (tag, setData) => {
 	setData(n => ({...n, tags: n.tags.filter(item => item !== tag)}))
 }
 /**
  * Select computed  bg color from element
- * @param {Event} e
+ * @param {Event} event
+ * @param {Function} setData // data signal setter
  */
-const colorSelect = e => {
-	const computedStyle = window.getComputedStyle( e.target ,null);
+const colorSelect = (event, setData) => {
+	const computedStyle = window.getComputedStyle( event.target ,null);
 	const bgColor = computedStyle.getPropertyValue('background-color')
 	const [r, g, b] = bgColor.match(/\((.*)\)/)[1].split(',').map(c => c.trim())
 	setData(n => ({...n, color: rgbToHex(r, g, b)}))

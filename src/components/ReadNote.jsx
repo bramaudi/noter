@@ -1,31 +1,33 @@
-import notesModel from '../models/notes'
+import { createSignal, onMount } from 'solid-js'
+// Utilities
+import notesModel, { structure } from '../models/notes'
+import { invertToBW } from '../helper/style'
+import { nl2br } from '../helper/string'
+// Components
 import Tooltip from './Tooltip'
 import Modal from './Modal'
 import iconArrowRight from '../assets/icons/arrow-right.svg'
 import iconTrash from '../assets/icons/trash.svg'
 import iconEdit from '../assets/icons/edit-2.svg'
-import { invertToBW } from '../helper/style'
-import { createSignal, onMount } from 'solid-js'
 
-const propsType = {
-	note: () => notesModel.structure,
+const propsTypes = {
+	note: () => structure,
 	scrollY: () => ({ notes: 0, read: 0 }),
 	setScrollY: () => null,
 	setRoute: () => null,
 	setNotes: () => null,
 }
 
-const ReadNote = (props = propsType) => {
+const ReadNote = (props = propsTypes) => {
 	const { note, scrollY, setScrollY, setRoute, setNotes } = props
 	const [modal, setModal] = createSignal(false)
+	// Navigate back to notes list
 	const navigateBack = () => {
 		let lastY = scrollY().notes
 		setRoute('notes')
 		window.scrollTo(window, lastY)
 	}
-	const nl2br = (str = '') => {
-		return str.replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '<br />')
-	}
+	// Proccess note deletion
 	const commitDelete = () => {
 		notesModel.remove(note().id)
 		setNotes(n => n.filter((item) => {
@@ -33,6 +35,7 @@ const ReadNote = (props = propsType) => {
 		}))
 		navigateBack()
 	}
+	// Navigate to edit section >>
 	const navigateEdit = () => {
 		setRoute('edit')
 		setScrollY(x => ({ ...x, read: window.scrollY }))
@@ -50,7 +53,9 @@ const ReadNote = (props = propsType) => {
 					<button onClick={commitDelete} type="button" className="cursor-pointer p-2 rounded whitespace-nowrap bg-red-300 hover:bg-red-400">
 						Delete
 					</button>
-					<button onClick={() => setModal(false)} type="button" className="cursor-pointer p-2 ml-auto">Cancel</button>
+					<button onClick={() => setModal(false)} type="button" className="cursor-pointer p-2 ml-auto">
+						Cancel
+					</button>
 				</div>
 				<div className="p-2 text-xs text-red-600">This action cannot be undone.</div>
 			</Modal>

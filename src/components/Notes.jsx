@@ -1,8 +1,10 @@
 import styles from '../assets/css/masonry.module.css'
-import Masonry from './Masonry'
-import { autoTitleSize, invertToBW, truncateText } from "../helper/style"
-import { formatDate } from '../helper/date'
 import { For, Show } from 'solid-js'
+import { autoTitleSize, invertToBW } from "../helper/style"
+import { truncateText } from '../helper/string'
+import { formatDate } from '../helper/date'
+import { structure } from '../models/notes'
+import Masonry from './Masonry'
 
 const breakpointColumnsObj = {
 	default: 4,
@@ -11,14 +13,18 @@ const breakpointColumnsObj = {
 	300: 1
 }
 
-const defaultProps = {
-	notes: () => [],
+const propsTypes = {
+	notes: () => [structure],
 	setSingleNote: () => null,
 	setRoute: () => null,
 }
 
-const Notes = (props = defaultProps) => {
+const Notes = (props = propsTypes) => {
 	const { notes, setSingleNote, setRoute } = props
+	/**
+	 * Set note object & navigate to read section
+	 * @param {structure} note Decrypted note
+	 */
 	const readNote = (note) => {
 		setSingleNote(note)
 		setRoute('read')
@@ -32,13 +38,16 @@ const Notes = (props = defaultProps) => {
 			>
 				{notes().map(note => (
 					<div onClick={() => readNote(note)} style={{ background: note.color, color: invertToBW(note.color) }}>
+						{/* Both title & body is available */}
 						<Show when={note.title !== '' && note.body !== ''}>
 							<div className={`${autoTitleSize(note.title)}`} className="font-medium">{truncateText(note.title)}</div>
 							<div className={`${autoTitleSize(note.body)}`}>{truncateText(note.body)}</div>
 						</Show>
+						{/* Missing title or body  */}
 						<Show when={note.title === '' || note.body === ''}>
 							<div className={`${autoTitleSize(note.title || note.body)}`}>{truncateText(note.title || note.body)}</div>
 						</Show>
+						{/* Tags & Date */}
 						<div className="mt-2 text-xs flex items-center opacity-70">
 							<div className="flex-1 whitespace-nowrap overflow-hidden overflow-ellipsis">
 								<For each={note.tags}>

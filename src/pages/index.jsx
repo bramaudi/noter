@@ -1,4 +1,7 @@
-import { createEffect, createResource, createSignal, Match, onCleanup, onMount, Show, Switch } from "solid-js"
+import {
+	createEffect, createSignal, onCleanup, onMount, // lifecycle
+	Match, Show, Switch // component
+} from "solid-js"
 // Services
 import auth from '../services/auth'
 import notesModel from '../models/notes'

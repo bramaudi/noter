@@ -1,12 +1,12 @@
 import styles from '../assets/css/tooltip.module.css'
 
-const defaultProps = {
+const propsTypes = {
 	position: 'top',
 	text: '',
 	children: () => null
 }
 
-const Tooltip = (props = defaultProps) => {
+const Tooltip = (props = propsTypes) => {
 	const { position, text, children } = props
 	return (
 		<div

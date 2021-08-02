@@ -1,5 +1,5 @@
 import { createSignal, For } from "solid-js"
-import { invertToBW, rgbToHex } from "../helper/style"
+import { invertToBW } from "../helper/style"
 import { toIsoString } from "../helper/date"
 import formHelper from '../helper/form'
 // Components
@@ -76,7 +76,7 @@ const EditNote = (props = propsTypes) => {
 					<For each={formHelper.colorOptions}>
 						{color => (
 							<span
-								onClick={formHelper.colorSelect}
+								onClick={e => formHelper.colorSelect(e, setData)}
 								className={`bg-${color}-200`}
 								className="cursor-pointer inline-block w-6 h-6 mr-2 mb-0 rounded-md border border-gray-200 hover:border-gray-500"
 							></span>
@@ -94,7 +94,7 @@ const EditNote = (props = propsTypes) => {
 				{/* Tags */}
 				<div class="relative border-b-2 pb-2 mt-10 mb-5 focus-within:border-blue-500">
 					<input
-						onKeyPress={formHelper.tagsAdd}
+						onKeyPress={e => formHelper.tagsAdd(e, setData)}
 						type="text"
 						name="note-tags"
 						placeholder=" "
@@ -108,7 +108,7 @@ const EditNote = (props = propsTypes) => {
 							className="inline-flex items-center pl-2 mr-2 mb-2 rounded-3xl bg-blue-200"
 						>
 							{tag}
-							<button onClick={() => formHelper.tagsRemove(tag)} className="flex items-center justify-center w-5 h-5 text-xs font-semibold p-2 ml-1 rounded-full bg-blue-300 hover:bg-blue-400 text-blue-900" type="button">x</button>
+							<button onClick={() => formHelper.tagsRemove(tag, setData)} className="flex items-center justify-center w-5 h-5 text-xs font-semibold p-2 ml-1 rounded-full bg-blue-300 hover:bg-blue-400 text-blue-900" type="button">x</button>
 						</div>
 					)}
 				</For>

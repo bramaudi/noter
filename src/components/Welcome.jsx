@@ -3,14 +3,15 @@ import iconCoffee from '../assets/icons/coffee.svg'
 import iconUploadCloud from '../assets/icons/upload-cloud.svg'
 import iconLock from '../assets/icons/lock.svg'
 import { Link } from 'solid-app-router'
-// import auth from '../services/auth'
+import supabase, { auth } from '../services/supabase'
 
 const Welcome = () => {
-	// if (!auth) {
-	// 	supabase.auth.onAuthStateChange(() => {
-	// 		window.location.href = '/'
-	// 	})
-	// }
+	if (!auth) {
+		 // full refresh after login
+		supabase.auth.onAuthStateChange(() => {
+			window.location.href = '/'
+		})
+	}
 	return (
 		<div className="flex items-center justify-center min-h-screen">
 			<div className="max-w-xl mb-14">
