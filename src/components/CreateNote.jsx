@@ -5,7 +5,7 @@ import iconCheck from '../assets/icons/check.svg'
 import notesModel from '../models/notes'
 
 const propsTypes = {
-	notes: () => notesModel.structure,
+	notes: () => [],
 	scrollY: () => ({ notes: 0 }),
 	setNotes: () => null,
 	setScrollY: () => null,
@@ -45,8 +45,9 @@ const CreateNote = (props = propsTypes) => {
 	const submitNote = (e) => {
 		e.preventDefault()
 		try {
+			data().id = notes().length + 1
 			notesModel.store(data())
-			setNotes([...notes, data()]) // add new note to current notes
+			setNotes([...notes(), notesModel.decryptNote(data())]) // add new note to current notes
 			setRoute('notes')
 			setScrollY(x => ({...x, notes: document.body.scrollHeight})) // scroll bottom
 		} catch (error) {

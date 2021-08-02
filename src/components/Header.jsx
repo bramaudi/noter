@@ -35,7 +35,7 @@ const Header = (props = propsTypes) => {
 	const refreshNotes = async () => {
 		setSpin(true)
 		const { data } = await notesModel.index()
-		setNotes(data)
+		setNotes(data.map(notesModel.decryptNote))
 		setSpin(false)
 		ref_imgRefresh.setAttribute('src', iconCheck)
 		setTimeout(() => {

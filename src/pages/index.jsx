@@ -43,7 +43,7 @@ const Home = () => {
 		window.addEventListener('scroll', saveScroll)
 		setLoading(true)
 		const { data } = await fetchNotes({ lastId: 0, limit: 1000 })
-		setNotes(data)
+		setNotes(data.map(notesModel.decryptNote))
 		setLoading(false)
 	})
 	createEffect(() => {
@@ -68,7 +68,7 @@ const Home = () => {
 					</Match>
 					<Match when={route() === 'create'}>
 						<CreateNote
-							notes={!loading() ? notes() : []}
+							notes={!loading() ? notes : () => []}
 							setNotes={setNotes}
 							scrollY={scrollY}
 							setScrollY={setScrollY}

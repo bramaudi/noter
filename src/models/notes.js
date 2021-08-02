@@ -1,5 +1,6 @@
 import { toIsoString } from '../helper/date'
 import supabase, { auth } from '../services/supabase'
+import { encrypt, decrypt } from '../services/encryption'
 
 const structure = {
 	id: 0,
@@ -15,6 +16,12 @@ const structure = {
 const order = (a, b) => {
 	return new Date(b.updated_at) - new Date(a.updated_at)
 			|| new Date(b.created_at) - new Date(a.created_at)
+}
+
+const decryptNote = (note) => {
+	const title = decrypt(note.title, auth.id)
+	const body = decrypt(note.body, auth.id)
+	return {...note, title, body}
 }
 
 const index = async (lastId = 0, limit = 10) => {
@@ -36,13 +43,16 @@ const read = async (id) => {
 }
 
 const store = async (data) => {
-	delete data.id
+	data.body = encrypt(data.body, auth.id)
+	data.title = encrypt(data.title, auth.id)
 	return await supabase
 		.from('notes')
 		.insert(data)
 }
 
 const update = async (data) => {
+	data.body = encrypt(data.body, auth.id)
+	data.title = encrypt(data.title, auth.id)
 	return await supabase
 		.from('notes')
 		.update(data)
@@ -59,6 +69,7 @@ const remove = async (noteId) => {
 export default {
 	structure,
 	order,
+	decryptNote,
 	index,
 	read,
 	store,

@@ -43,8 +43,9 @@ const EditNote = (props = propsTypes) => {
 			data().updated_at = toIsoString(new Date())
 			notesModel.update(data())
 			// change local note
-			setSingleNote(data())
-			setNotes( n => n.map(x => x.id == data().id ? data() : x).sort(notesModel.order) )
+			const modifedNote = notesModel.decryptNote(data())
+			setSingleNote(modifedNote)
+			setNotes( n => n.map(x => x.id == modifedNote.id ? modifedNote : x).sort(notesModel.order) )
 			setRoute('read')
 		} catch (error) {
 			alert(error)
