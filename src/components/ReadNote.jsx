@@ -2,7 +2,7 @@ import { createSignal, onMount } from 'solid-js'
 // Utilities
 import notesModel, { structure } from '../models/notes'
 import { invertToBW } from '../helper/style'
-import { nl2br } from '../helper/string'
+import { encodeHTMLEntities, nl2br } from '../helper/string'
 // Components
 import Tooltip from './Tooltip'
 import Modal from './Modal'
@@ -40,7 +40,7 @@ const ReadNote = (props = propsTypes) => {
 		setRoute('edit')
 		setScrollY(x => ({ ...x, read: window.scrollY }))
 	}
-
+	
 	onMount(() => {
 		// restore scrollY
 		window.scrollTo(window, scrollY().read)
@@ -82,7 +82,7 @@ const ReadNote = (props = propsTypes) => {
 				style={{ background: note().color, color: invertToBW(note().color) }}
 			>
 				<div className="font-semibold" className={note().title && 'mb-3'}>{note().title}</div>
-				<div innerHTML={nl2br(note().body)}></div>
+				<div innerHTML={nl2br(encodeHTMLEntities(note().body))}></div>
 			</div>
 		</div>
 	)

@@ -14,6 +14,6 @@
 .column > div { /* change div to reference your elements you put in <Masonry> */
   @apply cursor-pointer m-0 mb-2;
   @apply font-light leading-relaxed break-words;
-  @apply border rounded-lg p-3;
+  @apply border rounded-lg p-3 py-2;
   @apply hover:border hover:border-gray-400;
 }

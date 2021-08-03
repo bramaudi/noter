@@ -62,6 +62,7 @@ const EditNote = (props = propsTypes) => {
 					</button>
 				</div>
 				<textarea
+					onKeyDown={formHelper.keepIndentation}
 					onInput={e => setData(n => ({...n, body: e.target.value}))}
 					className="block w-full my-2 p-2 px-3 border-2 rounded outline-none focus:ring-0 focus:border-blue-500"
 					style={{background: data().color, color: invertToBW(data().color)}}
@@ -72,12 +73,12 @@ const EditNote = (props = propsTypes) => {
 				>
 					{data().body}
 				</textarea>
-				<div className="">
+				<div>
 					<For each={formHelper.colorOptions}>
 						{color => (
 							<span
 								onClick={e => formHelper.colorSelect(e, setData)}
-								className={`bg-${color}-200`}
+								className={color}
 								className="cursor-pointer inline-block w-6 h-6 mr-2 mb-0 rounded-md border border-gray-200 hover:border-gray-500"
 							></span>
 						)}

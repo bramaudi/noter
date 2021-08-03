@@ -27,10 +27,10 @@ const CreateNote = (props = propsTypes) => {
 	}
 	/**
 	 * Submit new note
-	 * @param {Event} e 
+	 * @param {Event} event
 	 */
-	const submitNote = (e) => {
-		e.preventDefault()
+	const submitNote = (event) => {
+		event.preventDefault()
 		// If nothing to store then back to notes list
 		if (data().title === '' && data().body === '') {
 			return navigateBack()
@@ -70,6 +70,7 @@ const CreateNote = (props = propsTypes) => {
 					</button>
 				</div>
 				<textarea
+					onKeyDown={formHelper.keepIndentation}
 					onInput={e => setData(n => ({...n, body: e.target.value}))}
 					className="block w-full my-2 p-2 px-3 border-2 rounded outline-none focus:ring-0 focus:border-blue-500"
 					style={{background: data().color, color: invertToBW(data().color)}}
@@ -79,12 +80,12 @@ const CreateNote = (props = propsTypes) => {
 					placeholder="Write a note here ..."
 					>	
 				</textarea>
-				<div className="">
+				<div>
 					<For each={formHelper.colorOptions}>
 						{color => (
 							<span
 								onClick={e => formHelper.colorSelect(e, setData)}
-								className={`bg-${color}-200`}
+								className={color}
 								className="cursor-pointer inline-block w-6 h-6 mr-2 mb-0 rounded-md border border-gray-200 hover:border-gray-500"
 							></span>
 						)}

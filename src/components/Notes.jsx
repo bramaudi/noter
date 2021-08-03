@@ -1,7 +1,7 @@
 import styles from '../assets/css/masonry.module.css'
 import { For, Show } from 'solid-js'
 import { autoTitleSize, invertToBW } from "../helper/style"
-import { truncateText } from '../helper/string'
+import { encodeHTMLEntities, nl2br, truncateText } from '../helper/string'
 import { formatDate } from '../helper/date'
 import { structure } from '../models/notes'
 import Masonry from './Masonry'
@@ -40,12 +40,27 @@ const Notes = (props = propsTypes) => {
 					<div onClick={() => readNote(note)} style={{ background: note.color, color: invertToBW(note.color) }}>
 						{/* Both title & body is available */}
 						<Show when={note.title !== '' && note.body !== ''}>
-							<div className={`${autoTitleSize(note.title)}`} className="font-medium">{truncateText(note.title)}</div>
-							<div className={`${autoTitleSize(note.body)}`}>{truncateText(note.body)}</div>
+							<div
+								className={`${autoTitleSize(note.title)}`}
+								className="font-medium"
+							>
+								{truncateText(note.title, 60, false)}
+							</div>
+							<div
+								className={`${autoTitleSize(note.body)}`}
+								innerHTML={nl2br(encodeHTMLEntities(truncateText(note.body)))}
+							></div>
 						</Show>
 						{/* Missing title or body  */}
 						<Show when={note.title === '' || note.body === ''}>
-							<div className={`${autoTitleSize(note.title || note.body)}`}>{truncateText(note.title || note.body)}</div>
+							<div
+								className={`${autoTitleSize(note.title || note.body)}`}
+								innerHTML={
+									note.body !== ''
+										? nl2br(encodeHTMLEntities(truncateText(note.body)))
+										: truncateText(note.title, 60, false)
+								}
+							></div>
 						</Show>
 						{/* Tags & Date */}
 						<div className="mt-2 text-xs flex items-center opacity-70">

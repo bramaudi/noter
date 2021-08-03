@@ -1,7 +1,36 @@
 import { rgbToHex } from "./style";
 
-const colorOptions = [ 'white', 'yellow', 'blue', 'green', 'red', 'purple', 'gray', 'indigo', 'pink' ]
+const colorOptions = [ 
+	'bg-white-200', 
+	'bg-yellow-200', 
+	'bg-blue-200', 
+	'bg-green-200', 
+	'bg-red-200', 
+	'bg-purple-200', 
+	'bg-gray-200', 
+	'bg-indigo-200', 
+	'bg-pink-200',
+]
 
+/**
+	 * Prevent moving to next field when press tab button
+	 * @param {InputEvent} event 
+	 */
+ const keepIndentation = event => {
+	if (event.key == 'Tab') {
+		event.preventDefault();
+		var start = event.target.selectionStart;
+		var end = event.target.selectionEnd;
+
+		// set textarea value to: text before caret + tab + text after caret
+		event.target.value = event.target.value.substring(0, start) +
+			"\t" + event.target.value.substring(end);
+
+		// put caret at right position again
+		event.target.selectionStart =
+			event.target.selectionEnd = start + 1;
+	}
+}
 /**
  * Append new tag
  * @param {Event} event
@@ -39,6 +68,7 @@ const colorSelect = (event, setData) => {
 
 export default {
 	colorOptions,
+	keepIndentation,
 	tagsAdd,
 	tagsRemove,
 	colorSelect,
