@@ -21,21 +21,29 @@ const EditNote = (props = propsTypes) => {
 	 * Submit update note
 	 * @param {Event} e 
 	 */
-	const submitEditNote = (e) => {
+	const submitEditNote = async (e) => {
 		e.preventDefault()
+		// if nothing changes then go back
+		if (JSON.stringify(data()) === JSON.stringify(note())) {
+			return setRoute('read')
+		}
 		try {
+			// update modified date
 			data().updated_at = toIsoString(new Date())
-			notesModel.update(data())
-			// add changes to local state
-			const updatedNote = notesModel.decryptNote(data())
-			setSingleNote(updatedNote)
+
+			// add changes to local state first
+			setSingleNote(data())
 			setNotes(
 				n => n
-					.map(x => x.id == updatedNote.id ? updatedNote : x)
-					.sort(notesModel.order)
+				.map(x => x.id == data().id ? data() : x)
+				.sort(notesModel.order)
 			)
 			// navigate back
 			setRoute('read')
+
+			// update note to server
+			const { error } = await notesModel.update(data())
+			if (error) alert(error.message)
 		}
 		catch (error) {
 			alert(error)

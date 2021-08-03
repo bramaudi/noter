@@ -29,21 +29,25 @@ const CreateNote = (props = propsTypes) => {
 	 * Submit new note
 	 * @param {Event} event
 	 */
-	const submitNote = (event) => {
+	const submitNote = async (event) => {
 		event.preventDefault()
 		// If nothing to store then back to notes list
 		if (data().title === '' && data().body === '') {
 			return navigateBack()
 		}
 		try {
-			// auto increment id based on current notes count
-			data().id = notes().length + 1
-			notesModel.store(data())
+			// generate time-based id
+			data().id = Date.now()
+
 			// append latest added note to current local notes
-			setNotes([...notes(), notesModel.decryptNote(data())])
+			setNotes([...notes(), data()].sort(notesModel.order))
 			// navigate back & scroll to bottom
 			setRoute('notes')
 			setScrollY(x => ({...x, notes: document.body.scrollHeight}))
+
+			// store new note to server
+			const { error } = await notesModel.store(data())
+			if (error) alert(error.message)
 		}
 		catch (error) {
 			alert(error)

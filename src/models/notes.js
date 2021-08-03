@@ -2,23 +2,23 @@ import { toIsoString } from '../helper/date'
 import supabase, { auth } from '../services/supabase'
 import { encrypt, decrypt } from '../services/encryption'
 
+const now = toIsoString(new Date())
 export const structure = {
 	id: 0,
 	title: '',
 	body: '',
 	tags: [],
 	color: '#fff',
-	created_at: toIsoString(new Date()),
-	updated_at: null,
+	created_at: now,
+	updated_at: now,
 	user_id: auth?.id || ''
 }
 
 /**
- * Order notes[] by updated_at, created_at descending
+ * Order notes[] by updated_at descending
  */
 const order = (a, b) => {
 	return new Date(b.updated_at) - new Date(a.updated_at)
-			|| new Date(b.created_at) - new Date(a.created_at)
 }
 
 /**
@@ -67,11 +67,15 @@ const read = async (id) => {
  * @returns {Promise}
  */
 const store = async (data) => {
-	if (data.body !== '') data.body = encrypt(data.body, auth.id)
-	if (data.title !== '') data.title = encrypt(data.title, auth.id)
+	const noteObj = {
+		...structure,
+		...data,
+		title: (data.title !== '') ? encrypt(data.title, auth.id) : '',
+		body: (data.body !== '') ? encrypt(data.body, auth.id) : '',
+	}
 	return await supabase
 		.from('notes')
-		.insert(data)
+		.insert(noteObj)
 }
 
 /**
@@ -80,12 +84,16 @@ const store = async (data) => {
  * @returns {Promise}
  */
 const update = async (data) => {
-	if (data.body !== '') data.body = encrypt(data.body, auth.id)
-	if (data.title !== '') data.title = encrypt(data.title, auth.id)
+	const noteObj = {
+		...structure,
+		...data,
+		title: (data.title !== '') ? encrypt(data.title, auth.id) : '',
+		body: (data.body !== '') ? encrypt(data.body, auth.id) : '',
+	}
 	return await supabase
 		.from('notes')
-		.update(data)
-		.match({ id: data.id })
+		.update(noteObj)
+		.match({ id: noteObj.id })
 }
 
 /**
