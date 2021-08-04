@@ -9,6 +9,7 @@ import Modal from './Modal'
 import iconArrowRight from '../assets/icons/arrow-right.svg'
 import iconTrash from '../assets/icons/trash.svg'
 import iconEdit from '../assets/icons/edit-2.svg'
+import { onCleanup } from 'solid-js'
 
 const propsTypes = {
 	note: () => structure,
@@ -40,11 +41,25 @@ const ReadNote = (props = propsTypes) => {
 		setRoute('edit')
 		setScrollY(x => ({ ...x, read: window.scrollY }))
 	}
+	/**
+	 * Navigate back on escape
+	 * @param {KeyboardEvent} event 
+	 */
+	const navigateEscape = (event) => {
+		if (event.key === 'Escape') {
+			navigateBack()
+		}
+	}
 	
 	onMount(() => {
+		window.addEventListener('keydown', navigateEscape)
 		// restore scrollY
 		window.scrollTo(window, scrollY().read)
 	})
+	onCleanup(() => {
+		window.removeEventListener('keydown', navigateEscape)
+	})
+	
 	return (
 		<div className="p-3 mx-auto min-h-screen max-w-xl">
 			<Modal show={modal} onClose={() => setModal(false)}>
