@@ -14,7 +14,7 @@ const colorOptions = [
 
 /**
 	 * Prevent moving to next field when press tab button
-	 * @param {InputEvent} event 
+	 * @param {KeyboardEvent} event 
 	 */
  const keepIndentation = event => {
 	if (event.key == 'Tab') {
