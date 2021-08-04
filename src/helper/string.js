@@ -16,5 +16,5 @@ export const encodeHTMLEntities = (str = '') => {
   return str
     .replace(/./gm, s => (s.match(/[a-z0-9\s]+/i)) ? s : "&#" + s.charCodeAt(0) + ";")
     .replace(/\t/g, t => '&nbsp;&nbsp;&nbsp;&nbsp;') // 1 tab = 4 spaces
-    .replace(/\u0020/g, t => '&nbsp;') // encode spacebar
+    // .replace(/\u0020/g, t => '&nbsp;') // encode spacebar
 }

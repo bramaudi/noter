@@ -82,7 +82,7 @@ const ReadNote = (props = propsTypes) => {
 				style={{ background: note().color, color: invertToBW(note().color) }}
 			>
 				<div className="font-semibold" className={note().title && 'mb-3'}>{note().title}</div>
-				<div className="break-all" innerHTML={nl2br(encodeHTMLEntities(note().body))}></div>
+				<div className="break-words" innerHTML={nl2br(encodeHTMLEntities(note().body))}></div>
 			</div>
 		</div>
 	)
