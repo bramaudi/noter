@@ -90,7 +90,7 @@ const Header = (props = propsTypes) => {
 						<img
 							class="w-8 h-8 rounded bg-gray-200"
 							src={auth.user_metadata.avatar_url}
-							alt={auth.user_metadata.user_name} />
+						/>
 						
 						<div className="hidden sm:block sm:ml-2">{auth.user_metadata.full_name}</div>
 					</button>
