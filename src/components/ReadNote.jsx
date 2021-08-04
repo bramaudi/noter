@@ -10,6 +10,7 @@ import iconArrowRight from '../assets/icons/arrow-right.svg'
 import iconTrash from '../assets/icons/trash.svg'
 import iconEdit from '../assets/icons/edit-2.svg'
 import { onCleanup } from 'solid-js'
+import { createEffect } from 'solid-js'
 
 const propsTypes = {
 	note: () => structure,
@@ -20,6 +21,7 @@ const propsTypes = {
 }
 
 const ReadNote = (props = propsTypes) => {
+	let ref_modalDeleteButton
 	const { note, scrollY, setScrollY, setRoute, setNotes } = props
 	const [modal, setModal] = createSignal(false)
 	// Navigate back to notes list
@@ -46,15 +48,22 @@ const ReadNote = (props = propsTypes) => {
 	 * @param {KeyboardEvent} event 
 	 */
 	const navigateEscape = (event) => {
-		if (event.key === 'Escape') {
-			navigateBack()
-		}
+		if (event.key === 'Escape') navigateBack()
 	}
 	
 	onMount(() => {
-		window.addEventListener('keydown', navigateEscape)
 		// restore scrollY
 		window.scrollTo(window, scrollY().read)
+	})
+	createEffect(() => {
+		// navigate bakc if no modal open
+		modal()
+			? window.removeEventListener('keydown', navigateEscape)
+			: window.addEventListener('keydown', navigateEscape)
+
+		if (modal()) {
+			ref_modalDeleteButton.focus()
+		}
 	})
 	onCleanup(() => {
 		window.removeEventListener('keydown', navigateEscape)
@@ -65,7 +74,7 @@ const ReadNote = (props = propsTypes) => {
 			<Modal show={modal} onClose={() => setModal(false)}>
 				<div className="p-2">Delete this note?</div>
 				<div className="p-2 flex items-center">
-					<button onClick={commitDelete} type="button" className="cursor-pointer p-2 rounded whitespace-nowrap bg-red-300 hover:bg-red-400">
+					<button onClick={commitDelete} ref={ref_modalDeleteButton} type="button" className="cursor-pointer p-2 rounded whitespace-nowrap bg-red-300 hover:bg-red-400 focus:ring focus:outline-none">
 						Delete
 					</button>
 					<button onClick={() => setModal(false)} type="button" className="cursor-pointer p-2 ml-auto">
