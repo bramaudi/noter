@@ -1,4 +1,5 @@
 import iconArrowRight from '../assets/icons/arrow-right.svg'
+import iconGithub from '../assets/icons/github.svg'
 import { Link } from 'solid-app-router'
 import supabase, { auth } from '../services/supabase'
 import { createEffect } from 'solid-js'
@@ -29,6 +30,10 @@ const Welcome = () => {
 						<div className="mr-2">Continue</div>
 						<img className="invert" src={iconArrowRight} alt="arrow-right" />
 					</Link>
+
+					<a href="//github.com/bramaudi/noter" target="_blank">
+						<img className="block mx-auto mt-5" src={iconGithub} alt="github" />
+					</a>
 				</div>
 
 			</div>
