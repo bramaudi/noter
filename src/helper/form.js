@@ -1,7 +1,7 @@
 import { rgbToHex } from "./style";
 
 const colorOptions = [ 
-	'bg-white-200', 
+	'bg-white', 
 	'bg-yellow-200', 
 	'bg-blue-200', 
 	'bg-green-200', 
