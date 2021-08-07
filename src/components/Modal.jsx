@@ -10,18 +10,16 @@ const Modal = (props = propsTypes) => {
 	const { show, onClose, children } = props
 	/**
 	 * Close modal when escape button pressed
-	 * @param {Event} e 
+	 * @param {KeyboardEvent} e
 	 * @returns 
 	 */
-	const onEscape = (e) => ((e.charCode || e.keyCode) === 27)
-		? onClose()
-		: null
+	const onEscape = (e) => e.key === 'Escape' ? onClose() : null
 
 	createEffect(() => {
-		document.body.addEventListener('keydown', onEscape)
+		window.addEventListener('keydown', onEscape)
 	})
 	onCleanup(() => {
-		document.body.removeEventListener('keydown', onEscape)
+		window.removeEventListener('keydown', onEscape)
 	})
 	return (
 		<div
