@@ -24,8 +24,8 @@ const Header = (props = propsTypes) => {
 	 */
 	const signOut = async () => {
 		// Start animate icon
-		ref_imgLogout.classList.add('animate-spin')
 		ref_imgLogout.setAttribute('src', iconLoader)
+		ref_imgLogout.classList.add('animate-spin')
 		// Logging out ...
 		const { error } = await logout()
 		if (error) return createAlert(error.message)
