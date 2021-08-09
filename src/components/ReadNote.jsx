@@ -31,8 +31,12 @@ const ReadNote = (props = propsTypes) => {
 		window.scrollTo(window, lastY)
 	}
 	// Proccess note deletion
-	const commitDelete = () => {
-		notesModel.remove(note().single.id)
+	const commitDelete = async () => {
+		try {
+			await notesModel.remove(note().single.id)
+		} catch (error) {
+			alert(error)
+		}
 		setNote(n => ({
 			...n,
 			list: n.list.filter(x => x.id !== note().single.id)

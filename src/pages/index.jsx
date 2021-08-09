@@ -17,6 +17,7 @@ import Loading from "../components/Loading"
 import Empty from "../components/Empty"
 import ReadNote from "../components/ReadNote"
 import { useNote } from "../store/NoteContext"
+import Failed from "../components/Failed"
 
 const Home = () => {
 	const [scrollY, setScrollY] = createSignal({
@@ -29,6 +30,7 @@ const Home = () => {
 	const [route, setRoute] = createSignal('notes')
 	const [note, setNote] = useNote()
 	const [loading, setLoading] = createSignal(false)
+	const [failed, setFailed] = createSignal(false)
 
 	const saveScroll = () => {
 		if (route() === 'notes') {
@@ -45,11 +47,15 @@ const Home = () => {
 	onMount(async () => {
 		window.addEventListener('scroll', saveScroll)
 		setLoading(true)
-		const { data } = await fetchNotes({ lastId: 0, limit: 1000 })
-		setNote(note => ({
-			...note,
-			list: data.map(notesModel.decryptNote)
-		}))
+		try {
+			const { data } = await fetchNotes({ lastId: 0, limit: 1000 })
+			setNote(note => ({
+				...note,
+				list: data.map(notesModel.decryptNote)
+			}))
+		} catch (error) {
+			setFailed(true)
+		}
 		setLoading(false)
 	})
 	createEffect(() => {
@@ -66,10 +72,11 @@ const Home = () => {
 					<Match when={route() === 'notes'}>
 						<Header />
 						<Show when={loading()}><Loading /></Show>
-						<Show when={!loading()}>
+						<Show when={!loading() && !failed()}>
 							<Show when={!note().list.length}><Empty /></Show>
 							<Notes setRoute={setRoute} />
 						</Show>
+						<Show when={failed()}><Failed /></Show>
 						<FloatActionButton onClick={() => setRoute('create')} />
 					</Match>
 					<Match when={route() === 'create'}>

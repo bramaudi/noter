@@ -47,14 +47,20 @@ const Header = () => {
 	 */
 	const refreshNotes = async () => {
 		setSpin(true) // start spin
-		const { data } = await notesModel.index()
-		setNote(n => ({...n, list: data.map(notesModel.decryptNote)}))
-		setSpin(false) // stop spin
-		// temporarily swap with check icon
-		ref_imgRefresh.setAttribute('src', iconCheck)
-		setTimeout(() => {
+		try {
+			const { data } = await notesModel.index()
+			setNote(n => ({...n, list: data.map(notesModel.decryptNote)}))
+			setSpin(false) // stop spin
+			// temporarily swap with check icon
+			ref_imgRefresh.setAttribute('src', iconCheck)
+			setTimeout(() => {
+				ref_imgRefresh.setAttribute('src', iconRefresh)
+			}, 2000)
+		} catch (error) {
+			alert(error)
+			setSpin(false) // stop spin
 			ref_imgRefresh.setAttribute('src', iconRefresh)
-		}, 2000)
+		}
 	}
 	createEffect(() => {
 		// Only activate `clickOutsideProfilePopup` when popup open
