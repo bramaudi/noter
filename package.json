@@ -24,6 +24,7 @@
     "crypto-js": "^4.1.1",
     "solid-app-router": "^0.1.2",
     "solid-js": "^1.0.4",
+    "solid-masonry": "0.1.2",
     "sort-route-paths": "^1.0.0"
   }
 }

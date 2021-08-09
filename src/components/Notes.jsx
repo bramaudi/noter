@@ -4,7 +4,7 @@ import { autoTitleSize, invertToBW } from "../helper/style"
 import { encodeHTMLEntities, nl2br, truncateText } from '../helper/string'
 import { formatDate } from '../helper/date'
 import { structure } from '../models/notes'
-import Masonry from './Masonry'
+import Masonry from 'solid-masonry'
 
 const breakpointColumnsObj = {
 	default: 4,

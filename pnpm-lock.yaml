@@ -9,6 +9,7 @@ specifiers:
   postcss: ^8.3.6
   solid-app-router: ^0.1.2
   solid-js: ^1.0.4
+  solid-masonry: 0.1.2
   sort-route-paths: ^1.0.0
   tailwindcss: ^2.2.7
   vite: ^2.4.2
@@ -20,6 +21,7 @@ dependencies:
   crypto-js: 4.1.1
   solid-app-router: 0.1.3_solid-js@1.0.7
   solid-js: 1.0.7
+  solid-masonry: 0.1.2
   sort-route-paths: 1.0.0
 
 devDependencies:
@@ -1767,6 +1769,12 @@ packages:
 
   /solid-js/1.0.7:
     resolution: {integrity: sha512-2jHCXLwp/B7P4kh5tl0ospRaC2F++BU0uWwtfgK/8Zc/MROOyCmmkjHpLAQC2u2NWYVGnIclDIJ2FGDXJ0wcYg==}
+    dev: false
+
+  /solid-masonry/0.1.2:
+    resolution: {integrity: sha512-XxqYrqWLIARyUSFRroacMGZm9BflTbfsULyNmGs/TvF8jBoVhc1FqLy0qZkCtuvoK7IvspPWJHGBy1aoWk4oAw==}
+    dependencies:
+      solid-js: 1.0.7
     dev: false
 
   /solid-refresh/0.2.1_solid-js@1.0.2:
