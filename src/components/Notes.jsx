@@ -5,6 +5,7 @@ import { encodeHTMLEntities, nl2br, truncateText } from '../helper/string'
 import { formatDate } from '../helper/date'
 import { structure } from '../models/notes'
 import Masonry from 'solid-masonry'
+import { useNote } from '../store/NoteContext'
 
 const breakpointColumnsObj = {
 	default: 4,
@@ -14,19 +15,18 @@ const breakpointColumnsObj = {
 }
 
 const propsTypes = {
-	notes: () => [structure],
-	setSingleNote: () => null,
 	setRoute: () => null,
 }
 
 const Notes = (props = propsTypes) => {
-	const { notes, setSingleNote, setRoute } = props
+	const { setRoute } = props
+	const [note, setNote] = useNote()
 	/**
 	 * Set note object & navigate to read section
 	 * @param {structure} note Decrypted note
 	 */
 	const readNote = (note) => {
-		setSingleNote(note)
+		setNote(n => ({...n, single: note}))
 		setRoute('read')
 	}
 	return (
@@ -36,42 +36,42 @@ const Notes = (props = propsTypes) => {
 				className={styles.container}
 				columnClassName={styles.column}
 			>
-				{notes().map(note => (
-					<div onClick={() => readNote(note)} style={{ background: note.color, color: invertToBW(note.color) }}>
+				{note().list.map(item => (
+					<div onClick={() => readNote(item)} style={{ background: item.color, color: invertToBW(item.color) }}>
 						{/* Both title & body is available */}
-						<Show when={note.title !== '' && note.body !== ''}>
+						<Show when={item.title !== '' && item.body !== ''}>
 							<div
-								className={`${autoTitleSize(note.title)}`}
+								className={`${autoTitleSize(item.title)}`}
 								className="font-medium"
 							>
-								{truncateText(note.title, 60, false)}
+								{truncateText(item.title, 60, false)}
 							</div>
 							<div
-								className={`${autoTitleSize(note.body)}`}
-								innerHTML={nl2br(encodeHTMLEntities(truncateText(note.body)))}
+								className={`${autoTitleSize(item.body)}`}
+								innerHTML={nl2br(encodeHTMLEntities(truncateText(item.body)))}
 							></div>
 						</Show>
 						{/* Missing title or body  */}
-						<Show when={note.title === '' || note.body === ''}>
+						<Show when={item.title === '' || item.body === ''}>
 							<div
-								className={`${autoTitleSize(note.title || note.body)}`}
+								className={`${autoTitleSize(item.title || item.body)}`}
 								innerHTML={
-									note.body !== ''
-										? nl2br(encodeHTMLEntities(truncateText(note.body)))
-										: truncateText(note.title, 60, false)
+									item.body !== ''
+										? nl2br(encodeHTMLEntities(truncateText(item.body)))
+										: truncateText(item.title, 60, false)
 								}
 							></div>
 						</Show>
 						{/* Tags & Date */}
 						<div className="mt-2 text-xs flex items-center opacity-70">
 							<div className="flex-1 whitespace-nowrap overflow-hidden overflow-ellipsis">
-								<For each={note.tags}>
+								<For each={item.tags}>
 									{tag => (
 										<span className="mr-2">#{tag}</span>
 									)}
 								</For>
 							</div>
-							<div className="ml-2 whitespace-nowrap text-right">{formatDate(note.created_at)}</div>
+							<div className="ml-2 whitespace-nowrap text-right">{formatDate(item.created_at)}</div>
 						</div>
 					</div>
 				))}

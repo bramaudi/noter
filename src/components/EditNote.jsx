@@ -6,17 +6,16 @@ import formHelper from '../helper/form'
 import iconArrowRight from '../assets/icons/arrow-right.svg'
 import iconCheck from '../assets/icons/check.svg'
 import notesModel from '../models/notes'
+import { useNote } from "../store/NoteContext"
 
 const propsTypes = {
-	note: () => notesModel.structure,
-	setSingleNote: () => null,
-	setNotes: () => null,
 	setRoute: () => null,
 }
 
 const EditNote = (props = propsTypes) => {
-	const { note, setSingleNote, setNotes, setRoute } = props
-	const [data, setData] = createSignal(note())
+	const { setRoute } = props
+	const [note, setNote] = useNote()
+	const [formData, setFormData] = createSignal(note().single)
 	/**
 	 * Submit update note
 	 * @param {Event} e 
@@ -24,25 +23,26 @@ const EditNote = (props = propsTypes) => {
 	const submitEditNote = async (e) => {
 		e.preventDefault()
 		// if nothing changes then go back
-		if (JSON.stringify(data()) === JSON.stringify(note())) {
+		if (JSON.stringify(formData()) === JSON.stringify(note().single)) {
 			return setRoute('read')
 		}
 		try {
 			// update modified date
-			data().updated_at = toIsoString(new Date())
+			formData().updated_at = toIsoString(new Date())
 
 			// add changes to local state first
-			setSingleNote(data())
-			setNotes(
-				n => n
-				.map(x => x.id == data().id ? data() : x)
-				.sort(notesModel.order)
-			)
+			setNote(n => ({...n, single: formData()}))
+			setNote(n => ({
+				...n,
+				list: n.list
+					.map(x => x.id == formData().id ? formData() : x)
+					.sort(notesModel.order)
+			}))
 			// navigate back
 			setRoute('read')
 
 			// update note to server
-			const { error } = await notesModel.update(data())
+			const { error } = await notesModel.update(formData())
 			if (error) alert(error.message)
 		}
 		catch (error) {
@@ -59,9 +59,9 @@ const EditNote = (props = propsTypes) => {
 					</button>
 					{/* Note title */}
 					<input
-						onInput={e => setData(n => ({...n, title: e.target.value}))}
+						onInput={e => setFormData(n => ({...n, title: e.target.value}))}
 						className="mx-3 -mb-1 font-medium outline-none bg-transparent border-b border-transparent focus:border-blue-500 flex-1 whitespace-nowrap overflow-hidden overflow-ellipsis"
-						value={data().title}
+						value={formData().title}
 						placeholder="Untitled"
 						/>
 					{/* Save */}
@@ -71,21 +71,21 @@ const EditNote = (props = propsTypes) => {
 				</div>
 				<textarea
 					onKeyDown={formHelper.keepIndentation}
-					onInput={e => setData(n => ({...n, body: e.target.value}))}
+					onInput={e => setFormData(n => ({...n, body: e.target.value}))}
 					className="block w-full my-2 p-2 px-3 border-2 rounded outline-none focus:ring-0 focus:border-blue-500"
-					style={{background: data().color, color: invertToBW(data().color)}}
+					style={{background: formData().color, color: invertToBW(formData().color)}}
 					id="note-body"
 					cols="30"
 					rows="10"
 					placeholder="Write a note here ..."
 				>
-					{data().body}
+					{formData().body}
 				</textarea>
 				<div>
 					<For each={formHelper.colorOptions}>
 						{color => (
 							<span
-								onClick={e => formHelper.colorSelect(e, setData)}
+								onClick={e => formHelper.colorSelect(e, setFormData)}
 								className={color}
 								className="cursor-pointer inline-block w-6 h-6 mr-2 mb-0 rounded-md border border-gray-200 hover:border-gray-500"
 							></span>
@@ -98,12 +98,12 @@ const EditNote = (props = propsTypes) => {
 						title="Custom"
 					>
 					</label>
-					<input onChange={e => setData(n => ({...n, color: e.target.value}))} type="color" id="note-color" className="hidden" />
+					<input onChange={e => setFormData(n => ({...n, color: e.target.value}))} type="color" id="note-color" className="hidden" />
 				</div>
 				{/* Tags */}
 				<div class="relative border-b-2 pb-2 mt-10 mb-5 focus-within:border-blue-500">
 					<input
-						onKeyPress={e => formHelper.tagsAdd(e, setData)}
+						onKeyPress={e => formHelper.tagsAdd(e, setFormData)}
 						type="text"
 						name="note-tags"
 						placeholder=" "
@@ -111,13 +111,13 @@ const EditNote = (props = propsTypes) => {
 						/>
 					<label htmlFor="note-tags" class="absolute top-0 -z-1 duration-300 origin-0">Tags</label>
 				</div>
-				<For each={data().tags.sort((a, b) => a !== b ? a < b ? -1 : 1 : 0)}>
+				<For each={formData().tags.sort((a, b) => a !== b ? a < b ? -1 : 1 : 0)}>
 					{tag => (
 						<div
 							className="inline-flex items-center pl-2 mr-2 mb-2 rounded-3xl bg-blue-200"
 						>
 							{tag}
-							<button onClick={() => formHelper.tagsRemove(tag, setData)} className="flex items-center justify-center w-5 h-5 text-xs font-semibold p-2 ml-1 rounded-full bg-blue-300 hover:bg-blue-400 text-blue-900" type="button">x</button>
+							<button onClick={() => formHelper.tagsRemove(tag, setFormData)} className="flex items-center justify-center w-5 h-5 text-xs font-semibold p-2 ml-1 rounded-full bg-blue-300 hover:bg-blue-400 text-blue-900" type="button">x</button>
 						</div>
 					)}
 				</For>

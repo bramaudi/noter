@@ -11,18 +11,18 @@ import iconTrash from '../assets/icons/trash.svg'
 import iconEdit from '../assets/icons/edit-2.svg'
 import { onCleanup } from 'solid-js'
 import { createEffect } from 'solid-js'
+import { useNote } from '../store/NoteContext'
 
 const propsTypes = {
-	note: () => structure,
 	scrollY: () => ({ notes: 0, read: 0 }),
 	setScrollY: () => null,
 	setRoute: () => null,
-	setNotes: () => null,
 }
 
 const ReadNote = (props = propsTypes) => {
 	let ref_modalDeleteButton
-	const { note, scrollY, setScrollY, setRoute, setNotes } = props
+	const { scrollY, setScrollY, setRoute } = props
+	const [note, setNote] = useNote()
 	const [modal, setModal] = createSignal(false)
 	// Navigate back to notes list
 	const navigateBack = () => {
@@ -32,9 +32,10 @@ const ReadNote = (props = propsTypes) => {
 	}
 	// Proccess note deletion
 	const commitDelete = () => {
-		notesModel.remove(note().id)
-		setNotes(n => n.filter((item) => {
-			return item.id !== note().id
+		notesModel.remove(note().single.id)
+		setNote(n => ({
+			...n,
+			list: n.list.filter(x => x.id !== note().single.id)
 		}))
 		navigateBack()
 	}
@@ -103,10 +104,10 @@ const ReadNote = (props = propsTypes) => {
 			</div>
 			<div
 				className="border rounded-lg p-3 mt-3"
-				style={{ background: note().color, color: invertToBW(note().color) }}
+				style={{ background: note().single.color, color: invertToBW(note().single.color) }}
 			>
-				<div className="font-semibold" className={note().title && 'mb-3'}>{note().title}</div>
-				<div className="break-words" innerHTML={nl2br(encodeHTMLEntities(note().body))}></div>
+				<div className="font-semibold" className={note().single.title && 'mb-3'}>{note().single.title}</div>
+				<div className="break-words" innerHTML={nl2br(encodeHTMLEntities(note().single.body))}></div>
 			</div>
 		</div>
 	)

@@ -1,8 +1,11 @@
-import { Link } from "solid-app-router";
-import Header from './components/Header'
+import { NoteProvider } from './store/NoteContext'
 
 function App({ Routes }) {
-  return <Routes />
+  return (
+    <NoteProvider>
+      <Routes />
+    </NoteProvider>
+  )
 }
 
 export default App;

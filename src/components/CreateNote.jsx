@@ -5,18 +5,18 @@ import formHelper from '../helper/form'
 import iconArrowRight from '../assets/icons/arrow-right.svg'
 import iconCheck from '../assets/icons/check.svg'
 import notesModel from '../models/notes'
+import { useNote } from "../store/NoteContext"
 
 const propsTypes = {
-	notes: () => [],
 	scrollY: () => ({ notes: 0 }),
-	setNotes: () => null,
 	setScrollY: () => null,
 	setRoute: () => null,
 }
 
 const CreateNote = (props = propsTypes) => {
-	const { notes, scrollY, setScrollY, setNotes, setRoute } = props
-	const [data, setData] = createSignal(notesModel.structure)
+	const { scrollY, setScrollY, setRoute } = props
+	const [formData, setFormData] = createSignal(notesModel.structure)
+	const [note, setNote] = useNote()
 	/**
 	 * Navigate back to notes list
 	 */
@@ -32,21 +32,24 @@ const CreateNote = (props = propsTypes) => {
 	const submitNote = async (event) => {
 		event.preventDefault()
 		// If nothing to store then back to notes list
-		if (data().title === '' && data().body === '') {
+		if (formData().title === '' && formData().body === '') {
 			return navigateBack()
 		}
 		try {
 			// generate time-based id
-			data().id = Date.now()
+			formData().id = Date.now()
 
 			// append latest added note to current local notes
-			setNotes([...notes(), data()].sort(notesModel.order))
+			setNote(n => ({
+				...n,
+				list: [...n.list, formData()].sort(notesModel.order)
+			}))
 			// navigate back & scroll to bottom
 			setRoute('notes')
 			setScrollY(x => ({...x, notes: document.body.scrollHeight}))
 
 			// store new note to server
-			const { error } = await notesModel.store(data())
+			const { error } = await notesModel.store(formData())
 			if (error) alert(error.message)
 		}
 		catch (error) {
@@ -63,9 +66,9 @@ const CreateNote = (props = propsTypes) => {
 					</button>
 					{/* Note title */}
 					<input
-						onInput={e => setData(n => ({...n, title: e.target.value}))}
+						onInput={e => setFormData(n => ({...n, title: e.target.value}))}
 						className="mx-3 -mb-1 font-medium outline-none bg-transparent border-b border-transparent focus:border-blue-500 flex-1 whitespace-nowrap overflow-hidden overflow-ellipsis"
-						value={data().title}
+						value={formData().title}
 						placeholder="Untitled"
 						/>
 					{/* Save */}
@@ -75,9 +78,9 @@ const CreateNote = (props = propsTypes) => {
 				</div>
 				<textarea
 					onKeyDown={formHelper.keepIndentation}
-					onInput={e => setData(n => ({...n, body: e.target.value}))}
+					onInput={e => setFormData(n => ({...n, body: e.target.value}))}
 					className="block w-full my-2 p-2 px-3 border-2 rounded outline-none focus:ring-0 focus:border-blue-500"
-					style={{background: data().color, color: invertToBW(data().color)}}
+					style={{background: formData().color, color: invertToBW(formData().color)}}
 					id="note-body"
 					cols="30"
 					rows="10"
@@ -88,7 +91,7 @@ const CreateNote = (props = propsTypes) => {
 					<For each={formHelper.colorOptions}>
 						{color => (
 							<span
-								onClick={e => formHelper.colorSelect(e, setData)}
+								onClick={e => formHelper.colorSelect(e, setFormData)}
 								className={color}
 								className="cursor-pointer inline-block w-6 h-6 mr-2 mb-0 rounded-md border border-gray-200 hover:border-gray-500"
 							></span>
@@ -101,12 +104,12 @@ const CreateNote = (props = propsTypes) => {
 						title="Custom"
 					>
 					</label>
-					<input onChange={e => setData(n => ({...n, color: e.target.value}))} type="color" id="note-color" className="hidden" />
+					<input onChange={e => setFormData(n => ({...n, color: e.target.value}))} type="color" id="note-color" className="hidden" />
 				</div>
 				{/* Tags */}
 				<div class="relative border-b-2 pb-2 mt-10 mb-5 focus-within:border-blue-500">
 					<input
-						onKeyPress={e => formHelper.tagsAdd(e, setData)}
+						onKeyPress={e => formHelper.tagsAdd(e, setFormData)}
 						type="text"
 						name="note-tags"
 						placeholder=" "
@@ -114,13 +117,13 @@ const CreateNote = (props = propsTypes) => {
 						/>
 					<label htmlFor="note-tags" class="absolute top-0 -z-1 duration-300 origin-0">Tags</label>
 				</div>
-				<For each={data().tags.sort((a, b) => a !== b ? a < b ? -1 : 1 : 0)}>
+				<For each={formData().tags.sort((a, b) => a !== b ? a < b ? -1 : 1 : 0)}>
 					{tag => (
 						<div
 							className="inline-flex items-center pl-2 mr-2 mb-2 rounded-3xl bg-blue-200"
 						>
 							{tag}
-							<button onClick={() => formHelper.tagsRemove(tag, setData)} className="flex items-center justify-center w-5 h-5 text-xs font-semibold p-2 ml-1 rounded-full bg-blue-300 hover:bg-blue-400 text-blue-900" type="button">x</button>
+							<button onClick={() => formHelper.tagsRemove(tag, setFormData)} className="flex items-center justify-center w-5 h-5 text-xs font-semibold p-2 ml-1 rounded-full bg-blue-300 hover:bg-blue-400 text-blue-900" type="button">x</button>
 						</div>
 					)}
 				</For>
