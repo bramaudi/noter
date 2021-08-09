@@ -17,7 +17,9 @@
     "tailwindcss": "^2.2.7",
     "vite": "^2.4.2",
     "vite-plugin-pages": "^0.15.1",
-    "vite-plugin-solid": "^2.0.0"
+    "vite-plugin-pwa": "^0.10.0",
+    "vite-plugin-solid": "^2.0.0",
+    "workbox-window": "^6.2.2"
   },
   "dependencies": {
     "@supabase/supabase-js": "^1.20.0",

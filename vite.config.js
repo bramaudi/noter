@@ -1,6 +1,7 @@
 import { defineConfig } from "vite";
 import solidPlugin from "vite-plugin-solid";
 import Pages from "vite-plugin-pages";
+import { VitePWA } from "vite-plugin-pwa";
 
 export default defineConfig({
   plugins: [
@@ -9,6 +10,7 @@ export default defineConfig({
       importMode: 'async'
     }),
     solidPlugin(),
+    VitePWA()
   ],
   build: {
     target: "esnext",
