@@ -1,6 +1,6 @@
 import { createSignal, onCleanup, onMount } from 'solid-js'
 import styles from '../assets/css/masonry.module.css'
-import Masonry from './Masonry'
+import Masonry from 'solid-masonry'
 
 const breakpointColumnsObj = {
 	default: 4,
