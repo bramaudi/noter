@@ -15,7 +15,10 @@ const propsTypes = {
 }
 
 const EditNote = (props = propsTypes) => {
-	const refs = { submitButton: null }
+	const refs = {
+		submitButton: null,
+		textarea: null,
+	}
 	const { setRoute } = props
 	const [note, setNote] = useNote()
 	const [formData, setFormData] = createSignal(note.single)
@@ -69,6 +72,7 @@ const EditNote = (props = propsTypes) => {
 	}
 
 	onMount(() => {
+		refs.textarea.focus()
 		window.addEventListener('keydown', navigateSubmitEvent)
 		window.addEventListener('keydown', navigateEscapeEvent)
 	})
@@ -98,6 +102,7 @@ const EditNote = (props = propsTypes) => {
 					</button>
 				</div>
 				<textarea
+					ref={refs.textarea}
 					onKeyDown={formHelper.keepIndentation}
 					onInput={e => setFormData(n => ({...n, body: e.target.value}))}
 					className="block w-full my-2 p-2 px-3 border-2 rounded outline-none focus:ring-0 focus:border-blue-500"
