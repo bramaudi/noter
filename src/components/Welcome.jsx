@@ -1,4 +1,3 @@
-import iconArrowRight from '../assets/icons/arrow-right.svg'
 import iconGithub from '../assets/icons/github.svg'
 import { Link } from 'solid-app-router'
 import supabase, { auth } from '../services/supabase'
