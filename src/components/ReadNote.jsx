@@ -58,7 +58,7 @@ const ReadNote = (props = propsTypes) => {
 	 * @param {KeyboardEvent} event 
 	 */
 	 const navigateEditEvent = (event) => {
-		if (event.ctrlKey && event.key.toUpperCase() === 'E') {
+		if (event.key === 'Enter') {
 			navigateEdit()
 		}
 	}
