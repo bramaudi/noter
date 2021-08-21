@@ -5,17 +5,28 @@ import auth, { login } from "../services/auth"
 const Login = () => {
 	const navigate = useNavigate()
 	const [alert, setAlert] = createSignal(null)
+
+	/**
+	 * Create something like flash message
+	 * @param {string} message 
+	 */
 	const createAlert = message => {
 		setAlert(message)
 		setTimeout(() => setAlert(null), 3000)
 	}
+	/**
+	 * Sign-in with supabase provider
+	 * @param {string} provider 
+	 */
 	const signInWith = async (provider) => {
 		const { error } = await login(provider)
 		if (error) return createAlert(error.message)
 	}
+
 	onMount(() => {
 		if (auth) navigate('/', { replace: true })
 	})
+	
 	return (
 		<div class="flex items-center justify-center bg-gray-100" style="min-height: calc(100vh - 10em)">
 			<div class="p-10 w-full max-w-md bg-white rounded-lg shadow-md">

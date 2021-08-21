@@ -21,6 +21,7 @@ const propsTypes = {
 const Notes = (props = propsTypes) => {
 	const { setRoute } = props
 	const [note, setNote] = useNote()
+
 	/**
 	 * Set note object & navigate to read section
 	 * @param {structure} note Decrypted note
@@ -29,6 +30,7 @@ const Notes = (props = propsTypes) => {
 		setNote(n => ({...n, single: note}))
 		setRoute('read')
 	}
+	
 	return (
 		<div className="p-3 font-medium">
 			<Masonry
@@ -36,7 +38,7 @@ const Notes = (props = propsTypes) => {
 				className={styles.container}
 				columnClassName={styles.column}
 			>
-				{note().list.map(item => (
+				{note.list.map(item => (
 					<div onClick={() => readNote(item)} style={{ background: item.color, color: invertToBW(item.color) }}>
 						{/* Both title & body is available */}
 						<Show when={item.title !== '' && item.body !== ''}>

@@ -12,10 +12,16 @@ const breakpointColumnsObj = {
 const Loading = () => {
 	let randomizeInterval
 	const [data, setData] = createSignal([1,2,3,4])
+
+	/**
+	 * Generate random array of height
+	 * @returns {number[]}
+	 */
 	const randomHeight = () => {
 		const heightList = [150, 200, 250]
 		return heightList[Math.floor(Math.random() * heightList.length)]
 	}
+
 	onMount(() => {
 		setData(data().map(() => randomHeight()))
 		randomizeInterval = setInterval(() => {
@@ -25,6 +31,7 @@ const Loading = () => {
 	onCleanup(() => {
 		clearInterval(randomizeInterval)
 	})
+
 	return (
 		<div className="p-3 animate-pulse" style={{ animation: 'pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite' }}>
 			<Masonry

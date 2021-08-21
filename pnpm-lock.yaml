@@ -8,7 +8,7 @@ specifiers:
   lorem-ipsum: ^2.0.3
   postcss: ^8.3.6
   solid-app-router: ^0.1.2
-  solid-js: ^1.0.4
+  solid-js: ^1.1.1
   solid-masonry: 0.1.2
   sort-route-paths: ^1.0.0
   tailwindcss: ^2.2.7
@@ -21,8 +21,8 @@ specifiers:
 dependencies:
   '@supabase/supabase-js': 1.21.0
   crypto-js: 4.1.1
-  solid-app-router: 0.1.3_solid-js@1.0.7
-  solid-js: 1.0.7
+  solid-app-router: 0.1.3_solid-js@1.1.1
+  solid-js: 1.1.1
   solid-masonry: 0.1.2
   sort-route-paths: 1.0.0
 
@@ -3113,12 +3113,12 @@ packages:
       is-arrayish: 0.3.2
     dev: true
 
-  /solid-app-router/0.1.3_solid-js@1.0.7:
+  /solid-app-router/0.1.3_solid-js@1.1.1:
     resolution: {integrity: sha512-Su//M8U4w/GVJqIbxPOcWPtrGBFoV0m+Ob7/Gs86fhAMOwCui9XWji/st4sGLDUzcxp4uTNWVSLjVsBlFUiw/Q==}
     peerDependencies:
       solid-js: ^1.0.0
     dependencies:
-      solid-js: 1.0.7
+      solid-js: 1.1.1
     dev: false
 
   /solid-js/1.0.2:
@@ -3127,6 +3127,10 @@ packages:
 
   /solid-js/1.0.7:
     resolution: {integrity: sha512-2jHCXLwp/B7P4kh5tl0ospRaC2F++BU0uWwtfgK/8Zc/MROOyCmmkjHpLAQC2u2NWYVGnIclDIJ2FGDXJ0wcYg==}
+    dev: false
+
+  /solid-js/1.1.1:
+    resolution: {integrity: sha512-BtNNMUjBGtkx4viW5q/oqU4DOHa3WRhylN302cVVIeiBUGw6uzAE+NhNF12bAvSYJOCHLyGHpUEIeWklkeGgsg==}
     dev: false
 
   /solid-masonry/0.1.2:

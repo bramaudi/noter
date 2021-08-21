@@ -17,6 +17,7 @@ const CreateNote = (props = propsTypes) => {
 	const { scrollY, setScrollY, setRoute } = props
 	const [formData, setFormData] = createSignal(notesModel.structure)
 	const [note, setNote] = useNote()
+
 	/**
 	 * Navigate back to notes list
 	 */
@@ -35,19 +36,15 @@ const CreateNote = (props = propsTypes) => {
 		if (formData().title === '' && formData().body === '') {
 			return navigateBack()
 		}
+
 		try {
 			// generate time-based id
 			formData().id = Date.now()
-
 			// append latest added note to current local notes
-			setNote(n => ({
-				...n,
-				list: [...n.list, formData()].sort(notesModel.order)
-			}))
+			setNote('list', n => [...n, formData()].sort(notesModel.order))
 			// navigate back & scroll to bottom
 			setRoute('notes')
 			setScrollY(x => ({...x, notes: document.body.scrollHeight}))
-
 			// store new note to server
 			const { error } = await notesModel.store(formData())
 			if (error) alert(error.message)
@@ -56,6 +53,7 @@ const CreateNote = (props = propsTypes) => {
 			alert(error)
 		}
 	}
+	
 	return (
 		<div className="p-3 mx-auto max-w-xl">
 			<form onSubmit={submitNote}>

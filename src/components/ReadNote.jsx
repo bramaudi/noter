@@ -1,6 +1,6 @@
 import { createSignal, onMount } from 'solid-js'
 // Utilities
-import notesModel, { structure } from '../models/notes'
+import notesModel from '../models/notes'
 import { invertToBW } from '../helper/style'
 import { encodeHTMLEntities, nl2br } from '../helper/string'
 // Components
@@ -20,10 +20,11 @@ const propsTypes = {
 }
 
 const ReadNote = (props = propsTypes) => {
-	let ref_modalDeleteButton
+	const refs = { modalDeleteBtn: null }
 	const { scrollY, setScrollY, setRoute } = props
 	const [note, setNote] = useNote()
 	const [modal, setModal] = createSignal(false)
+
 	// Navigate back to notes list
 	const navigateBack = () => {
 		let lastY = scrollY().notes
@@ -33,15 +34,12 @@ const ReadNote = (props = propsTypes) => {
 	// Proccess note deletion
 	const commitDelete = async () => {
 		try {
-			await notesModel.remove(note().single.id)
+			setNote('list', n => n.filter(x => x.id !== note.single.id))
+			navigateBack()
+			await notesModel.remove(note.single.id)
 		} catch (error) {
 			alert(error)
 		}
-		setNote(n => ({
-			...n,
-			list: n.list.filter(x => x.id !== note().single.id)
-		}))
-		navigateBack()
 	}
 	// Navigate to edit section >>
 	const navigateEdit = () => {
@@ -67,7 +65,7 @@ const ReadNote = (props = propsTypes) => {
 			: window.addEventListener('keydown', navigateEscape)
 
 		if (modal()) {
-			ref_modalDeleteButton.focus()
+			refs.modalDeleteBtn.focus()
 		}
 	})
 	onCleanup(() => {
@@ -79,7 +77,7 @@ const ReadNote = (props = propsTypes) => {
 			<Modal show={modal} onClose={() => setModal(false)}>
 				<div className="p-2">Delete this note?</div>
 				<div className="p-2 flex items-center">
-					<button onClick={commitDelete} ref={ref_modalDeleteButton} type="button" className="cursor-pointer p-2 rounded whitespace-nowrap bg-red-300 hover:bg-red-400 focus:ring focus:outline-none">
+					<button onClick={commitDelete} ref={refs.modalDeleteBtn} type="button" className="cursor-pointer p-2 rounded whitespace-nowrap bg-red-300 hover:bg-red-400 focus:ring focus:outline-none">
 						Delete
 					</button>
 					<button onClick={() => setModal(false)} type="button" className="cursor-pointer p-2 ml-auto">
@@ -108,10 +106,10 @@ const ReadNote = (props = propsTypes) => {
 			</div>
 			<div
 				className="border rounded-lg p-3 mt-3"
-				style={{ background: note().single.color, color: invertToBW(note().single.color) }}
+				style={{ background: note.single.color, color: invertToBW(note.single.color) }}
 			>
-				<div className="font-semibold" className={note().single.title && 'mb-3'}>{note().single.title}</div>
-				<div className="break-words" innerHTML={nl2br(encodeHTMLEntities(note().single.body))}></div>
+				<div className="font-semibold" className={note.single.title && 'mb-3'}>{note.single.title}</div>
+				<div className="break-words" innerHTML={nl2br(encodeHTMLEntities(note.single.body))}></div>
 			</div>
 		</div>
 	)

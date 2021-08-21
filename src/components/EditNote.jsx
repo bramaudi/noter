@@ -15,7 +15,8 @@ const propsTypes = {
 const EditNote = (props = propsTypes) => {
 	const { setRoute } = props
 	const [note, setNote] = useNote()
-	const [formData, setFormData] = createSignal(note().single)
+	const [formData, setFormData] = createSignal(note.single)
+
 	/**
 	 * Submit update note
 	 * @param {Event} e 
@@ -23,24 +24,22 @@ const EditNote = (props = propsTypes) => {
 	const submitEditNote = async (e) => {
 		e.preventDefault()
 		// if nothing changes then go back
-		if (JSON.stringify(formData()) === JSON.stringify(note().single)) {
+		if (JSON.stringify(formData()) === JSON.stringify(note.single)) {
 			return setRoute('read')
 		}
+
 		try {
 			// update modified date
 			formData().updated_at = toIsoString(new Date())
-
 			// add changes to local state first
-			setNote(n => ({...n, single: formData()}))
-			setNote(n => ({
-				...n,
-				list: n.list
+			setNote('single', formData())
+			setNote('list', n => {
+				return n
 					.map(x => x.id == formData().id ? formData() : x)
 					.sort(notesModel.order)
-			}))
+			})
 			// navigate back
 			setRoute('read')
-
 			// update note to server
 			const { error } = await notesModel.update(formData())
 			if (error) alert(error.message)
@@ -49,6 +48,7 @@ const EditNote = (props = propsTypes) => {
 			alert(error)
 		}
 	}
+	
 	return (
 		<div className="p-3 mx-auto max-w-xl">
 			<form onSubmit={submitEditNote}>

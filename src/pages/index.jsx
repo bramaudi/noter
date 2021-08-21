@@ -23,36 +23,32 @@ const Home = () => {
 	const [scrollY, setScrollY] = createSignal({
 		notes: 0,
 		read: 0
-	})
-	
+	})	
 	const fetchNotes = async ({ lastId, limit }) => await notesModel.index(lastId, limit)
-
 	const [route, setRoute] = createSignal('notes')
 	const [note, setNote] = useNote()
 	const [loading, setLoading] = createSignal(false)
 	const [failed, setFailed] = createSignal(false)
 
+	/**
+	 * Remember current scroll Y pos
+	 */
 	const saveScroll = () => {
 		if (route() === 'notes') {
 			setScrollY(x => ({...x, notes: window.scrollY}))
 		}
 	}
 
-	if (!auth) {
-		supabase.auth.onAuthStateChange(() => {
-			window.location.href = '/'
-		})
-	}
-
 	onMount(async () => {
+		!auth && supabase.auth.onAuthStateChange(() => {
+			window.location.reload()
+		})
+
 		window.addEventListener('scroll', saveScroll)
 		setLoading(true)
 		try {
 			const { data } = await fetchNotes({ lastId: 0, limit: 1000 })
-			setNote(note => ({
-				...note,
-				list: data.map(notesModel.decryptNote)
-			}))
+			setNote('list', data.map(notesModel.decryptNote))
 		} catch (error) {
 			setFailed(true)
 		}
@@ -65,6 +61,7 @@ const Home = () => {
 	onCleanup(() => {
 		window.removeEventListener('scroll', saveScroll)
 	})
+	
 	return (
 		<>
 			<Show when={auth}>
@@ -73,7 +70,7 @@ const Home = () => {
 						<Header />
 						<Show when={loading()}><Loading /></Show>
 						<Show when={!loading() && !failed()}>
-							<Show when={!note().list.length}><Empty /></Show>
+							<Show when={!note.list.length}><Empty /></Show>
 							<Notes setRoute={setRoute} />
 						</Show>
 						<Show when={failed()}><Failed /></Show>

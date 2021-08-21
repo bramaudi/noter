@@ -8,6 +8,7 @@ const propsTypes = {
 
 const Modal = (props = propsTypes) => {
 	const { show, onClose, children } = props
+
 	/**
 	 * Close modal when escape button pressed
 	 * @param {KeyboardEvent} e
@@ -21,6 +22,7 @@ const Modal = (props = propsTypes) => {
 	onCleanup(() => {
 		window.removeEventListener('keydown', onEscape)
 	})
+	
 	return (
 		<div
 			onClick={onClose}
