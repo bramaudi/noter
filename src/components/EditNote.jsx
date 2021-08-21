@@ -7,12 +7,15 @@ import iconArrowRight from '../assets/icons/arrow-right.svg'
 import iconCheck from '../assets/icons/check.svg'
 import notesModel from '../models/notes'
 import { useNote } from "../store/NoteContext"
+import { onMount } from "solid-js"
+import { onCleanup } from "solid-js"
 
 const propsTypes = {
 	setRoute: () => null,
 }
 
 const EditNote = (props = propsTypes) => {
+	const refs = { submitButton: null }
 	const { setRoute } = props
 	const [note, setNote] = useNote()
 	const [formData, setFormData] = createSignal(note.single)
@@ -48,6 +51,31 @@ const EditNote = (props = propsTypes) => {
 			alert(error)
 		}
 	}
+	/**
+	 * Click save button on Ctrl+Enter
+	 * @param {KeyboardEvent} event 
+	 */
+	 const navigateSubmitEvent = (event) => {
+		if (event.ctrlKey && event.key === 'Enter') {
+			refs.submitButton.click()
+		}
+	}
+	/**
+	 * Navigate back on escape
+	 * @param {KeyboardEvent} event 
+	 */
+	 const navigateEscapeEvent = (event) => {
+		if (event.key === 'Escape') setRoute('read')
+	}
+
+	onMount(() => {
+		window.addEventListener('keydown', navigateSubmitEvent)
+		window.addEventListener('keydown', navigateEscapeEvent)
+	})
+	onCleanup(() => {
+		window.removeEventListener('keydown', navigateSubmitEvent)
+		window.removeEventListener('keydown', navigateEscapeEvent)
+	})
 	
 	return (
 		<div className="p-3 mx-auto max-w-xl">
@@ -65,7 +93,7 @@ const EditNote = (props = propsTypes) => {
 						placeholder="Untitled"
 						/>
 					{/* Save */}
-					<button type="submit" className="cursor-pointer p-2 rounded whitespace-nowrap bg-gray-300 hover:bg-gray-400">
+					<button ref={refs.submitButton} type="submit" className="cursor-pointer p-2 rounded whitespace-nowrap bg-gray-300 hover:bg-gray-400">
 						<img className="w-5 h-5" src={iconCheck} alt="back" />
 					</button>
 				</div>

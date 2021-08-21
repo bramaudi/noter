@@ -62,11 +62,21 @@ const ReadNote = (props = propsTypes) => {
 			navigateEdit()
 		}
 	}
+	/**
+	 * Popup deletion modal on "Delete" key
+	 * @param {KeyboardEvent} event 
+	 */
+	 const navigateDeleteEvent = (event) => {
+		if (event.key === 'Delete') {
+			setModal(true)
+		}
+	}
 	
 	onMount(() => {
 		// restore scrollY
 		window.scrollTo(window, scrollY().read)
 		window.addEventListener('keydown', navigateEditEvent)
+		window.addEventListener('keydown', navigateDeleteEvent)
 	})
 	createEffect(() => {
 		// navigate bakc if no modal open
@@ -81,6 +91,7 @@ const ReadNote = (props = propsTypes) => {
 	onCleanup(() => {
 		window.removeEventListener('keydown', navigateEditEvent)
 		window.removeEventListener('keydown', navigateEscapeEvent)
+		window.removeEventListener('keydown', navigateDeleteEvent)
 	})
 	
 	return (
