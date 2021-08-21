@@ -50,26 +50,37 @@ const ReadNote = (props = propsTypes) => {
 	 * Navigate back on escape
 	 * @param {KeyboardEvent} event 
 	 */
-	const navigateEscape = (event) => {
+	const navigateEscapeEvent = (event) => {
 		if (event.key === 'Escape') navigateBack()
+	}
+	/**
+	 * Navigate to edit on Ctrl+E
+	 * @param {KeyboardEvent} event 
+	 */
+	 const navigateEditEvent = (event) => {
+		if (event.ctrlKey && event.key.toUpperCase() === 'E') {
+			navigateEdit()
+		}
 	}
 	
 	onMount(() => {
 		// restore scrollY
 		window.scrollTo(window, scrollY().read)
+		window.addEventListener('keydown', navigateEditEvent)
 	})
 	createEffect(() => {
 		// navigate bakc if no modal open
 		modal()
-			? window.removeEventListener('keydown', navigateEscape)
-			: window.addEventListener('keydown', navigateEscape)
+			? window.removeEventListener('keydown', navigateEscapeEvent)
+			: window.addEventListener('keydown', navigateEscapeEvent)
 
 		if (modal()) {
 			refs.modalDeleteBtn.focus()
 		}
 	})
 	onCleanup(() => {
-		window.removeEventListener('keydown', navigateEscape)
+		window.removeEventListener('keydown', navigateEditEvent)
+		window.removeEventListener('keydown', navigateEscapeEvent)
 	})
 	
 	return (
@@ -98,7 +109,7 @@ const ReadNote = (props = propsTypes) => {
 					</button>
 				</Tooltip>
 				{/* Edit */}
-				<Tooltip position="bottom" text="Edit" className="ml-3">
+				<Tooltip position="left" text="Edit (Ctrl+E)" className="ml-3">
 					<button onClick={navigateEdit} type="button" className="cursor-pointer p-2 rounded whitespace-nowrap bg-gray-300 hover:bg-gray-400">
 						<img className="w-5 h-5" src={iconEdit} alt="back" />
 					</button>
