@@ -67,7 +67,10 @@ const NoteEdit = (props = propsTypes) => {
 	return (
 		<div className="p-3 mx-auto max-w-xl">
 			<form onSubmit={submitEditNote}>
-				<FormNav signal={[formData, setFormData]} />
+				<FormNav
+					signal={[formData, setFormData]}
+					onBack={() => setRoute('read')}
+				/>
 				<FormTextarea signal={[formData, setFormData]} />
 				<FormColor setFormData={setFormData} />
 				<FormTags signal={[formData, setFormData]} />

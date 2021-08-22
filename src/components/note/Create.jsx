@@ -70,7 +70,10 @@ const NoteCreate = (props = propsTypes) => {
 	return (
 		<div className="p-3 mx-auto max-w-xl">
 			<form onSubmit={submitNote}>
-				<FormNav signal={[formData, setFormData]} />
+				<FormNav
+					signal={[formData, setFormData]}
+					onBack={() => setRoute('notes')}
+				/>
 				<FormTextarea signal={[formData, setFormData]} />
 				<FormColor setFormData={setFormData} />
 				<FormTags signal={[formData, setFormData]} />
