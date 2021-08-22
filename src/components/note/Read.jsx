@@ -123,17 +123,19 @@ const NoteRead = (props = propsTypes) => {
 			</Modal>
 			<div className="flex items-center">
 				{/* Back */}
-				<button onClick={() => navigateBack()} type="button" className="cursor-pointer p-2 rounded whitespace-nowrap bg-gray-300 hover:bg-gray-400 focus:ring focus:outline-none">
-					<img className="w-5 h-5 transform -rotate-180" src={iconArrowRight} alt="back" />
-				</button>
+				<Tooltip position="bottom" text="Back (Esc)">
+					<button onClick={() => navigateBack()} type="button" className="cursor-pointer p-2 rounded whitespace-nowrap bg-gray-300 hover:bg-gray-400 focus:ring focus:outline-none">
+						<img className="w-5 h-5 transform -rotate-180" src={iconArrowRight} alt="back" />
+					</button>
+				</Tooltip>
 				{/* Delete */}
-				<Tooltip position="bottom" text="Delete" className="ml-auto">
+				<Tooltip position="bottom" text="Delete (Del)" className="ml-auto">
 					<button onClick={() => setModal(true)} type="button" className="cursor-pointer p-2 rounded whitespace-nowrap bg-red-300 hover:bg-red-400 focus:ring focus:outline-none">
 						<img className="w-5 h-5" src={iconTrash} alt="back" />
 					</button>
 				</Tooltip>
 				{/* Edit */}
-				<Tooltip position="left" text="Edit (Ctrl+E)" className="ml-3">
+				<Tooltip position="bottom" text="Edit (Enter)" className="ml-3">
 					<button onClick={navigateEdit} type="button" className="cursor-pointer p-2 rounded whitespace-nowrap bg-gray-300 hover:bg-gray-400 focus:ring focus:outline-none">
 						<img className="w-5 h-5" src={iconEdit} alt="back" />
 					</button>
