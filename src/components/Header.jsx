@@ -83,7 +83,7 @@ const Header = () => {
 				{/* Refresh Button */}
 				<div className="ml-auto">
 					<Tooltip text="Refresh" position="bottom">
-						<button onClick={() => refreshNotes()} class="relative flex items-center">
+						<button onClick={() => refreshNotes()} class="relative flex items-center rounded-full focus:ring focus:outline-none">
 							<img
 								ref={refs.refreshIcon}
 								class="w-5 h-5 rounded"
@@ -96,7 +96,7 @@ const Header = () => {
 				</div>
 				{/* Profile Picture */}
 				<div class="ml-5">
-					<button onClick={() => setModalProfile(true)} class="relative flex items-center">
+					<button onClick={() => setModalProfile(true)} class="relative flex items-center rounded focus:ring focus:outline-none">
 						<img
 							class="w-8 h-8 rounded bg-gray-200"
 							src={auth.user_metadata.avatar_url}

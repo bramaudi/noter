@@ -7,8 +7,7 @@ import iconArrowRight from '../assets/icons/arrow-right.svg'
 import iconCheck from '../assets/icons/check.svg'
 import notesModel from '../models/notes'
 import { useNote } from "../store/NoteContext"
-import { onMount } from "solid-js"
-import { onCleanup } from "solid-js"
+import { onMount, onCleanup } from "solid-js"
 
 const propsTypes = {
 	setRoute: () => null,
@@ -16,8 +15,8 @@ const propsTypes = {
 
 const EditNote = (props = propsTypes) => {
 	const refs = {
-		submitButton: null,
 		textarea: null,
+		submitButton: null,
 	}
 	const { setRoute } = props
 	const [note, setNote] = useNote()

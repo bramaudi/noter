@@ -1,5 +1,5 @@
 import styles from '../assets/css/masonry.module.css'
-import { For, Show } from 'solid-js'
+import { onMount, onCleanup, For, Show } from 'solid-js'
 import { autoTitleSize, invertToBW } from "../helper/style"
 import { encodeHTMLEntities, nl2br, truncateText } from '../helper/string'
 import { formatDate } from '../helper/date'
@@ -23,6 +23,35 @@ const Notes = (props = propsTypes) => {
 	const [note, setNote] = useNote()
 
 	/**
+	 * Shift focus using arrow keys
+	 * @param {KeyboardEvent} e 
+	 */
+	 const handleNoteShiftFocus = (e) => {
+		const currentIndex = e.target.getAttribute('id')?.match(/\d/)
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+			if (currentIndex?.length) {
+				// ~~() convert str to int
+				document.getElementById(`note_${~~(currentIndex[0]) - 1}`)?.focus()
+			}
+    }
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+      if (currentIndex?.length) {
+				// ~~() convert str to int
+				document.getElementById(`note_${~~(currentIndex[0]) + 1}`)?.focus()
+			}
+    }
+  }
+	/**
+	 * Navigate to read note page on Enter if a note have focus
+	 * @param {KeyboardEvent} e 
+	 */
+	const navigateReadEvent = e => {
+		if (e.key === 'Enter') {
+			const isNote = e.target.getAttribute('id')?.match('note_')
+			if (isNote?.length) e.target.$$click()
+		}
+	}
+	/**
 	 * Set note object & navigate to read section
 	 * @param {structure} note Decrypted note
 	 */
@@ -30,6 +59,16 @@ const Notes = (props = propsTypes) => {
 		setNote(n => ({...n, single: note}))
 		setRoute('read')
 	}
+
+	onMount(() => {
+		window.addEventListener('keydown', handleNoteShiftFocus)
+		window.addEventListener('keydown', navigateReadEvent)
+		document.getElementById('note_0')?.focus()
+	})
+	onCleanup(() => {
+		window.removeEventListener('keydown', handleNoteShiftFocus)
+		window.removeEventListener('keydown', navigateReadEvent)
+	})
 	
 	return (
 		<div className="p-3 font-medium">
@@ -38,8 +77,8 @@ const Notes = (props = propsTypes) => {
 				className={styles.container}
 				columnClassName={styles.column}
 			>
-				{note.list.map(item => (
-					<div onClick={() => readNote(item)} style={{ background: item.color, color: invertToBW(item.color) }}>
+				{note.list.map((item, index) => (
+					<div tabIndex="0" id={`note_${index}`} onClick={() => readNote(item)} style={{ background: item.color, color: invertToBW(item.color) }}>
 						{/* Both title & body is available */}
 						<Show when={item.title !== '' && item.body !== ''}>
 							<div

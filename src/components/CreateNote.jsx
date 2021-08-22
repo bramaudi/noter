@@ -1,4 +1,4 @@
-import { createSignal, For } from "solid-js"
+import { onMount, onCleanup, createSignal, For } from "solid-js"
 import { invertToBW } from "../helper/style"
 import formHelper from '../helper/form'
 // Components
@@ -14,9 +14,13 @@ const propsTypes = {
 }
 
 const CreateNote = (props = propsTypes) => {
+	const refs = {
+		textarea: null,
+		submitButton: null,
+	}
 	const { scrollY, setScrollY, setRoute } = props
 	const [formData, setFormData] = createSignal(notesModel.structure)
-	const [note, setNote] = useNote()
+	const [, setNote] = useNote()
 
 	/**
 	 * Navigate back to notes list
@@ -53,6 +57,32 @@ const CreateNote = (props = propsTypes) => {
 			alert(error)
 		}
 	}
+	/**
+	 * Navigate back on escape
+	 * @param {KeyboardEvent} event 
+	 */
+	 const navigateEscapeEvent = (event) => {
+		if (event.key === 'Escape') navigateBack()
+	}
+	/**
+	 * Click save button on Ctrl+Enter
+	 * @param {KeyboardEvent} event 
+	 */
+	 const navigateSubmitEvent = (event) => {
+		if (event.ctrlKey && event.key === 'Enter') {
+			refs.submitButton.click()
+		}
+	}
+
+	onMount(() => {
+		refs.textarea.focus()
+		window.addEventListener('keydown', navigateEscapeEvent)
+		window.addEventListener('keydown', navigateSubmitEvent)
+	})
+	onCleanup(() => {
+		window.removeEventListener('keydown', navigateEscapeEvent)
+		window.removeEventListener('keydown', navigateSubmitEvent)
+	})
 	
 	return (
 		<div className="p-3 mx-auto max-w-xl">
@@ -70,11 +100,12 @@ const CreateNote = (props = propsTypes) => {
 						placeholder="Untitled"
 						/>
 					{/* Save */}
-					<button type="submit" className="cursor-pointer p-2 rounded whitespace-nowrap bg-gray-300 hover:bg-gray-400">
+					<button ref={refs.submitButton} type="submit" className="cursor-pointer p-2 rounded whitespace-nowrap bg-gray-300 hover:bg-gray-400">
 						<img className="w-5 h-5" src={iconCheck} alt="back" />
 					</button>
 				</div>
 				<textarea
+					ref={refs.textarea}
 					onKeyDown={formHelper.keepIndentation}
 					onInput={e => setFormData(n => ({...n, body: e.target.value}))}
 					className="block w-full my-2 p-2 px-3 border-2 rounded outline-none focus:ring-0 focus:border-blue-500"

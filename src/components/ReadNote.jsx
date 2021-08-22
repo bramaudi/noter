@@ -9,8 +9,7 @@ import Modal from './Modal'
 import iconArrowRight from '../assets/icons/arrow-right.svg'
 import iconTrash from '../assets/icons/trash.svg'
 import iconEdit from '../assets/icons/edit-2.svg'
-import { onCleanup } from 'solid-js'
-import { createEffect } from 'solid-js'
+import { onCleanup, createEffect } from 'solid-js'
 import { useNote } from '../store/NoteContext'
 
 const propsTypes = {
@@ -59,6 +58,7 @@ const ReadNote = (props = propsTypes) => {
 	 */
 	 const navigateEditEvent = (event) => {
 		if (event.key === 'Enter') {
+			event.preventDefault()
 			navigateEdit()
 		}
 	}
@@ -72,6 +72,7 @@ const ReadNote = (props = propsTypes) => {
 		}
 	}
 	
+	
 	onMount(() => {
 		// restore scrollY
 		window.scrollTo(window, scrollY().read)
@@ -79,10 +80,15 @@ const ReadNote = (props = propsTypes) => {
 		window.addEventListener('keydown', navigateDeleteEvent)
 	})
 	createEffect(() => {
-		// navigate bakc if no modal open
-		modal()
-			? window.removeEventListener('keydown', navigateEscapeEvent)
-			: window.addEventListener('keydown', navigateEscapeEvent)
+		// prevent conflict key binding event when modal open
+		if (modal()) {
+			window.removeEventListener('keydown', navigateEscapeEvent)
+			window.removeEventListener('keydown', navigateEditEvent)
+		}
+		else {
+			window.addEventListener('keydown', navigateEscapeEvent)
+			window.addEventListener('keydown', navigateEditEvent)
+		}
 
 		if (modal()) {
 			refs.modalDeleteBtn.focus()
@@ -99,10 +105,19 @@ const ReadNote = (props = propsTypes) => {
 			<Modal show={modal} onClose={() => setModal(false)}>
 				<div className="p-2">Delete this note?</div>
 				<div className="p-2 flex items-center">
-					<button onClick={commitDelete} ref={refs.modalDeleteBtn} type="button" className="cursor-pointer p-2 rounded whitespace-nowrap bg-red-300 hover:bg-red-400 focus:ring focus:outline-none">
+					<button
+						onClick={commitDelete}
+						ref={refs.modalDeleteBtn}
+						type="button"
+						className="cursor-pointer p-2 rounded whitespace-nowrap bg-red-300 hover:bg-red-400 focus:ring focus:outline-none"
+					>
 						Delete
 					</button>
-					<button onClick={() => setModal(false)} type="button" className="cursor-pointer p-2 ml-auto">
+					<button
+						onClick={() => setModal(false)}
+						type="button"
+						className="cursor-pointer p-2 rounded ml-auto focus:ring focus:outline-none"
+					>
 						Cancel
 					</button>
 				</div>
@@ -110,18 +125,18 @@ const ReadNote = (props = propsTypes) => {
 			</Modal>
 			<div className="flex items-center">
 				{/* Back */}
-				<button onClick={() => navigateBack()} type="button" className="cursor-pointer p-2 rounded whitespace-nowrap bg-gray-300 hover:bg-gray-400">
+				<button onClick={() => navigateBack()} type="button" className="cursor-pointer p-2 rounded whitespace-nowrap bg-gray-300 hover:bg-gray-400 focus:ring focus:outline-none">
 					<img className="w-5 h-5 transform -rotate-180" src={iconArrowRight} alt="back" />
 				</button>
 				{/* Delete */}
 				<Tooltip position="bottom" text="Delete" className="ml-auto">
-					<button onClick={() => setModal(true)} type="button" className="cursor-pointer p-2 rounded whitespace-nowrap bg-red-300 hover:bg-red-400">
+					<button onClick={() => setModal(true)} type="button" className="cursor-pointer p-2 rounded whitespace-nowrap bg-red-300 hover:bg-red-400 focus:ring focus:outline-none">
 						<img className="w-5 h-5" src={iconTrash} alt="back" />
 					</button>
 				</Tooltip>
 				{/* Edit */}
 				<Tooltip position="left" text="Edit (Ctrl+E)" className="ml-3">
-					<button onClick={navigateEdit} type="button" className="cursor-pointer p-2 rounded whitespace-nowrap bg-gray-300 hover:bg-gray-400">
+					<button onClick={navigateEdit} type="button" className="cursor-pointer p-2 rounded whitespace-nowrap bg-gray-300 hover:bg-gray-400 focus:ring focus:outline-none">
 						<img className="w-5 h-5" src={iconEdit} alt="back" />
 					</button>
 				</Tooltip>
