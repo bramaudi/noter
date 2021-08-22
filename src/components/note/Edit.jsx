@@ -1,19 +1,19 @@
 import { createSignal, For } from "solid-js"
-import { invertToBW } from "../helper/style"
-import { toIsoString } from "../helper/date"
-import formHelper from '../helper/form'
+import { invertToBW } from "../../helper/style"
+import { toIsoString } from "../../helper/date"
+import formHelper from '../../helper/form'
 // Components
-import iconArrowRight from '../assets/icons/arrow-right.svg'
-import iconCheck from '../assets/icons/check.svg'
-import notesModel from '../models/notes'
-import { useNote } from "../store/NoteContext"
+import iconArrowRight from '../../assets/icons/arrow-right.svg'
+import iconCheck from '../../assets/icons/check.svg'
+import notesModel from '../../models/notes'
+import { useNote } from "../../store/NoteContext"
 import { onMount, onCleanup } from "solid-js"
 
 const propsTypes = {
 	setRoute: () => null,
 }
 
-const EditNote = (props = propsTypes) => {
+const NoteEdit = (props = propsTypes) => {
 	const refs = {
 		textarea: null,
 		submitButton: null,
@@ -158,4 +158,4 @@ const EditNote = (props = propsTypes) => {
 	)
 }
 
-export default EditNote
+export default NoteEdit

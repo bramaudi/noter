@@ -16,5 +16,5 @@
   @apply font-light leading-relaxed break-words;
   @apply border rounded-lg p-3 py-2;
   @apply hover:border hover:border-gray-400;
-  @apply focus:border focus:border-gray-400;
+  @apply focus:border focus:border-gray-400 focus:outline-none;
 }

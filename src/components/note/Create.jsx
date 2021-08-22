@@ -1,11 +1,11 @@
 import { onMount, onCleanup, createSignal, For } from "solid-js"
-import { invertToBW } from "../helper/style"
-import formHelper from '../helper/form'
+import { invertToBW } from "../../helper/style"
+import formHelper from '../../helper/form'
 // Components
-import iconArrowRight from '../assets/icons/arrow-right.svg'
-import iconCheck from '../assets/icons/check.svg'
-import notesModel from '../models/notes'
-import { useNote } from "../store/NoteContext"
+import iconArrowRight from '../../assets/icons/arrow-right.svg'
+import iconCheck from '../../assets/icons/check.svg'
+import notesModel from '../../models/notes'
+import { useNote } from "../../store/NoteContext"
 
 const propsTypes = {
 	scrollY: () => ({ notes: 0 }),
@@ -13,7 +13,7 @@ const propsTypes = {
 	setRoute: () => null,
 }
 
-const CreateNote = (props = propsTypes) => {
+const NoteCreate = (props = propsTypes) => {
 	const refs = {
 		textarea: null,
 		submitButton: null,
@@ -161,4 +161,4 @@ const CreateNote = (props = propsTypes) => {
 	)
 }
 
-export default CreateNote
+export default NoteCreate

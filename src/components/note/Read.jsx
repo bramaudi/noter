@@ -1,16 +1,16 @@
 import { createSignal, onMount } from 'solid-js'
 // Utilities
-import notesModel from '../models/notes'
-import { invertToBW } from '../helper/style'
-import { encodeHTMLEntities, nl2br } from '../helper/string'
+import notesModel from '../../models/notes'
+import { invertToBW } from '../../helper/style'
+import { encodeHTMLEntities, nl2br } from '../../helper/string'
 // Components
-import Tooltip from './Tooltip'
-import Modal from './Modal'
-import iconArrowRight from '../assets/icons/arrow-right.svg'
-import iconTrash from '../assets/icons/trash.svg'
-import iconEdit from '../assets/icons/edit-2.svg'
+import Tooltip from '../Tooltip'
+import Modal from '../Modal'
+import iconArrowRight from '../../assets/icons/arrow-right.svg'
+import iconTrash from '../../assets/icons/trash.svg'
+import iconEdit from '../../assets/icons/edit-2.svg'
 import { onCleanup, createEffect } from 'solid-js'
-import { useNote } from '../store/NoteContext'
+import { useNote } from '../../store/NoteContext'
 
 const propsTypes = {
 	scrollY: () => ({ notes: 0, read: 0 }),
@@ -18,7 +18,7 @@ const propsTypes = {
 	setRoute: () => null,
 }
 
-const ReadNote = (props = propsTypes) => {
+const NoteRead = (props = propsTypes) => {
 	const refs = { modalDeleteBtn: null }
 	const { scrollY, setScrollY, setRoute } = props
 	const [note, setNote] = useNote()
@@ -152,4 +152,4 @@ const ReadNote = (props = propsTypes) => {
 	)
 }
 
-export default ReadNote
+export default NoteRead
