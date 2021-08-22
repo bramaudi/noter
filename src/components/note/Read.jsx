@@ -1,16 +1,15 @@
-import { createSignal, onMount } from 'solid-js'
+import { onMount, createEffect, onCleanup, createSignal } from 'solid-js'
 // Utilities
 import notesModel from '../../models/notes'
+import { useNote } from '../../store/NoteContext'
 import { invertToBW } from '../../helper/style'
 import { encodeHTMLEntities, nl2br } from '../../helper/string'
 // Components
-import Tooltip from '../Tooltip'
-import Modal from '../Modal'
 import iconArrowRight from '../../assets/icons/arrow-right.svg'
 import iconTrash from '../../assets/icons/trash.svg'
 import iconEdit from '../../assets/icons/edit-2.svg'
-import { onCleanup, createEffect } from 'solid-js'
-import { useNote } from '../../store/NoteContext'
+import Tooltip from '../Tooltip'
+import Modal from '../Modal'
 
 const propsTypes = {
 	scrollY: () => ({ notes: 0, read: 0 }),
@@ -20,7 +19,7 @@ const propsTypes = {
 
 const NoteRead = (props = propsTypes) => {
 	const refs = { modalDeleteBtn: null }
-	const { scrollY, setScrollY, setRoute } = props
+	const {scrollY, setScrollY, setRoute} = props
 	const [note, setNote] = useNote()
 	const [modal, setModal] = createSignal(false)
 
@@ -71,7 +70,6 @@ const NoteRead = (props = propsTypes) => {
 			setModal(true)
 		}
 	}
-	
 	
 	onMount(() => {
 		// restore scrollY

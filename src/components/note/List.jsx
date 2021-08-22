@@ -1,11 +1,11 @@
-import styles from '../../assets/css/masonry.module.css'
 import { onMount, onCleanup, For, Show } from 'solid-js'
-import { autoTitleSize, invertToBW } from "../../helper/style"
-import { encodeHTMLEntities, nl2br, truncateText } from '../../helper/string'
 import { formatDate } from '../../helper/date'
 import { structure } from '../../models/notes'
 import { useNote } from '../../store/NoteContext'
+import { autoTitleSize, invertToBW } from "../../helper/style"
+import { encodeHTMLEntities, nl2br, truncateText } from '../../helper/string'
 import Masonry from 'solid-masonry'
+import styles from '../../assets/css/masonry.module.css'
 
 const breakpointColumnsObj = {
 	default: 4,
@@ -19,7 +19,7 @@ const propsTypes = {
 }
 
 const NoteList = (props = propsTypes) => {
-	const { setRoute } = props
+	const {setRoute} = props
 	const [note, setNote] = useNote()
 
 	/**

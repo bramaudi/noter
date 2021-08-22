@@ -7,7 +7,7 @@ const propsTypes = {
 }
 
 const Modal = (props = propsTypes) => {
-	const { show, onClose, children } = props
+	const {show, onClose, children} = props
 
 	/**
 	 * Close modal when escape button pressed

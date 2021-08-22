@@ -1,7 +1,8 @@
+import { createEffect } from 'solid-js'
+import supabase, { auth } from '../services/supabase'
+// Components
 import iconGithub from '../assets/icons/github.svg'
 import { Link } from 'solid-app-router'
-import supabase, { auth } from '../services/supabase'
-import { createEffect } from 'solid-js'
 
 const Welcome = () => {
 	createEffect(() => {

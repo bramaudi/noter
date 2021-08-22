@@ -7,7 +7,7 @@ const propsTypes = {
 }
 
 const Tooltip = (props = propsTypes) => {
-	const { position, text, children } = props
+	const {position, text, children} = props
 	return (
 		<div
 			data-tooltip={text}
