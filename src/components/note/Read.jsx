@@ -31,13 +31,9 @@ const NoteRead = (props = propsTypes) => {
 	}
 	// Proccess note deletion
 	const commitDelete = async () => {
-		try {
-			setNote('list', n => n.filter(x => x.id !== note.single.id))
-			navigateBack()
-			await notesRemove(note.single.id)
-		} catch (error) {
-			alert(error)
-		}
+		setNote('list', n => n.filter(x => x.id !== note.single.id))
+		navigateBack()
+		await notesRemove(note.single.id)
 	}
 	// Navigate to edit section >>
 	const navigateEdit = () => {

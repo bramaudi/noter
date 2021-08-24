@@ -20,7 +20,7 @@ export const notesFormat = {
 /**
  * Order notes[] by updated_at descending
  */
-export const notesOrder = (a, b) => {
+const notesOrder = (a, b) => {
 	return new Date(b.updated_at) - new Date(a.updated_at)
 }
 
@@ -30,6 +30,7 @@ export const notesOrder = (a, b) => {
  * @returns {notesFormat} Decrypted note
  */
 export const notesDecrypt = (note) => {
+	if (!auth) return
 	const title = note.title ? decrypt(note.title, auth.id) : ''
 	const body = note.body ? decrypt(note.body, auth.id) : ''
 	return {...note, title, body}
@@ -37,31 +38,36 @@ export const notesDecrypt = (note) => {
 
 /**
  * List of notes
- * @param {Number} lastId Last notes id
  * @param {Number} limit Number of notes
  * @returns {Promise}
  */
 export const notesFetchAll = async (lastId = 0, limit = 10) => {
-	return await supabase
-		.from('notes')
-		.select()
-		.order('updated_at', { ascending: false })
-		.order('created_at', { ascending: false })
-		.gt('id', lastId)
-		.limit(limit)
-}
+	const getLocalNotes = () => {
+		const data = JSON.parse(localStorage.getItem('notes')) || []
+		return data.sort(notesOrder)
+	}
 
-/**
- * Read single note
- * @param {Number} id Note's id
- * @returns {Promise}
- */
-export const notesFetchByID = async (id) => {
-	return await supabase
-		.from('notes')
-		.select()
-		.eq('id', id)
-		.single()
+	try {
+		const {data, error} = await supabase
+			.from('notes')
+			.select()
+			.order('updated_at', { ascending: false })
+			.order('created_at', { ascending: false })
+			.gt('id', lastId)
+			.limit(limit)
+
+		localStorage.setItem('notes', JSON.stringify(data))
+
+		return {
+			data: getLocalNotes(),
+			error
+		}
+	} catch (error) {
+		return {
+			data: getLocalNotes(),
+			error: { message: error }
+		}
+	}
 }
 
 /**
@@ -76,9 +82,27 @@ export const notesCreate = async (data) => {
 		title: (data.title !== '') ? encrypt(data.title, auth.id) : '',
 		body: (data.body !== '') ? encrypt(data.body, auth.id) : '',
 	}
-	return await supabase
-		.from('notes')
-		.insert(noteObj)
+	const updatedNotes = [
+		...(JSON.parse(localStorage.getItem('notes'))),
+		noteObj
+	]
+	localStorage.setItem('notes', JSON.stringify(updatedNotes))
+
+	try {
+		const {error} = await supabase
+			.from('notes')
+			.insert(noteObj)
+
+		return {
+			data: updatedNotes,
+			error
+		}
+	} catch (error) {
+		return {
+			data: updatedNotes,
+			error: { message: error }
+		}
+	}
 }
 
 /**
@@ -93,10 +117,25 @@ export const notesUpdate = async (data) => {
 		title: (data.title !== '') ? encrypt(data.title, auth.id) : '',
 		body: (data.body !== '') ? encrypt(data.body, auth.id) : '',
 	}
-	return await supabase
-		.from('notes')
-		.update(noteObj)
-		.match({ id: noteObj.id })
+	const updatedNotes = (JSON.parse(localStorage.getItem('notes'))).map(item => (item.id === noteObj.id) ? noteObj : item)
+	localStorage.setItem('notes', JSON.stringify(updatedNotes))
+
+	try {
+		const {error} = await supabase
+			.from('notes')
+			.update(noteObj)
+			.match({ id: noteObj.id })
+		
+		return {
+			data: updatedNotes,
+			error
+		}
+	} catch (error) {
+		return Promise.resolve({
+			data: updatedNotes,
+			error: { message: error }
+		})
+	}
 }
 
 /**
@@ -105,8 +144,44 @@ export const notesUpdate = async (data) => {
  * @returns 
  */
 export const notesRemove = async (id) => {
-	return await supabase
-		.from('notes')
-		.delete()
-		.eq('id', id)
+	const updatedNotes = JSON.parse(localStorage.getItem('notes')).filter(n => n.id !== id)
+	localStorage.setItem('notes', JSON.stringify(updatedNotes))
+
+	try {
+		const {error} = await supabase
+			.from('notes')
+			.delete()
+			.eq('id', id)
+
+		return {
+			data: updatedNotes,
+			error
+		}
+	} catch (error) {
+		return {
+			data: updatedNotes,
+			error: { message: error }
+		}
+	}
+}
+
+export const notesSync = async (pushLocal = false) => {
+	// TODO: add last_sync column date on user profile
+
+	// if local is empty -> fetch server
+	const localNotes = JSON.parse(localStorage.getItem('notes')) || []
+	if (!localNotes.length) {
+		return await notesFetchAll()
+	}
+	// else push local to server
+	else {
+		if (pushLocal) {
+			await supabase.from('notes').delete()
+			await supabase.from('notes').insert(localNotes.sort(notesOrder))
+		}
+		return {
+			data: localNotes.sort(notesOrder),
+			error: null
+		}
+	}
 }
