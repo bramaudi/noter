@@ -1,8 +1,8 @@
-import iconArrowRight from '../assets/icons/arrow-right.svg'
+import { createEffect } from 'solid-js'
+import supabase, { auth } from '../services/supabase'
+// Components
 import iconGithub from '../assets/icons/github.svg'
 import { Link } from 'solid-app-router'
-import supabase, { auth } from '../services/supabase'
-import { createEffect } from 'solid-js'
 
 const Welcome = () => {
 	createEffect(() => {
@@ -27,8 +27,7 @@ const Welcome = () => {
 						href="/login"
 						className="inline-flex items-center mt-5 p-2 px-3 rounded bg-green-700 hover:bg-green-900 text-gray-100"
 						>
-						<div className="mr-2">Continue</div>
-						<img className="invert" src={iconArrowRight} alt="arrow-right" />
+						Sign in
 					</Link>
 
 					<a href="//github.com/bramaudi/noter" target="_blank">

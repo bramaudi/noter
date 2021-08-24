@@ -3,6 +3,9 @@ import supabase, { auth } from '../services/supabase'
 import { encrypt, decrypt } from '../services/encryption'
 
 const now = toIsoString(new Date())
+const t = new Date();
+t.setSeconds(t.getSeconds() + 10)
+
 export const structure = {
 	id: 0,
 	title: '',
@@ -10,7 +13,7 @@ export const structure = {
 	tags: [],
 	color: '#fff',
 	created_at: now,
-	updated_at: now,
+	updated_at: toIsoString(t),
 	user_id: auth?.id || ''
 }
 

@@ -12,6 +12,9 @@ export default defineConfig({
     solidPlugin(),
     VitePWA()
   ],
+  server: {
+    host: '0.0.0.0'
+  },
   build: {
     target: "esnext",
     polyfillDynamicImport: false,
