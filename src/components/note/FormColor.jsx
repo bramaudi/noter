@@ -36,9 +36,10 @@ const FormColor = (props = propsTypes) => {
 			<For each={colorOptions}>
 				{color => (
 					<span
+						tabIndex="0"
 						onClick={e => colorSelect(e, setFormData)}
 						className={color}
-						className="cursor-pointer inline-block w-6 h-6 mr-2 mb-0 rounded-md border border-gray-200 hover:border-gray-500"
+						className="cursor-pointer inline-block w-6 h-6 mr-2 mb-0 rounded-md border focus:ring focus:outline-none border-gray-200 hover:border-gray-500"
 					></span>
 				)}
 			</For>

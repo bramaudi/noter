@@ -6,7 +6,6 @@ const propsTypes = {
 }
 
 const FormTextarea = (props = propsTypes) => {
-	const refs = { textarea: null }
 	const [formData, setFormData] = props.signal
 
 	/**
@@ -29,13 +28,9 @@ const FormTextarea = (props = propsTypes) => {
 		}
 	}
 
-	onMount(() => {
-		refs.textarea.focus()
-	})
-
 	return (
 		<textarea
-			ref={refs.textarea}
+			tabIndex="2"
 			onKeyDown={keepIndentation}
 			onInput={e => setFormData(n => ({...n, body: e.target.value}))}
 			className="block w-full my-2 p-2 px-3 border-2 rounded outline-none focus:ring-0 focus:border-blue-500"
