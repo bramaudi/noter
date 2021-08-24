@@ -1,6 +1,6 @@
 import { onMount, createEffect, onCleanup, createSignal } from 'solid-js'
 // Utilities
-import notesModel from '../../models/notes'
+import { notesRemove } from '../../models/notes'
 import { useNote } from '../../store/NoteContext'
 import { invertToBW } from '../../helper/style'
 import { encodeHTMLEntities, nl2br } from '../../helper/string'
@@ -34,7 +34,7 @@ const NoteRead = (props = propsTypes) => {
 		try {
 			setNote('list', n => n.filter(x => x.id !== note.single.id))
 			navigateBack()
-			await notesModel.remove(note.single.id)
+			await notesRemove(note.single.id)
 		} catch (error) {
 			alert(error)
 		}

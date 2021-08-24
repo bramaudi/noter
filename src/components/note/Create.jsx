@@ -1,6 +1,6 @@
 import { onMount, createEffect, onCleanup, createSignal } from "solid-js"
 import { useNote } from "../../store/NoteContext"
-import notesModel from '../../models/notes'
+import { notesCreate, notesFormat, notesOrder } from '../../models/notes'
 // Components
 import FormNav from "./FormNav"
 import FormColor from "./FormColor"
@@ -18,7 +18,7 @@ const NoteCreate = (props = propsTypes) => {
 	const {scrollY, setScrollY, setRoute} = props
 	const [warnOnExit, setWarnOnExit] = createSignal(false)
 	const [modal, setModal] = createSignal(false)
-	const [formData, setFormData] = createSignal(notesModel.structure)
+	const [formData, setFormData] = createSignal(notesFormat)
 	const [, setNote] = useNote()
 	const formDataRef = formData()
 
@@ -50,12 +50,12 @@ const NoteCreate = (props = propsTypes) => {
 			// generate time-based id
 			formData().id = Date.now()
 			// append latest added note to current local notes
-			setNote('list', n => [...n, formData()].sort(notesModel.order))
+			setNote('list', n => [...n, formData()].sort(notesOrder))
 			// navigate back & scroll to bottom
 			setRoute('notes')
 			setScrollY(x => ({...x, notes: document.body.scrollHeight}))
 			// store new note to server
-			const { error } = await notesModel.store(formData())
+			const { error } = await notesCreate(formData())
 			if (error) alert(error.message)
 		}
 		catch (error) {

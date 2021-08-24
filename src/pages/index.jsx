@@ -4,7 +4,7 @@ import {
 } from "solid-js"
 // Services
 import auth from '../services/auth'
-import notesModel from '../models/notes'
+import { notesDecrypt, notesFetchAll } from '../models/notes'
 import supabase from "../services/supabase"
 import { useNote } from "../store/NoteContext"
 // Components
@@ -24,7 +24,7 @@ const Home = () => {
 		notes: 0,
 		read: 0
 	})	
-	const fetchNotes = async ({ lastId, limit }) => await notesModel.index(lastId, limit)
+	const fetchNotes = async ({ lastId, limit }) => await notesFetchAll(lastId, limit)
 	const [route, setRoute] = createSignal('notes')
 	const [note, setNote] = useNote()
 	const [loading, setLoading] = createSignal(false)
@@ -47,8 +47,8 @@ const Home = () => {
 		window.addEventListener('scroll', saveScroll)
 		setLoading(true)
 		try {
-			const { data } = await fetchNotes({ lastId: 0, limit: 1000 })
-			setNote('list', data.map(notesModel.decryptNote))
+			const { data } = await fetchNotes({ lastId: 0, limit: 50 })
+			setNote('list', data.map(notesDecrypt))
 		} catch (error) {
 			setFailed(true)
 		}

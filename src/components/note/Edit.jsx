@@ -1,7 +1,7 @@
 import { onMount, createEffect, onCleanup, createSignal } from "solid-js"
 import { toIsoString } from "../../helper/date"
 import { useNote } from "../../store/NoteContext"
-import notesModel from '../../models/notes'
+import { notesOrder, notesUpdate } from '../../models/notes'
 // Components
 import FormNav from "./FormNav"
 import FormColor from "./FormColor"
@@ -52,11 +52,11 @@ const NoteEdit = (props = propsTypes) => {
 			setNote('list', n => {
 				return n
 					.map(x => x.id == formData().id ? formData() : x)
-					.sort(notesModel.order)
+					.sort(notesOrder)
 			})
-			navigateBack()
+			navigateBack(true)
 			// update note to server
-			const { error } = await notesModel.update(formData())
+			const { error } = await notesUpdate(formData())
 			if (error) alert(error.message)
 		}
 		catch (error) {

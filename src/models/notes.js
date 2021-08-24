@@ -6,7 +6,7 @@ const now = toIsoString(new Date())
 const t = new Date();
 t.setSeconds(t.getSeconds() + 10)
 
-export const structure = {
+export const notesFormat = {
 	id: 0,
 	title: '',
 	body: '',
@@ -20,16 +20,16 @@ export const structure = {
 /**
  * Order notes[] by updated_at descending
  */
-const order = (a, b) => {
+export const notesOrder = (a, b) => {
 	return new Date(b.updated_at) - new Date(a.updated_at)
 }
 
 /**
  * Decrypt title / body of note
- * @param {structure} note Encrypted note
- * @returns {structure} Decrypted note
+ * @param {notesFormat} note Encrypted note
+ * @returns {notesFormat} Decrypted note
  */
-const decryptNote = (note) => {
+export const notesDecrypt = (note) => {
 	const title = note.title ? decrypt(note.title, auth.id) : ''
 	const body = note.body ? decrypt(note.body, auth.id) : ''
 	return {...note, title, body}
@@ -41,7 +41,7 @@ const decryptNote = (note) => {
  * @param {Number} limit Number of notes
  * @returns {Promise}
  */
-const index = async (lastId = 0, limit = 10) => {
+export const notesFetchAll = async (lastId = 0, limit = 10) => {
 	return await supabase
 		.from('notes')
 		.select()
@@ -56,7 +56,7 @@ const index = async (lastId = 0, limit = 10) => {
  * @param {Number} id Note's id
  * @returns {Promise}
  */
-const read = async (id) => {
+export const notesFetchByID = async (id) => {
 	return await supabase
 		.from('notes')
 		.select()
@@ -66,12 +66,12 @@ const read = async (id) => {
 
 /**
  * Store new note
- * @param {structure} data Note
+ * @param {notesFormat} data Note
  * @returns {Promise}
  */
-const store = async (data) => {
+export const notesCreate = async (data) => {
 	const noteObj = {
-		...structure,
+		...notesFormat,
 		...data,
 		title: (data.title !== '') ? encrypt(data.title, auth.id) : '',
 		body: (data.body !== '') ? encrypt(data.body, auth.id) : '',
@@ -83,12 +83,12 @@ const store = async (data) => {
 
 /**
  * Update note
- * @param {structure} data Note
+ * @param {notesFormat} data Note
  * @returns {Promise}
  */
-const update = async (data) => {
+export const notesUpdate = async (data) => {
 	const noteObj = {
-		...structure,
+		...notesFormat,
 		...data,
 		title: (data.title !== '') ? encrypt(data.title, auth.id) : '',
 		body: (data.body !== '') ? encrypt(data.body, auth.id) : '',
@@ -104,20 +104,9 @@ const update = async (data) => {
  * @param {Number} id Note's id
  * @returns 
  */
-const remove = async (id) => {
+export const notesRemove = async (id) => {
 	return await supabase
 		.from('notes')
 		.delete()
 		.eq('id', id)
-}
-
-export default {
-	structure,
-	order,
-	decryptNote,
-	index,
-	read,
-	store,
-	update,
-	remove
 }

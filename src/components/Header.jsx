@@ -1,7 +1,7 @@
 import { createEffect, createSignal, Show } from 'solid-js'
 // Services
 import auth, { logout } from '../services/auth'
-import notesModel from '../models/notes'
+import { notesDecrypt, notesFetchAll } from '../models/notes'
 // Components
 import iconCheck from '../assets/icons/check.svg'
 import iconRefresh from '../assets/icons/refresh-cw.svg'
@@ -53,8 +53,8 @@ const Header = () => {
 		setSpin(true) // start spin
 
 		try {
-			const { data } = await notesModel.index()
-			setNote('list', data.map(notesModel.decryptNote))
+			const { data } = await notesFetchAll()
+			setNote('list', data.map(notesDecrypt))
 			// temporarily swap with check icon
 			refs.refreshIcon.setAttribute('src', iconCheck)
 			setTimeout(() => {
