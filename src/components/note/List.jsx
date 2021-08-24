@@ -95,7 +95,7 @@ const NoteList = (props = propsTypes) => {
 							</div>
 							<div
 								className={`${autoTitleSize(item.body)}`}
-								innerHTML={nl2br(encodeHTMLEntities(truncateText(item.body)))}
+								innerHTML={nl2br(encodeHTMLEntities(truncateText(item.body, 300, false)))}
 							></div>
 						</Show>
 						{/* Missing title or body  */}
@@ -104,7 +104,7 @@ const NoteList = (props = propsTypes) => {
 								className={`${autoTitleSize(item.title || item.body)}`}
 								innerHTML={
 									item.body !== ''
-										? nl2br(encodeHTMLEntities(truncateText(item.body)))
+										? nl2br(encodeHTMLEntities(truncateText(item.body, 300, false)))
 										: truncateText(item.title, 60, false)
 								}
 							></div>

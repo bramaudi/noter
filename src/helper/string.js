@@ -1,5 +1,7 @@
 export const nl2br = (str = '') => {
-	return str.replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '<br />')
+	var breakTag = '<br />';
+  var replaceStr = '$1'+ breakTag;
+  return (str + '').replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, replaceStr);
 }
 
 export const truncateText = ( str = '', limit = 300, useWordBoundary = true ) => {
