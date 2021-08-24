@@ -1,6 +1,6 @@
 import { NoteProvider } from './store/NoteContext'
-import { registerSW } from 'virtual:pwa-register'
-import { onMount, onCleanup } from 'solid-js';
+import { onCleanup } from 'solid-js';
+import ReloadPrompt from './components/ReloadPrompt';
 
 function App({ Routes }) {
   /**
@@ -18,25 +18,17 @@ function App({ Routes }) {
     }
   }
 
-  onMount(() => {
-		window.addEventListener('keydown', handleShiftFocus)
-  
-    if (typeof window !== 'undefined') {
-      registerSW({
-        onOfflineReady() {
-          console.log('App ready to use offline');
-        }
-      })
-    }
-  })
   onCleanup(() => {
 		window.removeEventListener('keydown', handleShiftFocus)
   })
 
   return (
-    <NoteProvider>
-      <Routes />
-    </NoteProvider>
+    <>
+      <ReloadPrompt />
+      <NoteProvider>
+        <Routes />
+      </NoteProvider>
+    </>
   )
 }
 
