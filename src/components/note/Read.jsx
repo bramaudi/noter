@@ -76,20 +76,16 @@ const NoteRead = (props = propsTypes) => {
 		window.scrollTo(window, scrollY().read)
 		window.addEventListener('keydown', navigateEditEvent)
 		window.addEventListener('keydown', navigateDeleteEvent)
+		window.addEventListener('keydown', navigateEscapeEvent)
 	})
 	createEffect(() => {
-		// prevent conflict key binding event when modal open
+		// prevent escape key event conflict
 		if (modal()) {
 			window.removeEventListener('keydown', navigateEscapeEvent)
-			window.removeEventListener('keydown', navigateEditEvent)
+			refs.modalDeleteBtn.focus()
 		}
 		else {
 			window.addEventListener('keydown', navigateEscapeEvent)
-			window.addEventListener('keydown', navigateEditEvent)
-		}
-
-		if (modal()) {
-			refs.modalDeleteBtn.focus()
 		}
 	})
 	onCleanup(() => {
@@ -100,7 +96,7 @@ const NoteRead = (props = propsTypes) => {
 	
 	return (
 		<div className="p-3 mx-auto min-h-screen max-w-xl">
-			<Modal show={modal} onClose={() => setModal(false)}>
+			<Modal signal={[modal, setModal]}>
 				<div className="p-2">Delete this note?</div>
 				<div className="p-2 flex items-center">
 					<button

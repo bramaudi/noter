@@ -1,4 +1,4 @@
-import { onMount, onCleanup, createSignal } from "solid-js"
+import { onMount, createEffect, onCleanup, createSignal } from "solid-js"
 import { toIsoString } from "../../helper/date"
 import { useNote } from "../../store/NoteContext"
 import notesModel from '../../models/notes'
@@ -7,6 +7,7 @@ import FormNav from "./FormNav"
 import FormColor from "./FormColor"
 import FormTags from "./FormTags"
 import FormTextarea from "./FormTextarea"
+import FormLeaveConfirm from "./FormLeaveConfirm"
 
 const propsTypes = {
 	setRoute: () => null,
@@ -15,8 +16,22 @@ const propsTypes = {
 const NoteEdit = (props = propsTypes) => {
 	const {setRoute} = props
 	const [note, setNote] = useNote()
+	const [warnOnExit, setWarnOnExit] = createSignal(false)
+	const [modal, setModal] = createSignal(false)
 	const [formData, setFormData] = createSignal(note.single)
+	const formDataRef = formData()
 
+	/**
+	 * Navigate back to notes list
+	 */
+	 const navigateBack = (forceNavigate = false) => {
+		if (warnOnExit() && !forceNavigate) {
+			setModal(true)
+			return
+		}
+
+		setRoute('notes')
+	}
 	/**
 	 * Submit update note
 	 * @param {Event} e 
@@ -25,7 +40,8 @@ const NoteEdit = (props = propsTypes) => {
 		e.preventDefault()
 		// if nothing changes then go back
 		if (JSON.stringify(formData()) === JSON.stringify(note.single)) {
-			return setRoute('read')
+			navigateBack()
+			return
 		}
 
 		try {
@@ -38,8 +54,7 @@ const NoteEdit = (props = propsTypes) => {
 					.map(x => x.id == formData().id ? formData() : x)
 					.sort(notesModel.order)
 			})
-			// navigate back
-			setRoute('read')
+			navigateBack()
 			// update note to server
 			const { error } = await notesModel.update(formData())
 			if (error) alert(error.message)
@@ -54,11 +69,23 @@ const NoteEdit = (props = propsTypes) => {
 	 * @param {KeyboardEvent} event 
 	 */
 	 const navigateEscapeEvent = (event) => {
-		if (event.key === 'Escape') setRoute('read')
+		if (event.key === 'Escape') navigateBack()
+	}
+	/**
+	 * Warn user before exit to confirm saving note
+	 */
+	 const warnWhenClose = () => {
+		const formTouched = JSON.stringify(formData()) !== JSON.stringify(formDataRef)
+		setWarnOnExit(!!formTouched)
 	}
 
 	onMount(() => {
 		window.addEventListener('keydown', navigateEscapeEvent)
+	})
+	createEffect(() => {
+		modal()
+			? window.removeEventListener('keydown', navigateEscapeEvent)
+			: window.addEventListener('keydown', navigateEscapeEvent)
 	})
 	onCleanup(() => {
 		window.removeEventListener('keydown', navigateEscapeEvent)
@@ -66,10 +93,14 @@ const NoteEdit = (props = propsTypes) => {
 	
 	return (
 		<div className="p-3 mx-auto max-w-xl">
-			<form onSubmit={submitEditNote}>
+			<FormLeaveConfirm
+				signal={[modal, setModal]}
+				onConfirm={() => navigateBack(true)}
+			/>
+			<form onSubmit={submitEditNote} onInput={warnWhenClose}>
 				<FormNav
 					signal={[formData, setFormData]}
-					onBack={() => setRoute('read')}
+					onBack={() => navigateBack()}
 				/>
 				<FormTextarea signal={[formData, setFormData]} />
 				<FormColor setFormData={setFormData} />
