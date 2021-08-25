@@ -77,10 +77,12 @@ const NoteRead = (props = propsTypes) => {
 	createEffect(() => {
 		// prevent escape key event conflict
 		if (modal()) {
+			window.removeEventListener('keydown', navigateEditEvent)
 			window.removeEventListener('keydown', navigateEscapeEvent)
 			refs.modalDeleteBtn.focus()
 		}
 		else {
+			window.addEventListener('keydown', navigateEditEvent)
 			window.addEventListener('keydown', navigateEscapeEvent)
 		}
 	})
