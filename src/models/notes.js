@@ -170,7 +170,9 @@ export const notesSync = async (pushLocal = false) => {
 	// TODO: add last_sync column date on user profile
 
 	// if local is empty -> fetch server
-	const localNotes = JSON.parse(LZString.decompress(localStorage.getItem('notes'))) || []
+	const localNotes = JSON.parse(
+		LZString.decompress(localStorage.getItem('notes')) || '[]'
+	) || []
 
 	if (!localNotes.length) {
 		return await notesFetchAll()

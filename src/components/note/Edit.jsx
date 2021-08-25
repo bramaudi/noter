@@ -8,7 +8,6 @@ import FormColor from "./FormColor"
 import FormTags from "./FormTags"
 import FormTextarea from "./FormTextarea"
 import FormLeaveConfirm from "./FormLeaveConfirm"
-import preventBack from "../../helper/prevent-back"
 
 const propsTypes = {
 	setRoute: () => null,
@@ -66,9 +65,12 @@ const NoteEdit = (props = propsTypes) => {
 		const formTouched = JSON.stringify(formData()) !== JSON.stringify(formDataRef)
 		setWarnOnExit(!!formTouched)
 	}
+	const handlePopState = () => {
+		navigateBack()
+	}
 
 	onMount(() => {
-		preventBack(navigateBack)
+		window.addEventListener('popstate', handlePopState)
 		window.addEventListener('keydown', navigateEscapeEvent)
 	})
 	createEffect(() => {
@@ -77,6 +79,7 @@ const NoteEdit = (props = propsTypes) => {
 			: window.addEventListener('keydown', navigateEscapeEvent)
 	})
 	onCleanup(() => {
+		window.removeEventListener('popstate', handlePopState)
 		window.removeEventListener('keydown', navigateEscapeEvent)
 	})
 	

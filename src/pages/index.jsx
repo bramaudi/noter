@@ -37,6 +37,16 @@ const Home = () => {
 			setScrollY(x => ({...x, notes: window.scrollY}))
 		}
 	}
+	// Prevent back if not on 'notes' route
+	// This to support native back hijacking in Create, Edit, Read
+	window.history.pushState(null, null, window.top.location.pathname + window.top.location.search);
+	const handlePopState = () => {
+		if (route() === 'notes') {
+			window.removeEventListener('popstate', handlePopState)
+			window.history.back()
+		}
+		window.history.pushState(null, null, window.top.location.pathname + window.top.location.search);
+	}
 
 	onMount(async () => {
 		if (!auth) {
@@ -56,6 +66,10 @@ const Home = () => {
 	createEffect(() => {
 		// restore scrollY
 		window.scrollTo(window, scrollY().notes)
+
+		route() === 'notes'
+			? window.removeEventListener('popstate', handlePopState)
+			: window.addEventListener('popstate', handlePopState)
 	})
 	onCleanup(() => {
 		window.removeEventListener('scroll', saveScroll)
