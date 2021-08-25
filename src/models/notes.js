@@ -9,7 +9,7 @@ export const notesFormat = {
 	title: '',
 	body: '',
 	tags: [],
-	color: '#fff',
+	color: null,
 	created_at: now,
 	updated_at: now,
 	user_id: auth?.id || ''

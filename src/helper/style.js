@@ -13,6 +13,7 @@ const rgbToHex = (r, g, b) => '#' + [r, g, b].map(x => {
 }).join('')
 
 const hexToRgbArray = (hex) => {
+	hex = hex || '#fff'
 	if (hex.slice(0, 1) === '#') hex = hex.slice(1);
 	if (!/^(?:[0-9a-f]{3}){1,2}$/i.test(hex)) throw new Error(`Invalid HEX color: "${hex}"`);
 	// normalize / convert 3-chars hex to 6-chars.
