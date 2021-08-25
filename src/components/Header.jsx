@@ -2,7 +2,7 @@ import { createEffect, createSignal, Show } from 'solid-js'
 import { createStore } from 'solid-js/store'
 // Services
 import auth, { logout } from '../services/auth'
-import { notesDecrypt, notesFetchAll, notesSync } from '../models/notes'
+import { notesDecompress, notesFetchAll, notesSync } from '../models/notes'
 // Components
 import iconCheck from '../assets/icons/check.svg'
 import iconUploadCloud from '../assets/icons/upload-cloud.svg'
@@ -60,7 +60,7 @@ const Header = () => {
 
 		try {
 			const {data, error} = await notesFetchAll()
-			setNote('list', data.map(notesDecrypt))
+			setNote('list', data.map(notesDecompress))
 			// temporarily swap with check icon
 			refs.syncIcon.setAttribute('src', iconCheck)
 			setTimeout(() => {
@@ -88,7 +88,7 @@ const Header = () => {
 
 		try {
 			const {data, error} = await notesSync(true)
-			setNote('list', data.map(notesDecrypt))
+			setNote('list', data.map(notesDecompress))
 			// temporarily swap with check icon
 			refs.backupIcon.setAttribute('src', iconCheck)
 			setTimeout(() => {
@@ -124,7 +124,7 @@ const Header = () => {
 				{/* Refresh Button */}
 				<div className="ml-auto">
 					<Tooltip text="Sync" position="bottom">
-						<button aria-label="Sync" onClick={() => syncNotes()} class="relative flex items-center rounded-full focus:ring focus:outline-none">
+						<button aria-label="Sync" onClick={() => syncNotes()} class="relative flex items-center rounded-full">
 							<img
 								ref={refs.syncIcon}
 								class="w-5 h-5 rounded"
@@ -138,7 +138,7 @@ const Header = () => {
 				{/* Backup Button */}
 				<div className="ml-5">
 					<Tooltip text="Backup" position="bottom">
-						<button aria-label="Backup" onClick={() => backupNotes()} class="relative flex items-center rounded-full focus:ring focus:outline-none">
+						<button aria-label="Backup" onClick={() => backupNotes()} class="relative flex items-center rounded-full">
 							<img
 								ref={refs.backupIcon}
 								class="w-5 h-5 rounded"
