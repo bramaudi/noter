@@ -77,51 +77,56 @@ const NoteList = (props = propsTypes) => {
 				className={styles.container}
 				columnClassName={styles.column}
 			>
-				{note.list.map((item, index) => (
-					<div
-						tabIndex="0"
-						id={`note_${index}`}
-						onClick={() => readNote(item)}
-						onMouseOver={e => e.target.focus()}
-						style={{ background: item.color, color: invertToBW(item.color) }}
-					>
-						{/* Both title & body is available */}
-						<Show when={item.title !== '' && item.body !== ''}>
-							<div
-								className={`${autoTitleSize(item.title)}`}
-								className="font-medium"
-							>
-								{truncateText(item.title, 60, false)}
+				{note.list.map((item, index) => {
+					const bodylength = window.innerWidth > 768 ? 300 : 150;
+					const noteTitle = truncateText(item.title, 60, false)
+					const noteBody = truncateText(item.body, bodylength, false)
+					return (
+						<div
+							tabIndex="0"
+							id={`note_${index}`}
+							onClick={() => readNote(item)}
+							onMouseOver={e => e.target.focus()}
+							style={{ background: item.color, color: invertToBW(item.color) }}
+						>
+							{/* Both title & body is available */}
+							<Show when={item.title !== '' && item.body !== ''}>
+								<div
+									className={`${autoTitleSize(item.title)}`}
+									className="font-medium"
+								>
+									{noteTitle}
+								</div>
+								<div
+									className={`${autoTitleSize(item.body)}`}
+									innerHTML={nl2br(encodeHTMLEntities(noteBody))}
+								></div>
+							</Show>
+							{/* Missing title or body  */}
+							<Show when={item.title === '' || item.body === ''}>
+								<div
+									className={`${autoTitleSize(item.title || item.body)}`}
+									innerHTML={
+										item.body !== ''
+											? nl2br(encodeHTMLEntities(noteBody))
+											: noteTitle
+									}
+								></div>
+							</Show>
+							{/* Tags & Date */}
+							<div className="mt-2 text-xs flex items-center opacity-70">
+								<div className="flex-1 whitespace-nowrap overflow-hidden overflow-ellipsis">
+									<For each={item.tags}>
+										{tag => (
+											<span className="mr-2">#{tag}</span>
+										)}
+									</For>
+								</div>
+								<div className="ml-2 whitespace-nowrap text-right">{formatDate(item.created_at)}</div>
 							</div>
-							<div
-								className={`${autoTitleSize(item.body)}`}
-								innerHTML={nl2br(encodeHTMLEntities(truncateText(item.body, 300, false)))}
-							></div>
-						</Show>
-						{/* Missing title or body  */}
-						<Show when={item.title === '' || item.body === ''}>
-							<div
-								className={`${autoTitleSize(item.title || item.body)}`}
-								innerHTML={
-									item.body !== ''
-										? nl2br(encodeHTMLEntities(truncateText(item.body, 300, false)))
-										: truncateText(item.title, 60, false)
-								}
-							></div>
-						</Show>
-						{/* Tags & Date */}
-						<div className="mt-2 text-xs flex items-center opacity-70">
-							<div className="flex-1 whitespace-nowrap overflow-hidden overflow-ellipsis">
-								<For each={item.tags}>
-									{tag => (
-										<span className="mr-2">#{tag}</span>
-									)}
-								</For>
-							</div>
-							<div className="ml-2 whitespace-nowrap text-right">{formatDate(item.created_at)}</div>
 						</div>
-					</div>
-				))}
+					)
+				})}
 			</Masonry>
 		</div>
 	)
