@@ -1,9 +1,9 @@
 import { onMount, createEffect, onCleanup, createSignal } from 'solid-js'
 // Utilities
-import notesModel from '../../models/notes'
+import { notesRemove } from '../../models/notes'
 import { useNote } from '../../store/NoteContext'
 import { invertToBW } from '../../helper/style'
-import { encodeHTMLEntities, nl2br } from '../../helper/string'
+import { parseURL, nl2br } from '../../helper/string'
 // Components
 import iconArrowRight from '../../assets/icons/arrow-right.svg'
 import iconTrash from '../../assets/icons/trash.svg'
@@ -31,13 +31,9 @@ const NoteRead = (props = propsTypes) => {
 	}
 	// Proccess note deletion
 	const commitDelete = async () => {
-		try {
-			setNote('list', n => n.filter(x => x.id !== note.single.id))
-			navigateBack()
-			await notesModel.remove(note.single.id)
-		} catch (error) {
-			alert(error)
-		}
+		setNote('list', n => n.filter(x => x.id !== note.single.id))
+		navigateBack()
+		await notesRemove(note.single.id)
 	}
 	// Navigate to edit section >>
 	const navigateEdit = () => {
@@ -94,6 +90,13 @@ const NoteRead = (props = propsTypes) => {
 		window.removeEventListener('keydown', navigateDeleteEvent)
 	})
 	
+	const noteBody = (str ='') => {
+		str = str.replace(/</g, '&lt;')
+		str = nl2br(str)
+		str = parseURL(str)
+		return str
+	}
+
 	return (
 		<div className="p-3 mx-auto min-h-screen max-w-xl">
 			<Modal signal={[modal, setModal]}>
@@ -142,7 +145,7 @@ const NoteRead = (props = propsTypes) => {
 				style={{ background: note.single.color, color: invertToBW(note.single.color) }}
 			>
 				<div className="font-semibold" className={note.single.title && 'mb-3'}>{note.single.title}</div>
-				<div className="break-words" innerHTML={nl2br(encodeHTMLEntities(note.single.body))}></div>
+				<div className="break-words" innerHTML={noteBody(note.single.body)}></div>
 			</div>
 		</div>
 	)

@@ -1,9 +1,11 @@
 import { createEffect, createSignal, Show } from 'solid-js'
+import { createStore } from 'solid-js/store'
 // Services
 import auth, { logout } from '../services/auth'
-import notesModel from '../models/notes'
+import { notesDecrypt, notesFetchAll, notesSync } from '../models/notes'
 // Components
 import iconCheck from '../assets/icons/check.svg'
+import iconUploadCloud from '../assets/icons/upload-cloud.svg'
 import iconRefresh from '../assets/icons/refresh-cw.svg'
 import iconLogOut from '../assets/icons/log-out.svg'
 import iconLoader from '../assets/icons/loader.svg'
@@ -12,12 +14,16 @@ import { useNote } from '../store/NoteContext'
 
 const Header = () => {
 	const refs = {
-		refreshIcon: null,
+		syncIcon: null,
+		backupIcon: null,
 		logoutIcon: null,
 	}
 	const [, setNote] = useNote()
 	const [modalProfile, setModalProfile] = createSignal(false)
-	const [spin, setSpin] = createSignal(false)
+	const [animate, setAnimate] = createStore({
+		refresh: false,
+		backup: false,
+	})
 
 	/**
 	 * Close modal on outside profile popup menu
@@ -47,25 +53,60 @@ const Header = () => {
 		window.location.href = '/'
 	}
 	/**
-	 * Refresh / Sync notes
+	 * Pull cloud notes to local
 	 */
-	const refreshNotes = async () => {
-		setSpin(true) // start spin
+	const syncNotes = async () => {
+		setAnimate('sync', true) // start spin
 
 		try {
-			const { data } = await notesModel.index()
-			setNote('list', data.map(notesModel.decryptNote))
+			const {data, error} = await notesFetchAll()
+			setNote('list', data.map(notesDecrypt))
 			// temporarily swap with check icon
-			refs.refreshIcon.setAttribute('src', iconCheck)
+			refs.syncIcon.setAttribute('src', iconCheck)
 			setTimeout(() => {
-				refs.refreshIcon.setAttribute('src', iconRefresh)
-			}, 2000)
+				refs.syncIcon.setAttribute('src', iconRefresh)
+			}, 1000)
+
+			if (error) {
+				alert(error.message)
+				refs.syncIcon.setAttribute('src', iconRefresh)
+			}
 		} catch (error) {
-			alert(error)
-			refs.refreshIcon.setAttribute('src', iconRefresh)
+			if (error) {
+				alert(error)
+				refs.syncIcon.setAttribute('src', iconRefresh)
+			}
 		}
 
-		setSpin(false) // stop spin
+		setAnimate('sync', false) // stop spin
+	}
+	/**
+	 * Push local notes to cloud
+	 */
+	const backupNotes = async () => {
+		setAnimate('backup', true) // start spin
+
+		try {
+			const {data, error} = await notesSync(true)
+			setNote('list', data.map(notesDecrypt))
+			// temporarily swap with check icon
+			refs.backupIcon.setAttribute('src', iconCheck)
+			setTimeout(() => {
+				refs.backupIcon.setAttribute('src', iconUploadCloud)
+			}, 1000)
+
+			if (error) {
+				alert(error.message)
+				refs.backupIcon.setAttribute('src', iconUploadCloud)
+			}
+		} catch (error) {
+			if (error) {
+				alert(error)
+				refs.backupIcon.setAttribute('src', iconUploadCloud)
+			}
+		}
+
+		setAnimate('backup', false) // stop spin
 	}
 
 	createEffect(() => {
@@ -82,14 +123,28 @@ const Header = () => {
 			<Show when={auth}>
 				{/* Refresh Button */}
 				<div className="ml-auto">
-					<Tooltip text="Refresh" position="bottom">
-						<button aria-label="Refresh" onClick={() => refreshNotes()} class="relative flex items-center rounded-full focus:ring focus:outline-none">
+					<Tooltip text="Sync" position="bottom">
+						<button aria-label="Sync" onClick={() => syncNotes()} class="relative flex items-center rounded-full focus:ring focus:outline-none">
 							<img
-								ref={refs.refreshIcon}
+								ref={refs.syncIcon}
 								class="w-5 h-5 rounded"
-								className={spin() && 'animate-spin'}
+								className={animate.sync && 'animate-spin'}
 								src={iconRefresh}
 								alt="refresh"
+							/>
+						</button>
+					</Tooltip>
+				</div>
+				{/* Backup Button */}
+				<div className="ml-5">
+					<Tooltip text="Backup" position="bottom">
+						<button aria-label="Backup" onClick={() => backupNotes()} class="relative flex items-center rounded-full focus:ring focus:outline-none">
+							<img
+								ref={refs.backupIcon}
+								class="w-5 h-5 rounded"
+								className={animate.backup && 'animate-ping'}
+								src={iconUploadCloud}
+								alt="upload"
 							/>
 						</button>
 					</Tooltip>

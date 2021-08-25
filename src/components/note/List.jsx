@@ -1,6 +1,6 @@
 import { onMount, onCleanup, For, Show } from 'solid-js'
 import { formatDate } from '../../helper/date'
-import { structure } from '../../models/notes'
+import { notesFormat } from '../../models/notes'
 import { useNote } from '../../store/NoteContext'
 import { autoTitleSize, invertToBW } from "../../helper/style"
 import { encodeHTMLEntities, nl2br, truncateText } from '../../helper/string'
@@ -53,7 +53,7 @@ const NoteList = (props = propsTypes) => {
 	}
 	/**
 	 * Set note object & navigate to read section
-	 * @param {structure} note Decrypted note
+	 * @param {notesFormat} note Decrypted note
 	 */
 	const readNote = (note) => {
 		setNote(n => ({...n, single: note}))
@@ -78,7 +78,13 @@ const NoteList = (props = propsTypes) => {
 				columnClassName={styles.column}
 			>
 				{note.list.map((item, index) => (
-					<div tabIndex="0" id={`note_${index}`} onClick={() => readNote(item)} style={{ background: item.color, color: invertToBW(item.color) }}>
+					<div
+						tabIndex="0"
+						id={`note_${index}`}
+						onClick={() => readNote(item)}
+						onMouseOver={e => e.target.focus()}
+						style={{ background: item.color, color: invertToBW(item.color) }}
+					>
 						{/* Both title & body is available */}
 						<Show when={item.title !== '' && item.body !== ''}>
 							<div
@@ -89,7 +95,7 @@ const NoteList = (props = propsTypes) => {
 							</div>
 							<div
 								className={`${autoTitleSize(item.body)}`}
-								innerHTML={nl2br(encodeHTMLEntities(truncateText(item.body)))}
+								innerHTML={nl2br(encodeHTMLEntities(truncateText(item.body, 300, false)))}
 							></div>
 						</Show>
 						{/* Missing title or body  */}
@@ -98,7 +104,7 @@ const NoteList = (props = propsTypes) => {
 								className={`${autoTitleSize(item.title || item.body)}`}
 								innerHTML={
 									item.body !== ''
-										? nl2br(encodeHTMLEntities(truncateText(item.body)))
+										? nl2br(encodeHTMLEntities(truncateText(item.body, 300, false)))
 										: truncateText(item.title, 60, false)
 								}
 							></div>

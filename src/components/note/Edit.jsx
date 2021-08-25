@@ -1,7 +1,7 @@
 import { onMount, createEffect, onCleanup, createSignal } from "solid-js"
 import { toIsoString } from "../../helper/date"
 import { useNote } from "../../store/NoteContext"
-import notesModel from '../../models/notes'
+import { notesUpdate } from '../../models/notes'
 // Components
 import FormNav from "./FormNav"
 import FormColor from "./FormColor"
@@ -44,24 +44,11 @@ const NoteEdit = (props = propsTypes) => {
 			return
 		}
 
-		try {
-			// update modified date
-			formData().updated_at = toIsoString(new Date())
-			// add changes to local state first
-			setNote('single', formData())
-			setNote('list', n => {
-				return n
-					.map(x => x.id == formData().id ? formData() : x)
-					.sort(notesModel.order)
-			})
-			navigateBack()
-			// update note to server
-			const { error } = await notesModel.update(formData())
-			if (error) alert(error.message)
-		}
-		catch (error) {
-			alert(error)
-		}
+		formData().updated_at = toIsoString(new Date())
+		setNote('single', formData())
+		setNote('list', n => n.map(x => x.id == formData().id ? formData() : x))
+		navigateBack(true)
+		await notesUpdate(formData())
 	}
 	
 	/**

@@ -4,7 +4,7 @@ import {
 } from "solid-js"
 // Services
 import auth from '../services/auth'
-import notesModel from '../models/notes'
+import { notesDecrypt, notesSync } from '../models/notes'
 import supabase from "../services/supabase"
 import { useNote } from "../store/NoteContext"
 // Components
@@ -13,22 +13,21 @@ import FloatActionButton from '../components/FloatActionButton'
 import Welcome from '../components/Welcome'
 import Loading from "../components/Loading"
 import Empty from "../components/Empty"
-import Failed from "../components/Failed"
 import NoteList from "../components/note/List"
 import NoteCreate from "../components/note/Create"
 import NoteEdit from "../components/note/Edit"
 import NoteRead from "../components/note/Read"
+import { useNavigate } from "solid-app-router"
 
 const Home = () => {
 	const [scrollY, setScrollY] = createSignal({
 		notes: 0,
 		read: 0
 	})	
-	const fetchNotes = async ({ lastId, limit }) => await notesModel.index(lastId, limit)
+	const navigate = useNavigate()
 	const [route, setRoute] = createSignal('notes')
 	const [note, setNote] = useNote()
 	const [loading, setLoading] = createSignal(false)
-	const [failed, setFailed] = createSignal(false)
 
 	/**
 	 * Remember current scroll Y pos
@@ -40,18 +39,18 @@ const Home = () => {
 	}
 
 	onMount(async () => {
-		!auth && supabase.auth.onAuthStateChange(() => {
-			window.location.reload()
-		})
+		if (!auth) {
+			supabase.auth.onAuthStateChange(() => {
+				window.location.reload()
+			})
+			navigate('/login')
+		}
 
 		window.addEventListener('scroll', saveScroll)
+
 		setLoading(true)
-		try {
-			const { data } = await fetchNotes({ lastId: 0, limit: 1000 })
-			setNote('list', data.map(notesModel.decryptNote))
-		} catch (error) {
-			setFailed(true)
-		}
+		const {data} = await notesSync()
+		setNote('list', data.map(notesDecrypt))
 		setLoading(false)
 	})
 	createEffect(() => {
@@ -69,11 +68,10 @@ const Home = () => {
 					<Match when={route() === 'notes'}>
 						<Header />
 						<Show when={loading()}><Loading /></Show>
-						<Show when={!loading() && !failed()}>
+						<Show when={!loading()}>
 							<Show when={!note.list.length}><Empty /></Show>
 							<NoteList setRoute={setRoute} />
 						</Show>
-						<Show when={failed()}><Failed /></Show>
 						<FloatActionButton onClick={() => setRoute('create')} />
 					</Match>
 					<Match when={route() === 'create'}>
