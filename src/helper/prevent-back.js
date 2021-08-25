@@ -26,6 +26,13 @@ const preventBack = (fn = null) => {
 				}
 		};
 
+		global.history.pushState(null, null, global.top.location.pathname + global.top.location.search);
+		global.onpopstate = function (e) {
+			e.preventDefault();
+			if (typeof fn === 'function') fn()
+			global.history.pushState(null, null, global.top.location.pathname + global.top.location.search);
+		}
+
 		global.onload = function () {
 				noBackPlease();
 
