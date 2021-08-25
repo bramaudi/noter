@@ -4,7 +4,7 @@ import {
 } from "solid-js"
 // Services
 import auth from '../services/auth'
-import { notesDecrypt, notesSync } from '../models/notes'
+import { notesDecompress, notesSync } from '../models/notes'
 import supabase from "../services/supabase"
 import { useNote } from "../store/NoteContext"
 // Components
@@ -60,7 +60,7 @@ const Home = () => {
 
 		setLoading(true)
 		const {data} = await notesSync()
-		setNote('list', data.map(notesDecrypt))
+		setNote('list', data.map(notesDecompress))
 		setLoading(false)
 	})
 	createEffect(() => {
