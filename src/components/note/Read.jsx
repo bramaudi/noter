@@ -10,6 +10,7 @@ import iconTrash from '../../assets/icons/trash.svg'
 import iconEdit from '../../assets/icons/edit-2.svg'
 import Tooltip from '../Tooltip'
 import Modal from '../Modal'
+import preventBack from '../../helper/prevent-back'
 
 const propsTypes = {
 	scrollY: () => ({ notes: 0, read: 0 }),
@@ -69,6 +70,7 @@ const NoteRead = (props = propsTypes) => {
 	
 	onMount(() => {
 		// restore scrollY
+		preventBack(navigateBack)
 		window.scrollTo(window, scrollY().read)
 		window.addEventListener('keydown', navigateEditEvent)
 		window.addEventListener('keydown', navigateDeleteEvent)

@@ -7,6 +7,7 @@ import FormColor from "./FormColor"
 import FormTags from "./FormTags"
 import FormTextarea from "./FormTextarea"
 import FormLeaveConfirm from "./FormLeaveConfirm"
+import preventBack from "../../helper/prevent-back"
 
 const propsTypes = {
 	scrollY: () => ({ notes: 0 }),
@@ -68,6 +69,7 @@ const NoteCreate = (props = propsTypes) => {
 	}
 	
 	onMount(() => {
+		preventBack(navigateBack)
 		window.addEventListener('keydown', navigateEscapeEvent)
 	})
 	createEffect(() => {

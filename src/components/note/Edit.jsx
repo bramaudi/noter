@@ -8,6 +8,7 @@ import FormColor from "./FormColor"
 import FormTags from "./FormTags"
 import FormTextarea from "./FormTextarea"
 import FormLeaveConfirm from "./FormLeaveConfirm"
+import preventBack from "../../helper/prevent-back"
 
 const propsTypes = {
 	setRoute: () => null,
@@ -30,7 +31,7 @@ const NoteEdit = (props = propsTypes) => {
 			return
 		}
 
-		setRoute('notes')
+		setRoute('read')
 	}
 	/**
 	 * Submit update note
@@ -67,6 +68,7 @@ const NoteEdit = (props = propsTypes) => {
 	}
 
 	onMount(() => {
+		preventBack(navigateBack)
 		window.addEventListener('keydown', navigateEscapeEvent)
 	})
 	createEffect(() => {
