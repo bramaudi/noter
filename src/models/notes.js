@@ -1,6 +1,7 @@
 import { toIsoString } from '../helper/date'
 import supabase, { auth } from '../services/supabase'
 import { encrypt, decrypt } from '../services/encryption'
+import LZString from '../helper/lz-string'
 
 const now = toIsoString(new Date())
 const t = new Date();
@@ -43,7 +44,7 @@ export const notesDecrypt = (note) => {
  */
 export const notesFetchAll = async (lastId = 0, limit = 10) => {
 	const getLocalNotes = () => {
-		const data = JSON.parse(localStorage.getItem('notes')) || []
+		const data = JSON.parse(LZString.decompress(localStorage.getItem('notes'))) || []
 		return data.sort(notesOrder)
 	}
 
@@ -56,7 +57,7 @@ export const notesFetchAll = async (lastId = 0, limit = 10) => {
 			.gt('id', lastId)
 			.limit(limit)
 
-		localStorage.setItem('notes', JSON.stringify(data))
+		localStorage.setItem('notes', LZString.compress(JSON.stringify(data)))
 
 		return {
 			data: getLocalNotes(),
@@ -83,10 +84,10 @@ export const notesCreate = async (data) => {
 		body: (data.body !== '') ? encrypt(data.body, auth.id) : '',
 	}
 	const updatedNotes = [
-		...(JSON.parse(localStorage.getItem('notes'))),
+		...(JSON.parse(LZString.decompress(localStorage.getItem('notes')))),
 		noteObj
 	]
-	localStorage.setItem('notes', JSON.stringify(updatedNotes))
+	localStorage.setItem('notes', LZString.compress(JSON.stringify(updatedNotes)))
 
 	try {
 		const {error} = await supabase
@@ -117,8 +118,8 @@ export const notesUpdate = async (data) => {
 		title: (data.title !== '') ? encrypt(data.title, auth.id) : '',
 		body: (data.body !== '') ? encrypt(data.body, auth.id) : '',
 	}
-	const updatedNotes = (JSON.parse(localStorage.getItem('notes'))).map(item => (item.id === noteObj.id) ? noteObj : item)
-	localStorage.setItem('notes', JSON.stringify(updatedNotes))
+	const updatedNotes = (JSON.parse(LZString.decompress(localStorage.getItem('notes')))).map(item => (item.id === noteObj.id) ? noteObj : item)
+	localStorage.setItem('notes', LZString.compress(JSON.stringify(updatedNotes)))
 
 	try {
 		const {error} = await supabase
@@ -144,8 +145,8 @@ export const notesUpdate = async (data) => {
  * @returns 
  */
 export const notesRemove = async (id) => {
-	const updatedNotes = JSON.parse(localStorage.getItem('notes')).filter(n => n.id !== id)
-	localStorage.setItem('notes', JSON.stringify(updatedNotes))
+	const updatedNotes = JSON.parse(LZString.decompress(localStorage.getItem('notes'))).filter(n => n.id !== id)
+	localStorage.setItem('notes', LZString.compress(JSON.stringify(updatedNotes)))
 
 	try {
 		const {error} = await supabase
@@ -169,7 +170,8 @@ export const notesSync = async (pushLocal = false) => {
 	// TODO: add last_sync column date on user profile
 
 	// if local is empty -> fetch server
-	const localNotes = JSON.parse(localStorage.getItem('notes')) || []
+	const localNotes = JSON.parse(LZString.decompress(localStorage.getItem('notes'))) || []
+
 	if (!localNotes.length) {
 		return await notesFetchAll()
 	}
