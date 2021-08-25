@@ -20,3 +20,8 @@ export const encodeHTMLEntities = (str = '') => {
     .replace(/\t/g, t => '&nbsp;&nbsp;&nbsp;&nbsp;') // 1 tab = 4 spaces
     // .replace(/\u0020/g, t => '&nbsp;') // encode spacebar
 }
+
+export const parseURL = str => {
+  var url_regex = /(\b(https?|):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+  return str.replace(url_regex, '<a class="text-blue-800" target="_blank" href="$1">$1</a>');
+}
