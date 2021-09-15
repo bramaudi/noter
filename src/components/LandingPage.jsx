@@ -34,24 +34,32 @@ const FeatureCheck = ({ tips, children }) => {
 }
 
 const LandingPage = () => {
+	// createEffect(() => {
+	// 	if (!auth) {
+	// 		 // full refresh after login
+	// 		supabase.auth.onAuthStateChange(() => {
+	// 			window.location.href = '/'
+	// 		})
+	// 	}
+	// })
 	const [dummy, setDummy] = createSignal([])
+
+	const randomDummy = (limit = 10) => {
+		return dummySet
+			.map((value) => ({ value, sort: Math.random() }))
+			.sort((a, b) => a.sort - b.sort)
+			.map(({ value }) => value)
+			.slice(0, limit)
+	}
 
 	const randomize = setInterval(() => {
 		setDummy(notesFetchAll())
 	}, 1500)
 
-	createEffect(() => {
-		if (!auth) {
-			 // full refresh after login
-			supabase.auth.onAuthStateChange(() => {
-				window.location.href = '/notes'
-			})
-		}
-	})
-
 	onMount(() => {
 		setDummy(notesFetchAll())
 	})
+
 	onCleanup(() => {
 		clearInterval(randomize)
 	})
@@ -105,7 +113,7 @@ const LandingPage = () => {
 					<div className="mt-2">Free open source simple taking note's app with cloud backup & sync, work offline and PWA installable.</div>
 					<div className="mt-5 flex items-center">
 						<Link
-							href="/notes"
+							href="/login"
 							className="p-2 px-3 rounded bg-green-700 hover:bg-green-900 text-gray-100"
 							>
 							Getting started

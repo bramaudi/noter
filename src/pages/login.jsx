@@ -1,6 +1,9 @@
-import { Link, useNavigate } from "solid-app-router"
+import { useNavigate } from "solid-app-router"
+import { onCleanup } from "solid-js"
+import { createEffect } from "solid-js"
 import { createSignal, onMount, Show } from "solid-js"
 import auth, { login } from "../services/auth"
+import supabase from "../services/supabase"
 
 const Login = () => {
 	const navigate = useNavigate()
@@ -22,9 +25,32 @@ const Login = () => {
 		const { error } = await login(provider)
 		if (error) return createAlert(error.message)
 	}
+	/**
+	 * Navigate back when Esc pressed
+	 * @param {KeyboardEvent} e 
+	 */
+	const handleEscape = (e) => {
+		if (e.key === 'Escape') {
+			history.back()
+		}
+	}
+
+	createEffect(() => {
+		if (!auth?.anonymous) {
+			navigate('/notes')
+		} else {
+			// full refresh after login
+			supabase.auth.onAuthStateChange(() => {
+				navigate('/notes')
+			})
+		}
+	})
 
 	onMount(() => {
-		if (auth) navigate('/', { replace: true })
+		window.addEventListener('keyup', handleEscape)
+	})
+	onCleanup(() => {
+		window.removeEventListener('keyup', handleEscape)
 	})
 	
 	return (
@@ -41,12 +67,12 @@ const Login = () => {
 					Continue with Github
 				</button>
 				<div className="mt-8 text-center">
-					<Link
-						href="/"
+					<button
+						onClick={() => history.back()}
 						className="inline-block mt-5 p-2 px-3 rounded border border-gray-400 text-gray-700"
 						>
 						Back
-					</Link>
+					</button>
 				</div>
 			</div>
 		</div>

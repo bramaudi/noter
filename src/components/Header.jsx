@@ -2,27 +2,29 @@ import { createEffect, createSignal, Show } from 'solid-js'
 import { createStore } from 'solid-js/store'
 // Services
 import auth, { logout } from '../services/auth'
-import { notesDecompress, notesFetchAll, notesSync } from '../models/notes'
+import { notesFetch, notesDecompress, notesOverwriteLocal } from '../models/notes'
 // Components
 import iconCheck from '../assets/icons/check.svg'
-import iconUploadCloud from '../assets/icons/upload-cloud.svg'
+import iconDownloadCloud from '../assets/icons/download-cloud.svg'
 import iconRefresh from '../assets/icons/refresh-cw.svg'
+import iconLogIn from '../assets/icons/log-in.svg'
 import iconLogOut from '../assets/icons/log-out.svg'
 import iconLoader from '../assets/icons/loader.svg'
 import Tooltip from './Tooltip'
 import { useNote } from '../store/NoteContext'
+import { Link } from 'solid-app-router'
 
 const Header = () => {
 	const refs = {
 		syncIcon: null,
-		backupIcon: null,
+		pullIcon: null,
 		logoutIcon: null,
 	}
 	const [, setNote] = useNote()
 	const [modalProfile, setModalProfile] = createSignal(false)
 	const [animate, setAnimate] = createStore({
 		refresh: false,
-		backup: false,
+		pull: false,
 	})
 
 	/**
@@ -58,55 +60,41 @@ const Header = () => {
 	const syncNotes = async () => {
 		setAnimate('sync', true) // start spin
 
-		try {
-			const {data, error} = await notesFetchAll()
-			setNote('list', data.map(notesDecompress))
-			// temporarily swap with check icon
-			refs.syncIcon.setAttribute('src', iconCheck)
-			setTimeout(() => {
-				refs.syncIcon.setAttribute('src', iconRefresh)
-			}, 1000)
+		const {data, error} = await notesFetch()
+		setNote('list', data.map(notesDecompress))
+		// temporarily swap with check icon
+		refs.syncIcon.setAttribute('src', iconCheck)
+		setTimeout(() => {
+			refs.syncIcon.setAttribute('src', iconRefresh)
+		}, 1000)
 
-			if (error) {
-				alert(error.message)
-				refs.syncIcon.setAttribute('src', iconRefresh)
-			}
-		} catch (error) {
-			if (error) {
-				alert(error)
-				refs.syncIcon.setAttribute('src', iconRefresh)
-			}
+		if (error) {
+			console.error(error);
+			refs.syncIcon.setAttribute('src', iconRefresh)
 		}
 
 		setAnimate('sync', false) // stop spin
 	}
 	/**
-	 * Push local notes to cloud
+	 * Pull and overwrite local notes
 	 */
-	const backupNotes = async () => {
-		setAnimate('backup', true) // start spin
+	const pullNotes = async () => {
+		setAnimate('pull', true) // start spin
 
-		try {
-			const {data, error} = await notesSync(true)
-			setNote('list', data.map(notesDecompress))
-			// temporarily swap with check icon
-			refs.backupIcon.setAttribute('src', iconCheck)
-			setTimeout(() => {
-				refs.backupIcon.setAttribute('src', iconUploadCloud)
-			}, 1000)
+		const {data, error} = await notesOverwriteLocal()
+		setNote('list', data)
+		// temporarily swap with check icon
+		refs.pullIcon.setAttribute('src', iconCheck)
+		setTimeout(() => {
+			refs.pullIcon.setAttribute('src', iconDownloadCloud)
+		}, 1000)
 
-			if (error) {
-				alert(error.message)
-				refs.backupIcon.setAttribute('src', iconUploadCloud)
-			}
-		} catch (error) {
-			if (error) {
-				alert(error)
-				refs.backupIcon.setAttribute('src', iconUploadCloud)
-			}
+		if (error) {
+			alert(error.message)
+			refs.pullIcon.setAttribute('src', iconDownloadCloud)
 		}
 
-		setAnimate('backup', false) // stop spin
+		setAnimate('pull', false) // stop spin
 	}
 
 	createEffect(() => {
@@ -117,39 +105,42 @@ const Header = () => {
 	})
 	
 	return (
-		<header class="flex items-center p-3 pb-0 -mb-1">
-			{/* Brand */}
-			<div className="text-3xl">Noter</div>
-			<Show when={auth}>
-				{/* Refresh Button */}
-				<div className="ml-auto">
-					<Tooltip text="Sync" position="bottom">
-						<button aria-label="Sync" onClick={() => syncNotes()} class="relative flex items-center rounded-full">
-							<img
-								ref={refs.syncIcon}
-								class="w-5 h-5 rounded"
-								className={animate.sync && 'animate-spin'}
-								src={iconRefresh}
-								alt="refresh"
-							/>
-						</button>
-					</Tooltip>
-				</div>
-				{/* Backup Button */}
-				<div className="ml-5">
-					<Tooltip text="Backup" position="bottom">
-						<button aria-label="Backup" onClick={() => backupNotes()} class="relative flex items-center rounded-full">
-							<img
-								ref={refs.backupIcon}
-								class="w-5 h-5 rounded"
-								className={animate.backup && 'animate-ping'}
-								src={iconUploadCloud}
-								alt="upload"
-							/>
-						</button>
-					</Tooltip>
-				</div>
-				{/* Profile Picture */}
+		<>
+			<header class="flex items-center p-3 pb-0 -mb-1">
+				{/* Brand */}
+				<div className="text-3xl">Noter</div>
+				<div className="ml-auto"></div>
+				<Show when={!auth.anonymous}>
+					{/* Refresh Button */}
+					<div className="ml-5">
+						<Tooltip text="Sync" position="bottom">
+							<button aria-label="Sync" onClick={() => syncNotes()} class="relative flex items-center rounded-full">
+								<img
+									ref={refs.syncIcon}
+									class="w-5 h-5 rounded"
+									className={animate.sync && 'animate-spin'}
+									src={iconRefresh}
+									alt="refresh"
+								/>
+							</button>
+						</Tooltip>
+					</div>
+					{/* Pull Button */}
+					<div className="ml-5">
+						<Tooltip text="Pull" position="bottom">
+							<button aria-label="Pull" onClick={() => pullNotes()} class="relative flex items-center rounded-full">
+								<img
+									ref={refs.pullIcon}
+									class="w-5 h-5 rounded"
+									className={animate.pull && 'animate-ping'}
+									src={iconDownloadCloud}
+									alt="download"
+								/>
+							</button>
+						</Tooltip>
+					</div>
+					{/* Profile Picture */}
+				</Show>
 				<div class="ml-5">
 					<button aria-label="Profile" onClick={() => setModalProfile(true)} class="relative flex items-center rounded focus:ring focus:outline-none">
 						<img
@@ -165,19 +156,42 @@ const Header = () => {
 						class={modalProfile() ? '' : 'hidden'}
 					>
 						<span class="block sm:hidden w-full p-2 m-2 rounded border-b border-gray-200">{auth.user_metadata.full_name}</span>
-						<button onClick={signOut} class="flex items-center w-full p-1 px-3 m-2 rounded-lg text-left hover:bg-gray-200">
-							<img
-								ref={refs.logoutIcon}
-								src={iconLogOut}
-								alt="log-out"
-								className="w-4 h-4 mr-2"
-							/>
-							Logout
-						</button>
+						<Show when={auth.anonymous}>
+							<Link
+								href="/login" 
+								class="flex items-center w-full p-1 px-3 m-2 rounded-lg text-left hover:bg-gray-200"
+							>
+								<img
+									src={iconLogIn}
+									alt="log-in"
+									className="w-4 h-4 mr-2"
+								/>
+								Login
+							</Link>
+						</Show>
+						<Show when={!auth.anonymous}>
+							<button onClick={signOut} class="flex items-center w-full p-1 px-3 m-2 rounded-lg text-left hover:bg-gray-200">
+								<img
+									ref={refs.logoutIcon}
+									src={iconLogOut}
+									alt="log-out"
+									className="w-4 h-4 mr-2"
+								/>
+								Logout
+							</button>
+						</Show>
 					</div>
 				</div>
+			</header>
+			<Show when={auth.anonymous}>
+				<div className="mt-3 p-2 text-center bg-blue-200">
+					Login to backup your local notes to online server
+					<Link href="/login" className="ml-3 p-1 px-2 text-sm rounded bg-blue-700 hover:bg-blue-900 text-gray-100">
+						Login
+					</Link>
+				</div>
 			</Show>
-		</header>
+		</>
 	)
 }
 
