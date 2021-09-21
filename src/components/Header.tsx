@@ -11,6 +11,7 @@ import iconLogIn from '@assets/icons/log-in.svg'
 import iconLogOut from '@assets/icons/log-out.svg'
 import iconLoader from '@assets/icons/loader.svg'
 import Tooltip from './Tooltip'
+import Modal from "./Modal"
 import { useNote } from '@context/note'
 import { Link } from 'solid-app-router'
 
@@ -22,6 +23,10 @@ const Header = () => {
 	} = {}
 	const [, setNote] = useNote()
 	const [modalProfile, setModalProfile] = createSignal(false)
+	const [pullState, setPullState] = createStore({
+		modal: false,
+		confirm: false
+	})
 	const [animate, setAnimate] = createStore({
 		sync: false,
 		pull: false,
@@ -79,6 +84,11 @@ const Header = () => {
 	 * Pull and overwrite local notes
 	 */
 	const pullNotes = async () => {
+		if (!pullState.confirm) {
+			setPullState('modal', true)
+			return
+		}
+
 		setAnimate('pull', true) // start spin
 
 		const {data, error} = await notesOverwriteLocal()
@@ -106,6 +116,32 @@ const Header = () => {
 	
 	return (
 		<>
+			<Modal
+				signal={[() => pullState.modal, (x: boolean) => setPullState('modal', x)]}
+			>
+				<div className="p-2">Overwrite current local notes from cloud?</div>
+				<div className="p-2 flex items-center">
+					<button
+						onClick={async () => {
+							setPullState('confirm', true)
+							setPullState('modal', false)
+							await pullNotes()
+						}}
+						type="button"
+						className="cursor-pointer p-2 rounded whitespace-nowrap bg-red-300 hover:bg-red-400 focus:ring focus:outline-none"
+					>
+						Overwrite
+					</button>
+					<button
+						onClick={() => setPullState('modal', false)}
+						type="button"
+						className="cursor-pointer p-2 rounded ml-auto focus:ring focus:outline-none"
+					>
+						Cancel
+					</button>
+				</div>
+				<div className="p-2 text-xs text-red-600">Your local notes cannot be restored and replaced with notes from online server.</div>
+			</Modal>
 			<header class="flex items-center p-3 pb-0 -mb-1">
 				{/* Brand */}
 				<div className="text-3xl">Noter</div>
