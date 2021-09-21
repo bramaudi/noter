@@ -14,9 +14,9 @@ import Modal from "@components/Modal"
 
 const ReadPage = () => {
 	const refs: { modalDeleteBtn?: HTMLButtonElement } = {}
+	const navigate = useNavigate()
 	const [note, setNote] = useNote()
 	const [modal, setModal] = createSignal(false)
-	const navigate = useNavigate()
 
 	// Navigate back to notes list
 	const navigateBack = () => {
@@ -68,7 +68,6 @@ const ReadPage = () => {
 			navigate('/notes')
 		}
 		// restore scrollY
-		// window.scrollTo({ top: scrollY().read })
 		window.addEventListener('popstate', handlePopState)
 		window.addEventListener('keydown', navigateEditEvent)
 		window.addEventListener('keydown', navigateDeleteEvent)

@@ -1,8 +1,8 @@
-import { JSXElement } from 'solid-js'
-import { NoteProvider } from '@context/note'
-import { onCleanup } from 'solid-js';
-import ReloadPrompt from './components/ReloadPrompt';
-import { getLocalNotes } from '@models/notes';
+import { JSXElement, onCleanup } from "solid-js"
+import { NoteProvider } from "@context/note"
+import { ScrollProvider } from "@context/scroll"
+import { getLocalNotes } from "@models/notes";
+import ReloadPrompt from "@components/ReloadPrompt";
 
 function App({ Routes }: { Routes: () => JSXElement }) {
   /**
@@ -29,7 +29,9 @@ function App({ Routes }: { Routes: () => JSXElement }) {
     <>
       <ReloadPrompt />
       <NoteProvider initial={getLocalNotes(true)}>
-        <Routes />
+        <ScrollProvider>
+          <Routes />
+        </ScrollProvider>
       </NoteProvider>
     </>
   )
