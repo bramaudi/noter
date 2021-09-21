@@ -5,6 +5,7 @@ import { encodeHTMLEntities, nl2br, truncateText } from "@helper/string";
 import { autoTitleSize, invertToBW } from "@helper/style";
 import { NoteFormat } from "@models/notes";
 import { useNote } from "@context/note";
+import { useScroll } from "@context/scroll"
 
 const Card = (props: {
 	item: NoteFormat,
@@ -12,8 +13,9 @@ const Card = (props: {
 }) => {
 	const noteTitle = props.item.title ? truncateText(props.item.title, 60, false) : ''
 	const noteBody = props.item.body ? truncateText(props.item.body, window.innerWidth > 768 ? 300 : 150, false) : ''
-	const [, setNote] = useNote()
 	const navigate = useNavigate()
+	const [, setScroll] = useScroll()
+	const [, setNote] = useNote()
 
 	/**
 	 * Set note object & navigate to read section
@@ -21,6 +23,8 @@ const Card = (props: {
 	 */
 	 const readNote = (note: NoteFormat) => {
 		setNote(n => ({...n, single: note}))
+		setScroll('y', window.scrollY)
+		localStorage.setItem('scrollY', window.scrollY.toString())
 		navigate('/notes/read')
 	}
 

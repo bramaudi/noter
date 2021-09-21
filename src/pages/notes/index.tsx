@@ -1,4 +1,4 @@
-import { Show, onMount, onCleanup } from "solid-js"
+import { Show, onMount } from "solid-js"
 import { useNavigate } from "solid-app-router"
 // Services
 import { useNote } from '@context/note'
@@ -12,18 +12,19 @@ import NoteList from '@components/note/List'
 const Home = () => {
 	const navigate = useNavigate()
 	const [note] = useNote()
-	const [scroll, setScroll] = useScroll()
+	const [scroll] = useScroll()
 
-	const handleSaveScroll = () => {
-		setScroll('y', window.scrollY)
-	}
-
-	onMount(() => {		
-		window.scrollTo(0, scroll.y + 10)
-		window.addEventListener('scroll', handleSaveScroll)
-	})
-	onCleanup(() => {
-		window.removeEventListener('scroll', handleSaveScroll)
+	onMount(() => {
+		const lastScrollY = scroll.y || parseInt(localStorage.getItem('scrollY'))
+		console.log('lastScrollY', lastScrollY)
+		if ('scrollBy' in window) {
+			window.scrollBy({
+				top: lastScrollY,
+				behavior: 'smooth'
+			})
+		} else {
+			window.scrollTo(0, lastScrollY)
+		}
 	})
 
 	return (
