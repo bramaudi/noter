@@ -2,31 +2,36 @@ lockfileVersion: 5.3
 
 specifiers:
   '@supabase/supabase-js': ^1.20.0
+  '@types/lz-string': ^1.3.34
   '@vue/compiler-sfc': ^3.1.5
   autoprefixer: ^10.3.1
   crypto-js: ^4.1.1
   lorem-ipsum: ^2.0.3
+  lz-string: ^1.4.4
   postcss: ^8.3.6
   solid-app-router: ^0.1.2
   solid-js: ^1.1.1
-  solid-masonry: 0.1.2
+  solid-masonry: 0.1.6
   sort-route-paths: ^1.0.0
   tailwindcss: ^2.2.7
   vite: ^2.4.2
   vite-plugin-pages: ^0.15.1
   vite-plugin-pwa: ^0.10.0
   vite-plugin-solid: ^2.0.0
+  vite-tsconfig-paths: ^3.3.14
   workbox-window: ^6.2.2
 
 dependencies:
   '@supabase/supabase-js': 1.21.0
   crypto-js: 4.1.1
+  lz-string: 1.4.4
   solid-app-router: 0.1.3_solid-js@1.1.1
   solid-js: 1.1.1
-  solid-masonry: 0.1.2
+  solid-masonry: 0.1.6
   sort-route-paths: 1.0.0
 
 devDependencies:
+  '@types/lz-string': 1.3.34
   '@vue/compiler-sfc': 3.1.5
   autoprefixer: 10.3.1_postcss@8.3.6
   lorem-ipsum: 2.0.3
@@ -36,6 +41,7 @@ devDependencies:
   vite-plugin-pages: 0.15.1_d721cee1335e8c66be87b42b65e96079
   vite-plugin-pwa: 0.10.0_vite@2.4.2
   vite-plugin-solid: 2.0.0
+  vite-tsconfig-paths: 3.3.14_vite@2.4.2
   workbox-window: 6.2.2
 
 packages:
@@ -1313,6 +1319,10 @@ packages:
       to-fast-properties: 2.0.0
     dev: true
 
+  /@cush/relative/1.0.0:
+    resolution: {integrity: sha512-RpfLEtTlyIxeNPGKcokS+p3BZII/Q3bYxryFRglh5H3A3T8q9fsLYm72VYAMEOOIBLEa8o93kFLiBDUWKrwXZA==}
+    dev: true
+
   /@nodelib/fs.scandir/2.1.5:
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
     engines: {node: '>= 8'}
@@ -1435,6 +1445,14 @@ packages:
 
   /@types/estree/0.0.48:
     resolution: {integrity: sha512-LfZwXoGUDo0C3me81HXgkBg5CTQYb6xzEl+fNmbO4JdRiSKQ8A0GD1OBBvKAIsbCUgoyAty7m99GqqMQe784ew==}
+    dev: true
+
+  /@types/json5/0.0.29:
+    resolution: {integrity: sha1-7ihweulOEdK4J7y+UnC86n8+ce4=}
+    dev: true
+
+  /@types/lz-string/1.3.34:
+    resolution: {integrity: sha512-j6G1e8DULJx3ONf6NdR5JiR2ZY3K3PaaqiEuKYkLQO0Czfi1AzrtjfnfCROyWGeDd5IVMKCwsgSmMip9OWijow==}
     dev: true
 
   /@types/node/16.4.11:
@@ -2216,6 +2234,10 @@ packages:
       is-glob: 4.0.1
     dev: true
 
+  /glob-regex/0.3.2:
+    resolution: {integrity: sha512-m5blUd3/OqDTWwzBBtWBPrGlAzatRywHameHeekAZyZrskYouOGdNB8T/q6JucucvJXtOuyHIn0/Yia7iDasDw==}
+    dev: true
+
   /glob/7.1.7:
     resolution: {integrity: sha512-OvD9ENzPLbegENnYP5UUfJIirTg4+XwMWGaQfQTY0JenxNvvIKP3U3/tAQSPIu/lHxXYSZmpXlUHeqAIdKzBLQ==}
     dependencies:
@@ -2230,6 +2252,10 @@ packages:
   /globals/11.12.0:
     resolution: {integrity: sha512-WOBp/EEGUiIsJSp7wcv/y6MO+lV9UoncWqxuFfm8eBwzWNgyfBd6Gz+IeKQ9jCmyhoH99g15M3T+QaVHFjizVA==}
     engines: {node: '>=4'}
+    dev: true
+
+  /globrex/0.1.2:
+    resolution: {integrity: sha512-uHJgbwAMwNFf5mLst7IWLNg14x1CkeqglJb/K3doi4dw6q2IvAAmM/Y81kevy83wP+Sst+nutFTYOGg3d1lsxg==}
     dev: true
 
   /graceful-fs/4.2.6:
@@ -2609,6 +2635,11 @@ packages:
       yallist: 3.1.1
     dev: true
 
+  /lz-string/1.4.4:
+    resolution: {integrity: sha1-wNjq82BZ9wV5bh40SBHPTEmNOiY=}
+    hasBin: true
+    dev: false
+
   /magic-string/0.25.7:
     resolution: {integrity: sha512-4CrMT5DOHTDk4HYDlzmwu4FVCcIYI8gauveasrdCu2IKIFOJ3f0v/8MDGJCDL9oD2ppz/Av1b0Nj345H9M+XIA==}
     dependencies:
@@ -2952,6 +2983,15 @@ packages:
       picomatch: 2.3.0
     dev: true
 
+  /recrawl-sync/2.2.1:
+    resolution: {integrity: sha512-A2yLDgeXNaduJJMlqyUdIN7fewopnNm/mVeeGytS1d2HLXKpS5EthQ0j8tWeX+as9UXiiwQRwfoslKC+/gjqxg==}
+    dependencies:
+      '@cush/relative': 1.0.0
+      glob-regex: 0.3.2
+      slash: 3.0.0
+      tslib: 1.14.1
+    dev: true
+
   /reduce-css-calc/2.1.8:
     resolution: {integrity: sha512-8liAVezDmUcH+tdzoEGrhfbGcP7nOV4NkGE3a74+qqvE7nt9i4sKLGBuZNOnpI4WiGksiNPklZxva80061QiPg==}
     dependencies:
@@ -3113,6 +3153,11 @@ packages:
       is-arrayish: 0.3.2
     dev: true
 
+  /slash/3.0.0:
+    resolution: {integrity: sha512-g9Q1haeby36OSStwb4ntCGGGaKsaVSjQ68fBxoQcutl5fS1vuY18H3wSt3jFyFtrkx+Kz0V1G85A4MyAdDMi2Q==}
+    engines: {node: '>=8'}
+    dev: true
+
   /solid-app-router/0.1.3_solid-js@1.1.1:
     resolution: {integrity: sha512-Su//M8U4w/GVJqIbxPOcWPtrGBFoV0m+Ob7/Gs86fhAMOwCui9XWji/st4sGLDUzcxp4uTNWVSLjVsBlFUiw/Q==}
     peerDependencies:
@@ -3125,18 +3170,14 @@ packages:
     resolution: {integrity: sha512-zQIbVlBH9WNqXfUSOhZAGZv1bkuaeo5yke+M4r5QgG5IuFxP2+ltGJjGLBN7r+Nj9M+H9QK7ufHVeexQsDvg7A==}
     dev: true
 
-  /solid-js/1.0.7:
-    resolution: {integrity: sha512-2jHCXLwp/B7P4kh5tl0ospRaC2F++BU0uWwtfgK/8Zc/MROOyCmmkjHpLAQC2u2NWYVGnIclDIJ2FGDXJ0wcYg==}
-    dev: false
-
   /solid-js/1.1.1:
     resolution: {integrity: sha512-BtNNMUjBGtkx4viW5q/oqU4DOHa3WRhylN302cVVIeiBUGw6uzAE+NhNF12bAvSYJOCHLyGHpUEIeWklkeGgsg==}
     dev: false
 
-  /solid-masonry/0.1.2:
-    resolution: {integrity: sha512-XxqYrqWLIARyUSFRroacMGZm9BflTbfsULyNmGs/TvF8jBoVhc1FqLy0qZkCtuvoK7IvspPWJHGBy1aoWk4oAw==}
+  /solid-masonry/0.1.6:
+    resolution: {integrity: sha512-ENvaeaw48nmoEK94LjU6Z2NVX7dq5B9Oguu2rRH4zcmnhjnDMcF84t2Dud+as+ciYdI3/f+9bIwRvQ3Xp0SrqQ==}
     dependencies:
-      solid-js: 1.0.7
+      solid-js: 1.1.1
     dev: false
 
   /solid-refresh/0.2.1_solid-js@1.0.2:
@@ -3219,6 +3260,11 @@ packages:
       get-own-enumerable-property-symbols: 3.0.2
       is-obj: 1.0.1
       is-regexp: 1.0.0
+    dev: true
+
+  /strip-bom/3.0.0:
+    resolution: {integrity: sha1-IzTBjpx1n3vdVv3vfprj1YjmjtM=}
+    engines: {node: '>=4'}
     dev: true
 
   /strip-comments/2.0.1:
@@ -3337,6 +3383,19 @@ packages:
 
   /ts-toolbelt/9.6.0:
     resolution: {integrity: sha512-nsZd8ZeNUzukXPlJmTBwUAuABDe/9qtVDelJeT/qW0ow3ZS3BsQJtNkan1802aM9Uf68/Y8ljw86Hu0h5IUW3w==}
+    dev: true
+
+  /tsconfig-paths/3.11.0:
+    resolution: {integrity: sha512-7ecdYDnIdmv639mmDwslG6KQg1Z9STTz1j7Gcz0xa+nshh/gKDAHcPxRbWOsA3SPp0tXP2leTcY9Kw+NAkfZzA==}
+    dependencies:
+      '@types/json5': 0.0.29
+      json5: 1.0.1
+      minimist: 1.2.5
+      strip-bom: 3.0.0
+    dev: true
+
+  /tslib/1.14.1:
+    resolution: {integrity: sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==}
     dev: true
 
   /type-fest/0.16.0:
@@ -3468,6 +3527,20 @@ packages:
       merge-anything: 4.0.1
       solid-js: 1.0.2
       solid-refresh: 0.2.1_solid-js@1.0.2
+      vite: 2.4.2
+    transitivePeerDependencies:
+      - supports-color
+    dev: true
+
+  /vite-tsconfig-paths/3.3.14_vite@2.4.2:
+    resolution: {integrity: sha512-Z501YCOTTwBk+zDq0furrD+O+X/zawKIo8L3eE0GVSr700AvWAArnlUHOzoRJQw0fJLfd+61rD7jkT20Jh8gtA==}
+    peerDependencies:
+      vite: '>2.0.0-0'
+    dependencies:
+      debug: 4.3.2
+      globrex: 0.1.2
+      recrawl-sync: 2.2.1
+      tsconfig-paths: 3.11.0
       vite: 2.4.2
     transitivePeerDependencies:
       - supports-color
