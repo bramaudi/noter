@@ -29,7 +29,6 @@ const Card = (props: {
 			tabIndex="0"
 			id={`note_${props.index}`}
 			onClick={() => readNote(props.item)}
-			onMouseOver={e => (e.target as HTMLElement).focus()}
 			style={{
 				background: props.item.color,
 				color: props.item.color && invertToBW(props.item.color)

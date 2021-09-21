@@ -43,7 +43,6 @@ const NoteList = (props: { notes: NoteFormat[] }) => {
 	onMount(() => {
 		window.addEventListener('keydown', handleNoteShiftFocus)
 		window.addEventListener('keydown', navigateReadEvent)
-		document.getElementById('note_0')?.focus()
 	})
 	onCleanup(() => {
 		window.removeEventListener('keydown', handleNoteShiftFocus)
