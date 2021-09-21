@@ -11,11 +11,11 @@ import FormTextarea from "@components/note/FormTextarea"
 import FormLeaveConfirm from "@components/note/FormLeaveConfirm"
 
 const NoteEdit = () => {
+	const navigate = useNavigate()
 	const [note, setNote] = useNote()
 	const [warnOnExit, setWarnOnExit] = createSignal(false)
 	const [modal, setModal] = createSignal(false)
 	const [formData, setFormData] = createSignal(note.single)
-	const navigate = useNavigate()
 	const formDataRef = formData()
 
 	/**
@@ -24,6 +24,7 @@ const NoteEdit = () => {
 	 const navigateBack = (forceNavigate = false) => {
 		if (warnOnExit() && !forceNavigate) {
 			setModal(true)
+			history.pushState(null, document.title, location.href);
 			return
 		}
 
@@ -65,6 +66,7 @@ const NoteEdit = () => {
 	}
 
 	onMount(() => {
+		history.pushState(null, document.title, location.href);
 		window.addEventListener('popstate', handlePopState)
 		window.addEventListener('keydown', navigateEscapeEvent)
 	})

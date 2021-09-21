@@ -20,7 +20,7 @@ const ReadPage = () => {
 
 	// Navigate back to notes list
 	const navigateBack = () => {
-		// let lastY = scrollY().notes
+		// let lastY = scrollY().notes		
 		navigate('/notes')
 		// window.scrollTo({ top: lastY })
 	}
@@ -63,6 +63,7 @@ const ReadPage = () => {
 	}
 	
 	onMount(() => {
+		history.pushState(null, document.title, location.href);
 		if (!note.single.title && !note.single.body) {
 			navigate('/notes')
 		}
