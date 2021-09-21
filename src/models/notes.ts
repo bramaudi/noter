@@ -126,6 +126,7 @@ export const notesBackup = async (): Promise<NoteFormat[]> => {
  */
 export const notesOverwriteLocal = async (): Promise<Output> => {
 	const {data, error} = await notesFetch()
+	setLocalNotes(data)
 	const notes = data.map(notesDecompress)
 	return {data: notes, error}
 }
